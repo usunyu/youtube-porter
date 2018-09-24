@@ -1,2 +1,2 @@
 # youtube-porter
-Automate upload video to youtube from any sources
+Automate upload video to YouTube from any sources
