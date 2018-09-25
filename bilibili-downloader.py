@@ -1,6 +1,7 @@
 # - *- coding: utf- 8 - *-
 import requests, json, re
 
+CHUNK_SIZE = 1024
 
 def download(url, filename='0'):
     headers = {'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.92 Safari/537.36'}
@@ -12,13 +13,20 @@ def download(url, filename='0'):
     else:
         local_filename = filename + '.flv'
     file = open(local_filename, 'wb')
-    print('downloading...')
-    for chunk in response.iter_content(chunk_size=1024):
+    print('Start downloading...')
+    download_size = 0
+    for chunk in response.iter_content(chunk_size=CHUNK_SIZE):
         if chunk: # filter out keep-alive new chunks
             file.write(chunk)
             # file.flush()
+        download_size = download_size + CHUNK_SIZE
+        end = '\r'
+        if download_size > total_size:
+            download_size = total_size
+            end = '\r\n'
+        print('Download progress: {:.0%}'.format(float(download_size) / total_size), end=end, flush=True),
     file.close()
-    print('download finish')
+    print('Download finish!')
 
 
 BILIBILI_API = 'https://www.kanbilibili.com/api/video/'
