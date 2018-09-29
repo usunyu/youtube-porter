@@ -1,3 +1,5 @@
 from django.contrib import admin
+from video.models import Video, VideoTag
 
-# Register your models here.
+admin.site.register(video)
+admin.site.register(VideoTag)
