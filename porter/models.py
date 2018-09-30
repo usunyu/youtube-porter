@@ -1,5 +1,5 @@
 from django.db import models
-from porter.enums import PorterStatus
+from porter.enums import PorterStatus, VideoSource
 
 
 class YoutubeAccount(models.Model):
@@ -28,11 +28,20 @@ class Video(models.Model):
 
 class PorterJob(models.Model):
     video_url = models.CharField(max_length=256)
+    video_source = models.CharField(
+        max_length=32,
+        choices=[(source, source.value) for source in VideoSource],
+        default=VideoSource.BILIBILI
+    )
     youtube_account = models.ForeignKey(
         YoutubeAccount,
         on_delete=models.CASCADE,
         related_name='porter_jobs')
-    status = models.PositiveSmallIntegerField(default=PorterStatus.Pending)
+    status = models.CharField(
+        max_length=32,
+        choices=[(status, status.value) for status in PorterStatus],
+        default=PorterStatus.PENDING
+    )
 
     def __str__(self):
         return u'PorterJob: {}'.format(self.video_url)

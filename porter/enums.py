@@ -1,5 +1,11 @@
-class PorterStatus:
-    Pending = 0
-    Downloading = 1
-    Uploading = 2
-    Success = 3
+from enum import Enum
+
+class VideoSource(Enum):
+    BILIBILI = 'Bilibili'
+    YOUKU = 'Youku'
+
+class PorterStatus(Enum):
+    PENDING = 'Pending'
+    DOWNLOADING = 'Downloading'
+    UPLOADING = 'Uploading'
+    SUCCESS = 'Success'

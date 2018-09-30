@@ -1,6 +1,8 @@
 from datetime import datetime, timedelta, timezone
 from apscheduler.schedulers.background import BackgroundScheduler
 from django_apscheduler.jobstores import DjangoJobStore, register_events, register_job
+from porter.models import PorterJob
+
 
 scheduler = BackgroundScheduler()
 scheduler.add_jobstore(DjangoJobStore(), 'default')
@@ -13,9 +15,12 @@ def print_log(msg):
     us_dt = utc_dt.astimezone(timezone(timedelta(hours=-7)))
     print(TAG, us_dt.strftime("%Y-%m-%d %H:%M:%S"), msg)
 
+
 @scheduler.scheduled_job("interval", seconds=60, id='porter')
 def porter_job():
+
     print_log('Run schedule job now.')
+
 
 # avoid multi-thread to start multiple schedule jobs
 import fcntl
