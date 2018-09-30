@@ -1,6 +1,9 @@
+APScheduler==3.5.3
 cachetools==2.1.0
 certifi==2018.8.24
 chardet==3.0.4
+Django==2.1.1
+django-apscheduler==0.2.13
 google-api-python-client==1.7.4
 google-auth==1.5.1
 google-auth-httplib2==0.0.3
@@ -11,8 +14,10 @@ progressbar2==3.38.0
 pyasn1==0.4.4
 pyasn1-modules==0.2.2
 python-utils==2.3.0
+pytz==2018.5
 requests==2.19.1
 rsa==4.0
 six==1.11.0
+tzlocal==1.5.1
 uritemplate==3.0.0
 urllib3==1.23
