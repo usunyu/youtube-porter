@@ -7,14 +7,14 @@ class YoutubeAccount(models.Model):
     secret_file = models.CharField(max_length=256)
 
     def __str__(self):
-        return u'YoutubeAccount: {}'.format(self.name)
+        return self.name
 
 
 class VideoTag(models.Model):
     name = models.CharField(unique=True, db_index=True, max_length=64)
 
     def __str__(self):
-        return u'VideoTag: {}'.format(self.name)
+        return self.name
 
 
 class Video(models.Model):
@@ -23,25 +23,33 @@ class Video(models.Model):
     tags = models.ManyToManyField(VideoTag, related_name='videos')
 
     def __str__(self):
-        return u'Video: {}'.format(self.title)
+        return self.title
 
 
 class PorterJob(models.Model):
     video_url = models.CharField(max_length=256)
-    video_source = models.CharField(
-        max_length=32,
-        choices=[(source, source.value) for source in VideoSource],
+    VIDEO_SOURCE_CHOICES = (
+        (VideoSource.BILIBILI, 'Bilibili'),
+        (VideoSource.YOUKU, 'Youku')
+    )
+    video_source = models.PositiveSmallIntegerField(
+        choices=VIDEO_SOURCE_CHOICES,
         default=VideoSource.BILIBILI
     )
     youtube_account = models.ForeignKey(
         YoutubeAccount,
         on_delete=models.CASCADE,
         related_name='porter_jobs')
-    status = models.CharField(
-        max_length=32,
-        choices=[(status, status.value) for status in PorterStatus],
+    PORTER_STATUS_CHOICES = (
+        (PorterStatus.PENDING, 'Pending'),
+        (PorterStatus.DOWNLOADING, 'Downloading'),
+        (PorterStatus.UPLOADING, 'Uploading'),
+        (PorterStatus.SUCCESS, 'Success')
+    )
+    status = models.PositiveSmallIntegerField(
+        choices=PORTER_STATUS_CHOICES,
         default=PorterStatus.PENDING
     )
 
     def __str__(self):
-        return u'PorterJob: {}'.format(self.video_url)
+        return self.video_url
