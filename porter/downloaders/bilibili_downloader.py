@@ -15,10 +15,10 @@ def download(url):
     format = response.headers['Content-Type']
     filename = get_time_str()
     if format=='video/mp4':
-        local_filename = filename + '.mp4'
+        filename = filename + '.mp4'
     else:
-        local_filename = filename + '.flv'
-    file = open(local_filename, 'wb')
+        filename = filename + '.flv'
+    file = open(filename, 'wb')
     print_log(TAG, 'Start downloading...')
     download_size = 0
     for chunk in response.iter_content(chunk_size=CHUNK_SIZE):
@@ -33,8 +33,10 @@ def download(url):
         print(TAG, 'Download progress: {:.0%}'.format(float(download_size) / total_size), end=end, flush=True),
     file.close()
     print_log(TAG, 'Download finish!')
+    return filename
 
-def bilibili_download(video_url):
+def bilibili_download(job):
+    video_url = job.video_url
     video_id = re.findall('.*av([0-9]+)', video_url)[0]
     api_url = BILIBILI_API + video_id
     print_log(TAG, 'Fetch data from ' + api_url)
@@ -43,13 +45,17 @@ def bilibili_download(video_url):
 
     if payload['err'] == None:
         data = payload['data']
-        # TODO save video info
+        video = job.video
         title = data['title']
+        video.title = title
         print_log(TAG, 'Title: ' + title)
         typename = data['typename']
         print_log(TAG, 'Typename: ' + typename)
         description = data['description']
+        video.description = description
         print_log(TAG, 'Description: ' + description)
+        # TODO fetch tags
+        video.save(update_fields=['title', 'description'])
 
         # default first page
         # TODO deal with multi page video

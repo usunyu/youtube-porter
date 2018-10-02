@@ -24,7 +24,9 @@ class Video(models.Model):
     tags = models.ManyToManyField(VideoTag, related_name='videos')
 
     def __str__(self):
-        return self.title
+        if self.title:
+            return self.title
+        return 'Title not loaded'
 
 
 class PorterJob(models.Model):
@@ -50,12 +52,15 @@ class PorterJob(models.Model):
         null=True,
         blank=True
     )
+    video_file = models.CharField(max_length=64, null=True, blank=True)
     PORTER_STATUS_CHOICES = (
         (PorterStatus.PENDING, 'Pending'),
         (PorterStatus.DOWNLOADING, 'Downloading'),
         (PorterStatus.DOWNLOADED, 'Downloaded'),
         (PorterStatus.UPLOADING, 'Uploading'),
-        (PorterStatus.SUCCESS, 'Success')
+        (PorterStatus.SUCCESS, 'Success'),
+        (PorterStatus.DOWNLOAD_FAIL, 'Download Fail'),
+        (PorterStatus.UPLOAD_FAIL, 'Upload Fail'),
     )
     status = models.PositiveSmallIntegerField(
         choices=PORTER_STATUS_CHOICES,

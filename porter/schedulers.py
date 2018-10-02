@@ -3,7 +3,7 @@ from django_apscheduler.jobstores import DjangoJobStore, register_events, regist
 from porter.utils import print_log
 from porter.downloaders.bilibili_downloader import bilibili_download
 from porter.enums import VideoSource, PorterStatus
-from porter.models import PorterJob
+from porter.models import Video, PorterJob
 
 
 TAG = '[SCHEDULERS]'
@@ -31,24 +31,25 @@ def download_job():
         if PorterJob.objects.filter(video_url=job.video_url).exists():
             print_log(TAG, 'Youtube account: ' + job.youtube_account.name)
 
+        # create video object
+        video = Video(url=job.video_url)
+        video.save()
+        job.video = video
         # update status to *DOWNLOADING*
         job.status = PorterStatus.DOWNLOADING
-        job.save(update_fields=['status'])
+        job.save(update_fields=['video', 'status'])
         # download the video
         if job.video_source == VideoSource.BILIBILI:
-            video_file = bilibili_download(job.video_url)
+            video_file = bilibili_download(job)
         else:
             video_file = None
 
         if video_file:
-            # create video object
-            video = Video(url=job.video_url)
-            video.save()
-            # update job video
-            job.video = video
+            # update job video file
+            job.video_file = video_file
             # update status to *DOWNLOADED*
             job.status = PorterStatus.DOWNLOADED
-            job.save(update_fields=['video', 'status'])
+            job.save(update_fields=['video_file', 'status'])
         else:
             # update status to *DOWNLOAD_FAIL*
             job.status = PorterStatus.DOWNLOAD_FAIL
