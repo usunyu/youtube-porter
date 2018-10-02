@@ -18,7 +18,8 @@ class VideoTag(models.Model):
 
 
 class Video(models.Model):
-    title = models.CharField(max_length=256)
+    url = models.CharField(max_length=256)
+    title = models.CharField(max_length=256, null=True, blank=True)
     description = models.TextField(null=True, blank=True)
     tags = models.ManyToManyField(VideoTag, related_name='videos')
 
@@ -38,11 +39,21 @@ class PorterJob(models.Model):
     )
     youtube_account = models.ForeignKey(
         YoutubeAccount,
-        on_delete=models.CASCADE,
-        related_name='porter_jobs')
+        on_delete=models.SET_NULL,
+        related_name='porter_jobs',
+        null=True,
+        blank=True)
+    video = models.OneToOneField(
+        Video,
+        on_delete=models.SET_NULL,
+        related_name='porter_job',
+        null=True,
+        blank=True
+    )
     PORTER_STATUS_CHOICES = (
         (PorterStatus.PENDING, 'Pending'),
         (PorterStatus.DOWNLOADING, 'Downloading'),
+        (PorterStatus.DOWNLOADED, 'Downloaded'),
         (PorterStatus.UPLOADING, 'Uploading'),
         (PorterStatus.SUCCESS, 'Success')
     )

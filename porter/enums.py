@@ -13,8 +13,11 @@ class VideoSource:
 class PorterStatus:
     PENDING = 0
     DOWNLOADING = 1
-    UPLOADING = 2
-    SUCCESS = 3
+    DOWNLOADED = 2
+    UPLOADING = 3
+    SUCCESS = 4
+    DOWNLOAD_FAIL = 5
+    UPLOAD_FAIL = 6
 
     @staticmethod
     def tostr(val):
@@ -22,8 +25,14 @@ class PorterStatus:
             return 'Pending'
         if val == PorterStatus.DOWNLOADING:
             return 'Downloading'
+        if val == PorterStatus.DOWNLOADED:
+            return 'Downloaded'
         if val == PorterStatus.UPLOADING:
             return 'Uploading'
         if val == PorterStatus.SUCCESS:
             return 'Success'
+        if val == PorterStatus.DOWNLOAD_FAIL:
+            return 'Download Fail'
+        if val == PorterStatus.UPLOAD_FAIL:
+            return 'Upload Fail'
         return 'Unknown'

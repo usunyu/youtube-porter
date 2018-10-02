@@ -11,10 +11,11 @@ class PorterJobAdmin(admin.ModelAdmin):
         'id',
         'video_url',
         'video_source',
+        'video',
         'youtube_account',
         'status'
     ]
 
-    readonly_fields = ['status']
+    readonly_fields = ['video', 'status']
 
 admin.site.register(PorterJob, PorterJobAdmin)

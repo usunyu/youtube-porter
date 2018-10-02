@@ -1,5 +1,5 @@
 import requests, json, re
-from porter.utils import print_log
+from porter.utils import print_log, get_time_str
 
 
 TAG = '[BILIBILI DOWNLOADER]'
@@ -8,11 +8,12 @@ BILIBILI_API = 'https://www.kanbilibili.com/api/video/'
 
 CHUNK_SIZE = 1024
 
-def download(url, filename='default'):
+def download(url):
     headers = {'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.92 Safari/537.36'}
     response = requests.get(url, headers=headers, stream=True)
     total_size = int(response.headers['content-length'])
     format = response.headers['Content-Type']
+    filename = get_time_str()
     if format=='video/mp4':
         local_filename = filename + '.mp4'
     else:
@@ -51,6 +52,7 @@ def bilibili_download(video_url):
         print_log(TAG, 'Description: ' + description)
 
         # default first page
+        # TODO deal with multi page video
         ls = data['list'][0]
         cid = ls['cid']
         d_api_url = api_url + '/download?cid=' + str(cid) + '&quality=48'
@@ -58,6 +60,7 @@ def bilibili_download(video_url):
         d_payload = json.loads(d_response.text)
         download_url = d_payload['data']['durl'][0]['url']
         print_log(TAG, 'Ready to download video from: ' + download_url)
-        download(download_url, str(video_id))
-    else:
-        print_log(TAG, 'Fetch data error!')
+        return download(download_url)
+
+    print_log(TAG, 'Fetch data error!')
+    return None

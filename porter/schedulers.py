@@ -12,28 +12,66 @@ JOB_INTERVAL = 300
 scheduler = BackgroundScheduler()
 scheduler.add_jobstore(DjangoJobStore(), 'default')
 
-job_lock = False
+download_job_lock = False
+upload_job_lock = False
 
-@scheduler.scheduled_job("interval", seconds=JOB_INTERVAL, id='porter')
-def porter_job():
-    global job_lock
-    if job_lock:
-        print_log(TAG, 'Job is still running, skip this schedule...')
+@scheduler.scheduled_job("interval", seconds=JOB_INTERVAL, id='download')
+def download_job():
+    global download_job_lock
+    if download_job_lock:
+        print_log(TAG, 'Download job is still running, skip this schedule...')
         return
-    job_lock = True
+    download_job_lock = True
     jobs = PorterJob.objects.filter(status=PorterStatus.PENDING)
     for job in jobs:
-        print_log(TAG, 'Start to run job: ' + str(job.id))
+        print_log(TAG, 'Start to download job: ' + str(job.id))
         print_log(TAG, 'Video url: ' + job.video_url)
         print_log(TAG, 'Video source: ' + VideoSource.tostr(job.video_source))
-        print_log(TAG, 'Youtube account: ' + job.youtube_account.name)
 
+        if PorterJob.objects.filter(video_url=job.video_url).exists():
+            print_log(TAG, 'Youtube account: ' + job.youtube_account.name)
+
+        # update status to *DOWNLOADING*
+        job.status = PorterStatus.DOWNLOADING
+        job.save(update_fields=['status'])
+        # download the video
         if job.video_source == VideoSource.BILIBILI:
-            bilibili_download(job.video_url)
+            video_file = bilibili_download(job.video_url)
         else:
-            pass
+            video_file = None
 
-    job_lock = False
+        if video_file:
+            # create video object
+            video = Video(url=job.video_url)
+            video.save()
+            # update job video
+            job.video = video
+            # update status to *DOWNLOADED*
+            job.status = PorterStatus.DOWNLOADED
+            job.save(update_fields=['video', 'status'])
+        else:
+            # update status to *DOWNLOAD_FAIL*
+            job.status = PorterStatus.DOWNLOAD_FAIL
+            job.save(update_fields=['status'])
+
+    download_job_lock = False
+
+
+@scheduler.scheduled_job("interval", seconds=JOB_INTERVAL, id='upload')
+def upload_job():
+    global upload_job_lock
+    if upload_job_lock:
+        print_log(TAG, 'Upload job is still running, skip this schedule...')
+        return
+    upload_job_lock = True
+    jobs = PorterJob.objects.filter(status=PorterStatus.DOWNLOADED)
+    for job in jobs:
+        print_log(TAG, 'Start to upload job: ' + str(job.id))
+        # print_log(TAG, 'Video: ' + job.video.title)
+        print_log(TAG, 'Youtube account: ' + job.youtube_account.name)
+        # TODO
+
+    upload_job_lock = False
 
 
 # avoid multi-thread to start multiple schedule jobs
