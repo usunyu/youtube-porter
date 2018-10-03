@@ -1,5 +1,6 @@
 from apscheduler.schedulers.background import BackgroundScheduler
 from django_apscheduler.jobstores import DjangoJobStore, register_events, register_job
+from django.db.models import Q
 from porter.utils import print_log
 from porter.downloaders.bilibili_downloader import bilibili_download
 from porter.enums import VideoSource, PorterStatus
@@ -7,7 +8,8 @@ from porter.models import Video, PorterJob
 
 
 TAG = '[SCHEDULERS]'
-JOB_INTERVAL = 300
+# JOB_INTERVAL = 300
+JOB_INTERVAL = 10
 
 scheduler = BackgroundScheduler()
 scheduler.add_jobstore(DjangoJobStore(), 'default')
@@ -27,9 +29,14 @@ def download_job():
         print_log(TAG, 'Start to download job: ' + str(job.id))
         print_log(TAG, 'Video url: ' + job.video_url)
         print_log(TAG, 'Video source: ' + VideoSource.tostr(job.video_source))
+        print_log(TAG, 'Youtube account: ' + job.youtube_account.name)
 
-        if PorterJob.objects.filter(video_url=job.video_url).exists():
-            print_log(TAG, 'Youtube account: ' + job.youtube_account.name)
+        # check if job is duplicated
+        if PorterJob.objects.filter(Q(video_url=video_url) & Q(youtube_account=account)).exists():
+            # update status to *DUPLICATED*
+            job.status = PorterStatus.DUPLICATED
+            job.save(update_fields=['status'])
+            continue
 
         # create video object
         video = Video(url=job.video_url)
@@ -68,7 +75,7 @@ def upload_job():
     jobs = PorterJob.objects.filter(status=PorterStatus.DOWNLOADED)
     for job in jobs:
         print_log(TAG, 'Start to upload job: ' + str(job.id))
-        # print_log(TAG, 'Video: ' + job.video.title)
+        print_log(TAG, 'Video: ' + job.video.title)
         print_log(TAG, 'Youtube account: ' + job.youtube_account.name)
         # TODO
 

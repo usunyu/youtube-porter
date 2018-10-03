@@ -18,6 +18,7 @@ class PorterStatus:
     SUCCESS = 4
     DOWNLOAD_FAIL = 5
     UPLOAD_FAIL = 6
+    DUPLICATED = 7
 
     @staticmethod
     def tostr(val):
@@ -35,4 +36,6 @@ class PorterStatus:
             return 'Download Fail'
         if val == PorterStatus.UPLOAD_FAIL:
             return 'Upload Fail'
+        if val == PorterStatus.DUPLICATED:
+            return 'Duplicated'
         return 'Unknown'

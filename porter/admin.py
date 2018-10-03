@@ -3,7 +3,22 @@ from porter.models import *
 
 admin.site.register(YoutubeAccount)
 admin.site.register(VideoTag)
-admin.site.register(Video)
+
+class VideoAdmin(admin.ModelAdmin):
+
+    list_display = [
+        'id',
+        'url',
+        'api_url',
+        'title',
+        'description',
+        'all_tags'
+    ]
+
+    def all_tags(self, obj):
+        return ', '.join([tag.name for tag in obj.tags.all()])
+
+admin.site.register(Video, VideoAdmin)
 
 class PorterJobAdmin(admin.ModelAdmin):
 

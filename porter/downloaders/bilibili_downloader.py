@@ -1,5 +1,7 @@
 import requests, json, re
+from requests_html import HTMLSession
 from porter.utils import print_log, get_time_str
+from porter.models import VideoTag
 
 
 TAG = '[BILIBILI DOWNLOADER]'
@@ -46,6 +48,7 @@ def bilibili_download(job):
     if payload['err'] == None:
         data = payload['data']
         video = job.video
+        video.api_url = api_url
         title = data['title']
         video.title = title
         print_log(TAG, 'Title: ' + title)
@@ -54,8 +57,20 @@ def bilibili_download(job):
         description = data['description']
         video.description = description
         print_log(TAG, 'Description: ' + description)
-        # TODO fetch tags
-        video.save(update_fields=['title', 'description'])
+        # fetch video tags
+        html_session = HTMLSession()
+        html_response = html_session.get(video_url)
+        html_tags = html_response.html.find('#v_tag', first=True).find('.tag')
+        for html_tag in html_tags:
+            tag_name = html_tag.text
+            # check if tag exists
+            tag = VideoTag.objects.filter(name=tag_name).first()
+            if not tag:
+                # create the tag
+                tag = VideoTag(name=tag_name)
+                tag.save()
+            video.tags.add(tag)
+        video.save(update_fields=['api_url', 'title', 'description'])
 
         # default first page
         # TODO deal with multi page video
