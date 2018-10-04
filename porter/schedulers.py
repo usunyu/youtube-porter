@@ -1,3 +1,4 @@
+import subprocess
 from apscheduler.schedulers.background import BackgroundScheduler
 from django_apscheduler.jobstores import DjangoJobStore, register_events, register_job
 from django.db.models import Q
@@ -77,10 +78,34 @@ def upload_job():
     upload_job_lock = True
     jobs = PorterJob.objects.filter(status=PorterStatus.DOWNLOADED)
     for job in jobs:
+        video = job.video
         print_log(TAG, 'Start to upload job: ' + str(job.id))
-        print_log(TAG, 'Video: ' + job.video.title)
+        print_log(TAG, 'Video: ' + video.title)
         print_log(TAG, 'Youtube account: ' + job.youtube_account.name)
-        # TODO
+        try:
+            # update status to *UPLOADING*
+            job.status = PorterStatus.UPLOADING
+            job.save(update_fields=['status'])
+            # upload to youtube
+            # TODO, fill tags, category, description
+            subprocess.call(
+                'sudo youtube-upload --title="{}" "{}" --client-secrets="{}"'.format(
+                    video.title,
+                    job.video_file,
+                    job.youtube_account.secret_file
+                ),
+                shell=True
+            )
+        except Exception as e:
+            print_log(TAG, 'Failed to upload video: ' + video.title)
+            print(e)
+            # update status to *UPLOAD_FAIL*
+            job.status = PorterStatus.UPLOAD_FAIL
+            job.save(update_fields=['status'])
+        # update status to *SUCCESS*
+        job.status = PorterStatus.SUCCESS
+        job.save(update_fields=['status'])
+        # TODO delete the video file
 
     upload_job_lock = False
 
