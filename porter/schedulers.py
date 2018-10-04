@@ -8,8 +8,7 @@ from porter.models import Video, PorterJob
 
 
 TAG = '[SCHEDULERS]'
-# JOB_INTERVAL = 300
-JOB_INTERVAL = 10
+JOB_INTERVAL = 300
 
 scheduler = BackgroundScheduler()
 scheduler.add_jobstore(DjangoJobStore(), 'default')
@@ -32,7 +31,11 @@ def download_job():
         print_log(TAG, 'Youtube account: ' + job.youtube_account.name)
 
         # check if job is duplicated
-        if PorterJob.objects.filter(Q(video_url=video_url) & Q(youtube_account=account)).exists():
+        if PorterJob.objects.filter(
+            Q(video_url=job.video_url) &
+            Q(youtube_account=job.youtube_account) &
+            Q(status=PorterStatus.SUCCESS)
+        ).exists():
             # update status to *DUPLICATED*
             job.status = PorterStatus.DUPLICATED
             job.save(update_fields=['status'])

@@ -32,6 +32,6 @@ class PorterJobAdmin(admin.ModelAdmin):
         'status'
     ]
 
-    readonly_fields = ['video', 'video_file', 'status']
+    readonly_fields = ['video', 'video_file']
 
 admin.site.register(PorterJob, PorterJobAdmin)

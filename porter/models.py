@@ -62,6 +62,7 @@ class PorterJob(models.Model):
         (PorterStatus.SUCCESS, 'Success'),
         (PorterStatus.DOWNLOAD_FAIL, 'Download Fail'),
         (PorterStatus.UPLOAD_FAIL, 'Upload Fail'),
+        (PorterStatus.DUPLICATED, 'Duplicated'),
     )
     status = models.PositiveSmallIntegerField(
         choices=PORTER_STATUS_CHOICES,
