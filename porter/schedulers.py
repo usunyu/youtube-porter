@@ -43,7 +43,10 @@ def download_job():
             continue
 
         # create video object
-        video = Video(url=job.video_url)
+        video = Video(
+            url=job.video_url,
+            category='Entertainment' # default to entertainment category
+        )
         video.save()
         job.video = video
         # update status to *DOWNLOADING*
