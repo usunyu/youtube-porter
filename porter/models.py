@@ -6,6 +6,8 @@ class YoutubeAccount(models.Model):
     name = models.CharField(max_length=256)
     secret_file = models.CharField(max_length=256)
 
+    created_at = models.DateTimeField(auto_now_add=True)
+
     def __str__(self):
         return self.name
 
@@ -13,12 +15,13 @@ class YoutubeAccount(models.Model):
 class VideoTag(models.Model):
     name = models.CharField(unique=True, db_index=True, max_length=64)
 
+    created_at = models.DateTimeField(auto_now_add=True)
+
     def __str__(self):
         return self.name
 
 
 class Video(models.Model):
-    # TODO add created time
     url = models.CharField(max_length=256)
     api_url = models.CharField(max_length=256, null=True, blank=True)
     title = models.CharField(max_length=256, null=True, blank=True)
@@ -26,17 +29,18 @@ class Video(models.Model):
     category = models.CharField(max_length=64, null=True, blank=True)
     tags = models.ManyToManyField(VideoTag, related_name='videos')
 
+    created_at = models.DateTimeField(auto_now_add=True)
+
     def __str__(self):
         if self.title:
             return self.title
-        return 'None'
+        return '-'
 
     def print_tags(self):
         return ', '.join([tag.name for tag in self.tags.all()])
 
 
 class PorterJob(models.Model):
-    # TODO add download time, upload time
     video_url = models.CharField(max_length=256)
     VIDEO_SOURCE_CHOICES = (
         (VideoSource.BILIBILI, 'Bilibili'),
@@ -78,6 +82,10 @@ class PorterJob(models.Model):
         choices=PORTER_STATUS_CHOICES,
         default=PorterStatus.PENDING
     )
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    download_at = models.DateTimeField(auto_now_add=False, auto_now=False, null=True, blank=True)
+    upload_at = models.DateTimeField(auto_now_add=False, auto_now=False, null=True, blank=True)
 
     def __str__(self):
         return self.video_url
