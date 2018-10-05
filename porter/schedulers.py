@@ -1,17 +1,18 @@
 import os, subprocess
+from datetime import datetime
 from apscheduler.schedulers.background import BackgroundScheduler
 from django_apscheduler.jobstores import DjangoJobStore, register_events, register_job
 from django.db.models import Q
-from porter.utils import print_log
+from porter.utils import print_log, get_current_time
 from porter.downloaders.bilibili_downloader import bilibili_download
 from porter.enums import VideoSource, PorterStatus
 from porter.models import Video, PorterJob
 
 
 TAG = '[SCHEDULERS]'
-JOB_INTERVAL = 60 * 10
 # for debug
-# JOB_INTERVAL = 10
+JOB_INTERVAL = 10
+# JOB_INTERVAL = 60 * 10
 
 scheduler = BackgroundScheduler()
 scheduler.add_jobstore(DjangoJobStore(), 'default')
@@ -63,9 +64,10 @@ def download_job():
         if video_file:
             # update job video file
             job.video_file = video_file
+            job.download_at = get_current_time()
             # update status to *DOWNLOADED*
             job.status = PorterStatus.DOWNLOADED
-            job.save(update_fields=['video_file', 'status'])
+            job.save(update_fields=['video_file', 'status', 'download_at'])
         else:
             # update status to *DOWNLOAD_FAIL*
             job.status = PorterStatus.DOWNLOAD_FAIL
@@ -106,9 +108,10 @@ def upload_job():
             )
             youtube_id = output.decode("utf-8").strip()
             job.youtube_id = youtube_id
+            job.upload_at = get_current_time()
             # update status to *SUCCESS*
             job.status = PorterStatus.SUCCESS
-            job.save(update_fields=['youtube_id', 'status'])
+            job.save(update_fields=['youtube_id', 'status', 'upload_at'])
 
         except Exception as e:
             print_log(TAG, 'Failed to upload video: ' + video.title)
