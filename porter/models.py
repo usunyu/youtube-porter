@@ -23,7 +23,6 @@ class VideoTag(models.Model):
 
 class Video(models.Model):
     url = models.CharField(max_length=256)
-    api_url = models.CharField(max_length=256, null=True, blank=True)
     title = models.CharField(max_length=256, null=True, blank=True)
     description = models.TextField(null=True, blank=True)
     category = models.CharField(max_length=64, null=True, blank=True)
