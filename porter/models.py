@@ -18,6 +18,7 @@ class VideoTag(models.Model):
 
 
 class Video(models.Model):
+    # TODO add created time
     url = models.CharField(max_length=256)
     api_url = models.CharField(max_length=256, null=True, blank=True)
     title = models.CharField(max_length=256, null=True, blank=True)
@@ -28,10 +29,14 @@ class Video(models.Model):
     def __str__(self):
         if self.title:
             return self.title
-        return 'Title not loaded'
+        return 'None'
+
+    def print_tags(self):
+        return ', '.join([tag.name for tag in self.tags.all()])
 
 
 class PorterJob(models.Model):
+    # TODO add download time, upload time
     video_url = models.CharField(max_length=256)
     VIDEO_SOURCE_CHOICES = (
         (VideoSource.BILIBILI, 'Bilibili'),
