@@ -26,7 +26,13 @@ class PorterJobAdmin(admin.ModelAdmin):
             return format_html('<a href="/admin/porter/video/{}/" target="_blank">{}</a>'.format(video.id, video.id))
         return 'None'
 
-    video_detail.short_description = 'vid'
+    def youtube_link(self, obj):
+        if obj.youtube_id:
+            return format_html('<a href="https://www.youtube.com/watch?v={}/" target="_blank">{}</a>'.format(obj.youtube_id, obj.youtube_id))
+        return 'None'
+
+    video_detail.short_description = 'VID'
+    youtube_link.short_description = 'Youtube Link'
 
     list_display = [
         'id',
@@ -36,9 +42,10 @@ class PorterJobAdmin(admin.ModelAdmin):
         'video_detail',
         'video_file',
         'youtube_account',
+        'youtube_link',
         'status'
     ]
 
-    readonly_fields = ['video', 'video_file']
+    readonly_fields = ['video', 'youtube_id', 'video_file']
 
 admin.site.register(PorterJob, PorterJobAdmin)

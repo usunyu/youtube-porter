@@ -9,7 +9,9 @@ from porter.models import Video, PorterJob
 
 
 TAG = '[SCHEDULERS]'
-JOB_INTERVAL = 300
+JOB_INTERVAL = 60 * 10
+# for debug
+# JOB_INTERVAL = 10
 
 scheduler = BackgroundScheduler()
 scheduler.add_jobstore(DjangoJobStore(), 'default')
@@ -89,8 +91,9 @@ def upload_job():
             # update status to *UPLOADING*
             job.status = PorterStatus.UPLOADING
             job.save(update_fields=['status'])
+            print_log(TAG, '****** You may need input password! ******')
             # upload to youtube
-            subprocess.call(
+            output = subprocess.check_output(
                 'sudo youtube-upload --title="{}" --description="{}" --category="{}" --tags="{}" --client-secrets="{}" "{}"'.format(
                     video.title,
                     video.description,
@@ -101,15 +104,19 @@ def upload_job():
                 ),
                 shell=True
             )
+            youtube_id = output.decode("utf-8").strip()
+            job.youtube_id = youtube_id
+            # update status to *SUCCESS*
+            job.status = PorterStatus.SUCCESS
+            job.save(update_fields=['youtube_id', 'status'])
+
         except Exception as e:
             print_log(TAG, 'Failed to upload video: ' + video.title)
             print(e)
             # update status to *UPLOAD_FAIL*
             job.status = PorterStatus.UPLOAD_FAIL
             job.save(update_fields=['status'])
-        # update status to *SUCCESS*
-        job.status = PorterStatus.SUCCESS
-        job.save(update_fields=['status'])
+        # clean video file
         try:
             os.remove(job.video_file)
             print_log(TAG, 'Deleted video: ' + job.video_file)

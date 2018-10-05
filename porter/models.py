@@ -52,6 +52,10 @@ class PorterJob(models.Model):
         related_name='porter_jobs',
         null=True,
         blank=True)
+    youtube_id = models.CharField(
+        max_length=32,
+        null=True,
+        blank=True)
     video = models.OneToOneField(
         Video,
         on_delete=models.SET_NULL,
