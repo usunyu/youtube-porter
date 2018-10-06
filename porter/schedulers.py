@@ -10,9 +10,9 @@ from porter.models import Video, PorterJob
 
 
 TAG = '[SCHEDULERS]'
-# for debug
-JOB_INTERVAL = 10
-# JOB_INTERVAL = 60 * 10
+# set small for debug
+# JOB_INTERVAL = 10
+JOB_INTERVAL = 60 * 10
 
 scheduler = BackgroundScheduler()
 scheduler.add_jobstore(DjangoJobStore(), 'default')

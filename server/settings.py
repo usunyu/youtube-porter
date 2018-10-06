@@ -25,6 +25,10 @@ SECRET_KEY = '@@z#iju77mkxd$@=u#mq#^6wa-^^(4_!d2%!qgi@60bk7)-gnl'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+# Schedule job switch, turn off before initial migrations
+# START_JOB = False
+START_JOB = True
+
 ALLOWED_HOSTS = []
 
 

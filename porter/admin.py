@@ -29,14 +29,14 @@ class PorterJobAdmin(admin.ModelAdmin):
     def video_detail(self, obj):
         video = Video.objects.filter(url=obj.video_url).first()
         if video:
-            return format_html('<a href="/admin/porter/video/{}/" target="_blank">{}</a>'.format(
+            return format_html('<a href="/admin/porter/video/{}" target="_blank">{}</a>'.format(
                 video.id, video.id
             ))
         return '-'
 
     def youtube_link(self, obj):
         if obj.youtube_id:
-            return format_html('<a href="https://www.youtube.com/watch?v={}/" target="_blank">{}</a>'.format(
+            return format_html('<a href="https://www.youtube.com/watch?v={}" target="_blank">{}</a>'.format(
                 obj.youtube_id, obj.youtube_id
             ))
         return '-'
@@ -44,7 +44,7 @@ class PorterJobAdmin(admin.ModelAdmin):
     def api_link(self, obj):
         if obj.video_source == VideoSource.BILIBILI:
             video_id = re.findall('.*av([0-9]+)', obj.video_url)[0]
-            return format_html('<a href="https://www.kanbilibili.com/api/video/{}/" target="_blank">{}</a>'.format(
+            return format_html('<a href="https://www.kanbilibili.com/api/video/{}" target="_blank">{}</a>'.format(
                 video_id, video_id
             ))
         return '-'
