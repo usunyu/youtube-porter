@@ -1,4 +1,4 @@
-import os, subprocess
+import os, subprocess, requests, json
 from datetime import datetime
 from apscheduler.schedulers.background import BackgroundScheduler
 from django_apscheduler.jobstores import DjangoJobStore, register_events, register_job
@@ -6,7 +6,7 @@ from django.db.models import Q
 from porter.utils import print_log, get_current_time
 from porter.downloaders.bilibili_downloader import bilibili_download
 from porter.enums import VideoSource, PorterStatus
-from porter.models import Video, PorterJob
+from porter.models import Video, PorterJob, YoutubeAccount
 
 
 TAG = '[SCHEDULERS]'
@@ -128,6 +128,26 @@ def upload_job():
             print(e)
 
     upload_job_lock = False
+
+
+@scheduler.scheduled_job("cron", hour=0, minute=0, id='bilibili_recommend', misfire_grace_time=60, coalesce=True)
+def bilibili_recommend_job():
+    response = requests.get('http://api.bilibili.cn/recommend')
+    list = json.loads(response.text)['list']
+
+    account = YoutubeAccount.objects.all().first()
+
+    for record in list:
+        aid = record['aid']
+        # create porter job
+        video_url = '{}{}'.format('https://www.bilibili.com/video/av', aid)
+        if PorterJob.objects.filter(
+            Q(video_url=video_url) &
+            Q(youtube_account=account)
+        ).exists():
+            continue
+        print_log(TAG, 'Create new job from bilibili recommend api: ' + video_url)
+        PorterJob(video_url=video_url, youtube_account=account).save()
 
 
 # avoid multi-thread to start multiple schedule jobs
