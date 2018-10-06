@@ -1,7 +1,7 @@
 # youtube-porter
 Automate upload video to YouTube from any sources
 
-### Setup Env:
+### Get Started:
 
 1. Install required packages:
 ```
@@ -17,4 +17,12 @@ $ sudo python setup.py install
 3. Run Server:
 ```
 $ python manage.py runserver
+```
+
+### External Scripts:
+1. Existed in ```scripts``` folder.
+
+2. Run script (e.g. ```scripts/bilibili_recommend_import.py```):
+```
+$ python manage.py shell < scripts/bilibili_recommend_import.py
 ```
