@@ -48,7 +48,6 @@ def bilibili_download(job):
     if payload['err'] == None:
         data = payload['data']
         video = job.video
-        video.api_url = api_url
         title = data['title']
         video.title = title
         print_log(TAG, 'Title: ' + title)
@@ -70,7 +69,7 @@ def bilibili_download(job):
                 tag = VideoTag(name=tag_name)
                 tag.save()
             video.tags.add(tag)
-        video.save(update_fields=['api_url', 'title', 'description'])
+        video.save(update_fields=['title', 'description'])
 
         # default first page
         # TODO deal with multi page video
