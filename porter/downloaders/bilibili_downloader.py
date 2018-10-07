@@ -76,7 +76,14 @@ def bilibili_download(job):
         # TODO deal with multi page video
         ls = data['list'][0]
         cid = ls['cid']
-        d_api_url = api_url + '/download?cid=' + str(cid) + '&quality=48'
+        # quality:
+        # 112: 1080P+
+        # 80: 1080P
+        # 64: 720P
+        # 32: 480P
+        # 15: 360P
+        # default to highest quality
+        d_api_url = api_url + '/download?cid=' + str(cid) + '&quality=112'
         d_response = requests.get(d_api_url)
         d_payload = json.loads(d_response.text)
         download_url = d_payload['data']['durl'][0]['url']
