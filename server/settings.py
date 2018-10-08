@@ -23,14 +23,17 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '@@z#iju77mkxd$@=u#mq#^6wa-^^(4_!d2%!qgi@60bk7)-gnl'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-# DEBUG = True
-DEBUG = False
+DEBUG = True
+# DEBUG = False
 
 # Schedule job switch, turn off before initial migrations
 # START_JOB = False
 START_JOB = True
 
-ALLOWED_HOSTS = ['52.53.179.230']
+ALLOWED_HOSTS = [
+    '127.0.0.1',
+    '52.53.179.230'
+]
 
 
 # Application definition
