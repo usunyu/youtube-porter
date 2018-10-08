@@ -23,7 +23,7 @@ print('Parsing data and creating jobs...')
 page = pages
 while page >= 1:
     api_url = '{}?page={}'.format(API_URL, page)
-    res = requests.get(API_URL)
+    res = requests.get(api_url)
     list = json.loads(res.text)['list']
 
     for record in list:

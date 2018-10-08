@@ -30,6 +30,7 @@ DEBUG = False
 START_JOB = True
 
 ALLOWED_HOSTS = [
+    'localhost',
     '127.0.0.1',
     '52.53.179.230'
 ]

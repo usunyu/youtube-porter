@@ -63,7 +63,7 @@ class PorterJobAdmin(admin.ModelAdmin):
         'api_link',
         'video',
         'video_detail',
-        # 'video_file',
+        'video_file',
         'download_at',
         'youtube_account',
         'youtube_link',
