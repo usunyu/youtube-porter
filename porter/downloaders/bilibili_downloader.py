@@ -59,7 +59,10 @@ def bilibili_download(job):
         # fetch video tags
         html_session = HTMLSession()
         html_response = html_session.get(video_url)
-        html_tags = html_response.html.find('#v_tag', first=True).find('.tag')
+        if html_response and html_response.html:
+            html_tags = html_response.html.find('#v_tag', first=True).find('.tag')
+        else:
+            print_log(TAG, 'Did not found tags for this video!')
         for html_tag in html_tags:
             tag_name = html_tag.text
             # check if tag exists
