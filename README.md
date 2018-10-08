@@ -16,9 +16,21 @@ $ cd libs/youtube-upload
 $ sudo python setup.py install
 ```
 
-3. Run Server:
+3. Run server:
 ```
 $ python manage.py runserver
+```
+
+### Deployment:
+
+1. Attach to screen:
+```
+$ screen -r
+```
+
+2. Run server:
+```
+$ python manage.py runserver --insecure 0.0.0.0:9346
 ```
 
 ### External Scripts:
