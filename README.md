@@ -10,6 +10,8 @@ $ pip install -r requirements.txt
 
 2. Install [youtube-upload](https://github.com/tokland/youtube-upload):
 ```
+$ sudo pip install --upgrade google-api-python-client oauth2client progressbar2
+
 $ cd libs/youtube-upload
 $ sudo python setup.py install
 ```
