@@ -39,56 +39,52 @@ def download_job():
     if download_job_lock:
         print_log(TAG, 'Download job is still running, skip this schedule...')
         return
-    try:
-        download_job_lock = True
-        jobs = PorterJob.objects.filter(status=PorterStatus.PENDING)
-        for job in jobs:
-            print_log(TAG, 'Start to download job: ' + str(job.id))
-            print_log(TAG, 'Video url: ' + job.video_url)
-            print_log(TAG, 'Video source: ' + VideoSource.tostr(job.video_source))
-            print_log(TAG, 'Youtube account: ' + job.youtube_account.name)
+    download_job_lock = True
+    jobs = PorterJob.objects.filter(status=PorterStatus.PENDING)
+    for job in jobs:
+        print_log(TAG, 'Start to download job: ' + str(job.id))
+        print_log(TAG, 'Video url: ' + job.video_url)
+        print_log(TAG, 'Video source: ' + VideoSource.tostr(job.video_source))
+        print_log(TAG, 'Youtube account: ' + job.youtube_account.name)
 
-            # check if job is duplicated
-            if PorterJob.objects.filter(
-                Q(video_url=job.video_url) &
-                Q(youtube_account=job.youtube_account) &
-                Q(status=PorterStatus.SUCCESS)
-            ).exists():
-                # update status to *DUPLICATED*
-                job.status = PorterStatus.DUPLICATED
-                job.save(update_fields=['status'])
-                continue
+        # check if job is duplicated
+        if PorterJob.objects.filter(
+            Q(video_url=job.video_url) &
+            Q(youtube_account=job.youtube_account) &
+            Q(status=PorterStatus.SUCCESS)
+        ).exists():
+            # update status to *DUPLICATED*
+            job.status = PorterStatus.DUPLICATED
+            job.save(update_fields=['status'])
+            continue
 
-            # create video object
-            video = Video(
-                url=job.video_url,
-                category='Entertainment' # default to entertainment category
-            )
-            video.save()
-            job.video = video
-            # update status to *DOWNLOADING*
-            job.status = PorterStatus.DOWNLOADING
-            job.save(update_fields=['video', 'status'])
-            # download the video
-            if job.video_source == VideoSource.BILIBILI:
-                video_file = bilibili_download(job)
-            else:
-                video_file = None
+        # create video object
+        video = Video(
+            url=job.video_url,
+            category='Entertainment' # default to entertainment category
+        )
+        video.save()
+        job.video = video
+        # update status to *DOWNLOADING*
+        job.status = PorterStatus.DOWNLOADING
+        job.save(update_fields=['video', 'status'])
+        # download the video
+        if job.video_source == VideoSource.BILIBILI:
+            video_file = bilibili_download(job)
+        else:
+            video_file = None
 
-            if video_file:
-                # update job video file
-                job.video_file = video_file
-                job.download_at = get_current_time()
-                # update status to *DOWNLOADED*
-                job.status = PorterStatus.DOWNLOADED
-                job.save(update_fields=['video_file', 'status', 'download_at'])
-            else:
-                # update status to *DOWNLOAD_FAIL*
-                job.status = PorterStatus.DOWNLOAD_FAIL
-                job.save(update_fields=['status'])
-    except Exception as e:
-        print_log(TAG, 'Unknown error happened in download job!')
-        print(e)
+        if video_file:
+            # update job video file
+            job.video_file = video_file
+            job.download_at = get_current_time()
+            # update status to *DOWNLOADED*
+            job.status = PorterStatus.DOWNLOADED
+            job.save(update_fields=['video_file', 'status', 'download_at'])
+        else:
+            # update status to *DOWNLOAD_FAIL*
+            job.status = PorterStatus.DOWNLOAD_FAIL
+            job.save(update_fields=['status'])
 
 
     download_job_lock = False
@@ -100,80 +96,72 @@ def upload_job():
     if upload_job_lock:
         print_log(TAG, 'Upload job is still running, skip this schedule...')
         return
-    try:
-        upload_job_lock = True
-        jobs = PorterJob.objects.filter(status=PorterStatus.DOWNLOADED)
-        for job in jobs:
-            video = job.video
-            print_log(TAG, 'Start to upload job: ' + str(job.id))
-            print_log(TAG, 'Video: ' + video.title)
-            print_log(TAG, 'Youtube account: ' + job.youtube_account.name)
-            try:
-                # update status to *UPLOADING*
-                job.status = PorterStatus.UPLOADING
-                job.save(update_fields=['status'])
-                print_log(TAG, '****** You may need input password! ******')
-                # upload to youtube
-                output = subprocess.check_output(
-                    'sudo youtube-upload --title="{}" --description="{}" --category="{}" --tags="{}" --client-secrets="{}" "{}"'.format(
-                        video.title,
-                        VIDEO_DESCRIPTION.format(video.url, video.description),
-                        video.category,
-                        video.print_tags(),
-                        job.youtube_account.secret_file,
-                        job.video_file
-                    ),
-                    shell=True
-                )
-                youtube_id = output.decode("utf-8").strip()
-                job.youtube_id = youtube_id
-                job.upload_at = get_current_time()
-                # update status to *SUCCESS*
-                job.status = PorterStatus.SUCCESS
-                job.save(update_fields=['youtube_id', 'status', 'upload_at'])
+    upload_job_lock = True
+    jobs = PorterJob.objects.filter(status=PorterStatus.DOWNLOADED)
+    for job in jobs:
+        video = job.video
+        print_log(TAG, 'Start to upload job: ' + str(job.id))
+        print_log(TAG, 'Video: ' + video.title)
+        print_log(TAG, 'Youtube account: ' + job.youtube_account.name)
+        try:
+            # update status to *UPLOADING*
+            job.status = PorterStatus.UPLOADING
+            job.save(update_fields=['status'])
+            print_log(TAG, '****** You may need input password! ******')
+            # upload to youtube
+            output = subprocess.check_output(
+                'sudo youtube-upload --title="{}" --description="{}" --category="{}" --tags="{}" --client-secrets="{}" "{}"'.format(
+                    video.title,
+                    VIDEO_DESCRIPTION.format(video.url, video.description),
+                    video.category,
+                    video.print_tags(),
+                    job.youtube_account.secret_file,
+                    job.video_file
+                ),
+                shell=True
+            )
+            youtube_id = output.decode("utf-8").strip()
+            job.youtube_id = youtube_id
+            job.upload_at = get_current_time()
+            # update status to *SUCCESS*
+            job.status = PorterStatus.SUCCESS
+            job.save(update_fields=['youtube_id', 'status', 'upload_at'])
 
-            except Exception as e:
-                print_log(TAG, 'Failed to upload video: ' + video.title)
-                print(e)
-                # update status to *UPLOAD_FAIL*
-                job.status = PorterStatus.UPLOAD_FAIL
-                job.save(update_fields=['status'])
-            # clean video file
-            try:
-                os.remove(job.video_file)
-                print_log(TAG, 'Deleted video: ' + job.video_file)
-            except Exception as e:
-                print_log(TAG, 'Failed to delete video: ' + job.video_file)
-                print(e)
-    except Exception as e:
-        print_log(TAG, 'Unknown error happened in upload job!')
-        print(e)
+        except Exception as e:
+            print_log(TAG, 'Failed to upload video: ' + video.title)
+            print(e)
+            # update status to *UPLOAD_FAIL*
+            job.status = PorterStatus.UPLOAD_FAIL
+            job.save(update_fields=['status'])
+        # clean video file
+        try:
+            os.remove(job.video_file)
+            print_log(TAG, 'Deleted video: ' + job.video_file)
+        except Exception as e:
+            print_log(TAG, 'Failed to delete video: ' + job.video_file)
+            print(e)
 
     upload_job_lock = False
 
 
 @scheduler.scheduled_job("cron", hour=0, minute=0, id='bilibili_recommend', misfire_grace_time=60, coalesce=True)
 def bilibili_recommend_job():
-    try:
-        response = requests.get('http://api.bilibili.cn/recommend')
-        list = json.loads(response.text)['list']
+    response = requests.get('http://api.bilibili.cn/recommend')
+    list = json.loads(response.text)['list']
 
-        account = YoutubeAccount.objects.all().first()
+    account = YoutubeAccount.objects.all().first()
 
-        for record in list:
-            aid = record['aid']
-            # create porter job
-            video_url = '{}{}'.format('https://www.bilibili.com/video/av', aid)
-            if PorterJob.objects.filter(
-                Q(video_url=video_url) &
-                Q(youtube_account=account)
-            ).exists():
-                continue
-            print_log(TAG, 'Create new job from bilibili recommend api: ' + video_url)
-            PorterJob(video_url=video_url, youtube_account=account).save()
-    except Exception as e:
-        print_log(TAG, 'Unknown error happened in bilibili_recommend job!')
-        print(e)
+    for record in list:
+        aid = record['aid']
+        # create porter job
+        video_url = '{}{}'.format('https://www.bilibili.com/video/av', aid)
+        if PorterJob.objects.filter(
+            Q(video_url=video_url) &
+            Q(youtube_account=account)
+        ).exists():
+            continue
+        print_log(TAG, 'Create new job from bilibili recommend api: ' + video_url)
+        PorterJob(video_url=video_url, youtube_account=account).save()
 
 # avoid multi-thread to start multiple schedule jobs
 import fcntl
