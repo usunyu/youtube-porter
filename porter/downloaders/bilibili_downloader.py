@@ -39,7 +39,7 @@ def download(url):
         return filename
     except Exception as e:
         print_log(TAG, 'Unknown error during bilibili download!')
-        print(e)
+        print_log(TAG, str(e))
         return None
 
 def bilibili_download(job):
@@ -67,8 +67,9 @@ def bilibili_download(job):
         html_tags = []
         try:
             html_tags = html_response.html.find('#v_tag', first=True).find('.tag')
-        except Exception as ex:
+        except Exception as e:
             print_log(TAG, 'Error during fetching tags for this video!')
+            print_log(TAG, str(e))
         for html_tag in html_tags:
             tag_name = html_tag.text
             # check if tag exists

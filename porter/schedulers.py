@@ -39,6 +39,7 @@ def download_job():
     if download_job_lock:
         print_log(TAG, 'Download job is still running, skip this schedule...')
         return
+    print_log(TAG, 'Download job is started...')
     download_job_lock = True
     jobs = PorterJob.objects.filter(status=PorterStatus.PENDING)
     for job in jobs:
@@ -96,6 +97,7 @@ def upload_job():
     if upload_job_lock:
         print_log(TAG, 'Upload job is still running, skip this schedule...')
         return
+    print_log(TAG, 'Upload job is started...')
     upload_job_lock = True
     jobs = PorterJob.objects.filter(status=PorterStatus.DOWNLOADED)
     for job in jobs:
@@ -129,7 +131,7 @@ def upload_job():
 
         except Exception as e:
             print_log(TAG, 'Failed to upload video: ' + video.title)
-            print(e)
+            print_log(TAG, str(e))
             # update status to *UPLOAD_FAIL*
             job.status = PorterStatus.UPLOAD_FAIL
             job.save(update_fields=['status'])
@@ -139,13 +141,14 @@ def upload_job():
             print_log(TAG, 'Deleted video: ' + job.video_file)
         except Exception as e:
             print_log(TAG, 'Failed to delete video: ' + job.video_file)
-            print(e)
+            print_log(TAG, str(e))
 
     upload_job_lock = False
 
 
 @scheduler.scheduled_job("cron", hour=0, minute=0, id='bilibili_recommend', misfire_grace_time=60, coalesce=True)
 def bilibili_recommend_job():
+    print_log(TAG, 'Bilibili recommend job is started...')
     response = requests.get('http://api.bilibili.cn/recommend')
     list = json.loads(response.text)['list']
 
