@@ -30,7 +30,7 @@ DEBUG = False
 # START_JOB = False
 START_JOB = True
 
-ALLOWED_HOSTS = ['52.53.179.230:9346']
+ALLOWED_HOSTS = ['52.53.179.230']
 
 
 # Application definition
