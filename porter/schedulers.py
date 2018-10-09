@@ -52,13 +52,6 @@ def download_job():
 
     print_log(TAG, 'Download job is started...')
 
-    download_job_lock = True
-
-    print_log(TAG, 'Start to download job: ' + str(job.id))
-    print_log(TAG, 'Video url: ' + job.video_url)
-    print_log(TAG, 'Video source: ' + VideoSource.tostr(job.video_source))
-    print_log(TAG, 'Youtube account: ' + job.youtube_account.name)
-
     # check if job is duplicated
     if PorterJob.objects.filter(
         Q(video_url=job.video_url) &
@@ -70,6 +63,13 @@ def download_job():
         job.save(update_fields=['status'])
         print_log(TAG, 'Download job is duplicated, skip this schedule...')
         return
+
+    download_job_lock = True
+
+    print_log(TAG, 'Start to download job: ' + str(job.id))
+    print_log(TAG, 'Video url: ' + job.video_url)
+    print_log(TAG, 'Video source: ' + VideoSource.tostr(job.video_source))
+    print_log(TAG, 'Youtube account: ' + job.youtube_account.name)
 
     video = job.video
     if not video:
