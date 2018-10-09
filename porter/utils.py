@@ -1,6 +1,7 @@
 import logging
 import logging.handlers
 from django.utils import timezone
+from porter.models import Settings
 
 
 LOG_FILE = 'debug.log'
@@ -28,3 +29,24 @@ def get_current_time():
 def get_time_str():
     dt = timezone.localtime(timezone.now())
     return dt.strftime('%Y-%m-%d %H-%M-%S')
+
+
+def is_start_download_job():
+    settings = Settings.objects.all().first()
+    if not settings:
+        return False
+    return settings.start_download_job
+
+
+def is_start_upload_job():
+    settings = Settings.objects.all().first()
+    if not settings:
+        return False
+    return settings.start_upload_job
+
+
+def is_start_bilibili_recommend_job():
+    settings = Settings.objects.all().first()
+    if not settings:
+        return False
+    return settings.start_bilibili_recommend_job
