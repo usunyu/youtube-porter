@@ -50,3 +50,19 @@ def is_start_bilibili_recommend_job():
     if not settings:
         return False
     return settings.start_bilibili_recommend_job
+
+
+def get_youtube_invalid_content_chars():
+    return [
+        '<',
+        '>',
+    ]
+
+
+def get_youtube_invalid_tag_chars():
+    return [
+        '<',
+        '>',
+        ',',
+        '，',
+    ]

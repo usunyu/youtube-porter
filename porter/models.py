@@ -36,6 +36,8 @@ class Video(models.Model):
         return '-'
 
     def print_tags(self):
+        if self.tags.count() == 0:
+            return 'entertainment'
         return ', '.join([tag.name for tag in self.tags.all()])
 
 

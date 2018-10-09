@@ -39,6 +39,11 @@ def download_job():
         print_log(TAG, 'Download job is stopped, skip this schedule...')
         return
 
+    job = PorterJob.objects.filter(status=PorterStatus.PENDING).first()
+    if not job:
+        print_log(TAG, 'No pending download job available, skip this schedule...')
+        return
+
     global download_job_lock
 
     if download_job_lock:
@@ -48,11 +53,6 @@ def download_job():
     print_log(TAG, 'Download job is started...')
 
     download_job_lock = True
-
-    job = PorterJob.objects.filter(status=PorterStatus.PENDING).first()
-    if not job:
-        print_log(TAG, 'No pending download job available, skip this schedule...')
-        return
 
     print_log(TAG, 'Start to download job: ' + str(job.id))
     print_log(TAG, 'Video url: ' + job.video_url)
@@ -111,6 +111,11 @@ def upload_job():
         print_log(TAG, 'Upload job is stopped, skip this schedule...')
         return
 
+    job = PorterJob.objects.filter(status=PorterStatus.DOWNLOADED).first()
+    if not job:
+        print_log(TAG, 'No pending upload job available, skip this schedule...')
+        return
+
     global upload_job_lock
 
     if upload_job_lock:
@@ -120,11 +125,6 @@ def upload_job():
     print_log(TAG, 'Upload job is started...')
 
     upload_job_lock = True
-
-    job = PorterJob.objects.filter(status=PorterStatus.DOWNLOADED).first()
-    if not job:
-        print_log(TAG, 'No pending upload job available, skip this schedule...')
-        return
 
     video = job.video
 
@@ -180,6 +180,7 @@ def bilibili_recommend_job():
     if not is_start_bilibili_recommend_job():
         print_log(TAG, 'Bilibili recommend job is stopped, skip this schedule...')
         return
+
     print_log(TAG, 'Bilibili recommend job is started...')
     response = requests.get('http://api.bilibili.cn/recommend')
     list = json.loads(response.text)['list']

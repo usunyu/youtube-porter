@@ -1,6 +1,6 @@
 import requests, json, re
 from requests_html import HTMLSession
-from porter.utils import print_log, get_time_str
+from porter.utils import *
 from porter.models import VideoTag
 
 
@@ -53,14 +53,19 @@ def bilibili_download(job):
     if payload['err'] == None:
         data = payload['data']
         video = job.video
-        title = data['title']
-        video.title = title
-        print_log(TAG, 'Title: ' + title)
         typename = data['typename']
-        print_log(TAG, 'Typename: ' + typename)
+        title = data['title']
         description = data['description']
+        for invalid_char in get_youtube_invalid_content_chars():
+            title = title.replace(invalid_char, '')
+            description = description.replace(invalid_char, '')
+        video.title = title
         video.description = description
+
+        print_log(TAG, 'Title: ' + title)
+        print_log(TAG, 'Typename: ' + typename)
         print_log(TAG, 'Description: ' + description)
+
         # fetch video tags
         html_session = HTMLSession()
         html_response = html_session.get(video_url)
@@ -72,6 +77,8 @@ def bilibili_download(job):
             print_log(TAG, str(e))
         for html_tag in html_tags:
             tag_name = html_tag.text
+            for invalid_char in get_youtube_invalid_tag_chars():
+                tag_name = tag_name.replace(invalid_char, '')
             # check if tag exists
             tag = VideoTag.objects.filter(name=tag_name).first()
             if not tag:
