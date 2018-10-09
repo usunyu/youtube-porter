@@ -71,16 +71,19 @@ def download_job():
         print_log(TAG, 'Download job is duplicated, skip this schedule...')
         return
 
-    # create video object
-    video = Video(
-        url=job.video_url,
-        category='Entertainment' # default to entertainment category
-    )
-    video.save()
-    job.video = video
+    video = job.video
+    if not video:
+        # create video object if not existed
+        video = Video(
+            url=job.video_url,
+            category='Entertainment' # default to entertainment category
+        )
+        video.save()
+        job.video = video
+        job.save(update_fields=['video'])
     # update status to *DOWNLOADING*
     job.status = PorterStatus.DOWNLOADING
-    job.save(update_fields=['video', 'status'])
+    job.save(update_fields=['status'])
     # download the video
     if job.video_source == VideoSource.BILIBILI:
         video_file = bilibili_download(job)
