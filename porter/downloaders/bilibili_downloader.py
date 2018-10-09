@@ -53,12 +53,14 @@ def bilibili_download(job):
     if payload['err'] == None:
         data = payload['data']
         video = job.video
+        if 'title' in data:
+            title = data['title']
+        else:
+            print_log(TAG, 'This video may be deleted!')
+            return None
         typename = ''
         if 'typename' in data:
             typename = data['typename']
-        title = 'No title'
-        if 'title' in data:
-            title = data['title']
         description = ''
         if 'description' in data:
             description = data['description']
