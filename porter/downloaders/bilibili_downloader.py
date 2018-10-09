@@ -56,7 +56,7 @@ def bilibili_download(job):
         if 'title' in data:
             title = data['title']
         else:
-            print_log(TAG, 'This video may be deleted!')
+            print_log(TAG, 'This video may be removed!')
             return None
         typename = ''
         if 'typename' in data:
@@ -110,7 +110,11 @@ def bilibili_download(job):
         d_api_url = api_url + '/download?cid=' + str(cid) + '&quality=112'
         d_response = requests.get(d_api_url)
         d_payload = json.loads(d_response.text)
-        download_url = d_payload['data']['durl'][0]['url']
+        d_data = d_payload['data']
+        if not 'durl' in d_data:
+            print_log(TAG, 'This video may be deleted!')
+            return None
+        download_url = d_data['durl'][0]['url']
         print_log(TAG, 'Ready to download video from: ' + download_url)
         return download(download_url)
 
