@@ -53,9 +53,15 @@ def bilibili_download(job):
     if payload['err'] == None:
         data = payload['data']
         video = job.video
-        typename = data['typename']
-        title = data['title']
-        description = data['description']
+        typename = ''
+        if 'typename' in data:
+            typename = data['typename']
+        title = 'No title'
+        if 'title' in data:
+            title = data['title']
+        description = ''
+        if 'description' in data:
+            description = data['description']
         for invalid_char in get_youtube_invalid_content_chars():
             title = title.replace(invalid_char, '')
             description = description.replace(invalid_char, '')
