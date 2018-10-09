@@ -79,3 +79,13 @@ class PorterJobAdmin(admin.ModelAdmin):
     ]
 
 admin.site.register(PorterJob, PorterJobAdmin)
+
+class SettingsAdmin(admin.ModelAdmin):
+    list_display = [
+        'id',
+        'start_download_job',
+        'start_upload_job',
+        'start_bilibili_recommend_job',
+    ]
+
+admin.site.register(Settings, SettingsAdmin)

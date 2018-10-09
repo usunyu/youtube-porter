@@ -6,7 +6,7 @@ from django.db.models import Q
 from porter.utils import print_log, get_current_time
 from porter.downloaders.bilibili_downloader import bilibili_download
 from porter.enums import VideoSource, PorterStatus
-from porter.models import Video, PorterJob, YoutubeAccount
+from porter.models import Video, PorterJob, YoutubeAccount, Settings
 
 
 TAG = '[SCHEDULERS]'
@@ -35,6 +35,9 @@ This video is from: {}
 
 @scheduler.scheduled_job("interval", seconds=JOB_INTERVAL, id='download')
 def download_job():
+    if not Settings.objects.all().first().start_download_job:
+        print_log(TAG, 'Download job is stopped, skip this schedule...')
+        return
     global download_job_lock
     if download_job_lock:
         print_log(TAG, 'Download job is still running, skip this schedule...')
@@ -93,6 +96,9 @@ def download_job():
 
 @scheduler.scheduled_job("interval", seconds=JOB_INTERVAL, id='upload')
 def upload_job():
+    if not Settings.objects.all().first().start_upload_job:
+        print_log(TAG, 'Upload job is stopped, skip this schedule...')
+        return
     global upload_job_lock
     if upload_job_lock:
         print_log(TAG, 'Upload job is still running, skip this schedule...')
@@ -148,6 +154,9 @@ def upload_job():
 
 @scheduler.scheduled_job("cron", hour=0, minute=0, id='bilibili_recommend', misfire_grace_time=60, coalesce=True)
 def bilibili_recommend_job():
+    if not Settings.objects.all().first().start_bilibili_recommend_job:
+        print_log(TAG, 'Bilibili recommend job is stopped, skip this schedule...')
+        return
     print_log(TAG, 'Bilibili recommend job is started...')
     response = requests.get('http://api.bilibili.cn/recommend')
     list = json.loads(response.text)['list']

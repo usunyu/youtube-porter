@@ -25,9 +25,9 @@ SECRET_KEY = '@@z#iju77mkxd$@=u#mq#^6wa-^^(4_!d2%!qgi@60bk7)-gnl'
 # DEBUG = True
 DEBUG = False
 
-# Schedule job switch, turn off before initial migrations
-# START_JOB = False
-START_JOB = True
+# Schedule job import, turn off before initial migrations
+# IMPORT_SCHEDULE = False
+IMPORT_SCHEDULE = True
 
 ALLOWED_HOSTS = [
     'localhost',

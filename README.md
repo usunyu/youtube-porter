@@ -34,9 +34,17 @@ $ python manage.py runserver --insecure 0.0.0.0:9346
 ```
 
 ### External Scripts:
-1. Existed in ```scripts``` folder.
-
-2. Run script (e.g. ```scripts/bilibili_recommend_import.py```):
+1. Init settings:
 ```
-$ python manage.py shell < scripts/bilibili_recommend_import.py
+$ python manage.py shell < scripts/init_settings.py
+```
+
+2. Init youtube accounts:
+```
+$ python manage.py shell < scripts/init_youtube_account.py
+```
+
+3. Init bilibili recommend jobs:
+```
+$ python manage.py shell < scripts/init_bilibili_recommend.py
 ```

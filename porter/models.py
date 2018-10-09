@@ -88,3 +88,9 @@ class PorterJob(models.Model):
 
     def __str__(self):
         return self.video_url
+
+
+class Settings(models.Model):
+    start_download_job = models.BooleanField(default=False)
+    start_upload_job = models.BooleanField(default=False)
+    start_bilibili_recommend_job = models.BooleanField(default=False)
