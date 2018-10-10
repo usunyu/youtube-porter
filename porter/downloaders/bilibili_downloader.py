@@ -47,7 +47,11 @@ def bilibili_download(job):
     video_id = re.findall('.*av([0-9]+)', video_url)[0]
     api_url = BILIBILI_API + video_id
     print_log(TAG, 'Fetch data from ' + api_url)
-    response = requests.get(api_url)
+    try:
+        response = requests.get(api_url)
+    except Exception as e:
+        print_log(TAG, 'Request api error!')
+        return None
     payload = json.loads(response.text)
 
     if payload['err'] == None:
