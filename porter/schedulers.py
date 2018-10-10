@@ -11,8 +11,10 @@ from porter.models import Video, PorterJob, YoutubeAccount
 
 TAG = '[SCHEDULERS]'
 # set small for debug
-# JOB_INTERVAL = 10
-JOB_INTERVAL = 60 * 3
+# JOB_MULTIPLY = 5
+JOB_MULTIPLY = 60
+DOWNLOAD_JOB_INTERVAL = 3.2 * JOB_MULTIPLY
+UPLOAD_JOB_INTERVAL = 2.1 * JOB_MULTIPLY
 
 scheduler = BackgroundScheduler()
 scheduler.add_jobstore(DjangoJobStore(), 'default')
@@ -33,7 +35,7 @@ This video is from: {}
 {}
 """
 
-@scheduler.scheduled_job("interval", seconds=JOB_INTERVAL, id='download')
+@scheduler.scheduled_job("interval", seconds=DOWNLOAD_JOB_INTERVAL, id='download')
 def download_job():
     if not is_start_download_job():
         print_log(TAG, 'Download job is stopped, skip this schedule...')
@@ -105,7 +107,7 @@ def download_job():
     download_job_lock = False
 
 
-@scheduler.scheduled_job("interval", seconds=JOB_INTERVAL, id='upload')
+@scheduler.scheduled_job("interval", seconds=UPLOAD_JOB_INTERVAL, id='upload')
 def upload_job():
     if not is_start_upload_job():
         print_log(TAG, 'Upload job is stopped, skip this schedule...')
