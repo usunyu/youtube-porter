@@ -12,7 +12,7 @@ from porter.models import Video, PorterJob, YoutubeAccount
 TAG = '[SCHEDULERS]'
 # set small for debug
 # JOB_INTERVAL = 10
-JOB_INTERVAL = 60 * 5
+JOB_INTERVAL = 60 * 3
 
 scheduler = BackgroundScheduler()
 scheduler.add_jobstore(DjangoJobStore(), 'default')
