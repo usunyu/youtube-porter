@@ -4,8 +4,27 @@ from django.utils.html import format_html
 from porter.models import *
 from porter.enums import VideoSource
 
-admin.site.register(YoutubeAccount)
-admin.site.register(VideoTag)
+class YoutubeAccountAdmin(admin.ModelAdmin):
+
+    list_display = [
+        'id',
+        'name',
+        'secret_file',
+        'upload_quota',
+        'created_at'
+    ]
+
+admin.site.register(YoutubeAccount, YoutubeAccountAdmin)
+
+class VideoTagAdmin(admin.ModelAdmin):
+
+    list_display = [
+        'id',
+        'name',
+        'created_at'
+    ]
+
+admin.site.register(VideoTag, VideoTagAdmin)
 
 class VideoAdmin(admin.ModelAdmin):
 
