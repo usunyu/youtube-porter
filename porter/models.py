@@ -5,6 +5,7 @@ from porter.enums import PorterStatus, VideoSource
 class YoutubeAccount(models.Model):
     name = models.CharField(max_length=256)
     secret_file = models.CharField(max_length=256)
+    upload_quota = models.PositiveSmallIntegerField(default=0)
 
     created_at = models.DateTimeField(auto_now_add=True)
 

@@ -48,3 +48,8 @@ $ python manage.py shell < scripts/init_youtube_account.py
 ```
 $ python manage.py shell < scripts/init_bilibili_recommend.py
 ```
+
+### YouTube Channel:
+1. YPort Master:
+
+https://www.youtube.com/channel/UC-EXdAi5baz7XGNjuoJWwmQ

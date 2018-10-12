@@ -15,6 +15,7 @@ TAG = '[SCHEDULERS]'
 JOB_MULTIPLY = 60
 DOWNLOAD_JOB_INTERVAL = 3.2 * JOB_MULTIPLY
 UPLOAD_JOB_INTERVAL = 2.1 * JOB_MULTIPLY
+YOUTUBE_UPLOAD_QUOTA = 100
 
 scheduler = BackgroundScheduler()
 scheduler.add_jobstore(DjangoJobStore(), 'default')
@@ -41,7 +42,13 @@ def download_job():
         print_log(TAG, 'Download job is stopped, skip this schedule...')
         return
 
-    job = PorterJob.objects.filter(status=PorterStatus.PENDING).first()
+    # find a job with account has quota
+    job = None
+    js = PorterJob.objects.filter(status=PorterStatus.PENDING)
+    for j in js:
+        if j.youtube_account.upload_quota > 0:
+            job = j
+            break
     if not job:
         print_log(TAG, 'No pending download job available, skip this schedule...')
         return
@@ -113,7 +120,13 @@ def upload_job():
         print_log(TAG, 'Upload job is stopped, skip this schedule...')
         return
 
-    job = PorterJob.objects.filter(status=PorterStatus.DOWNLOADED).first()
+    # find a job with account has quota
+    job = None
+    js = PorterJob.objects.filter(status=PorterStatus.DOWNLOADED)
+    for j in js:
+        if j.youtube_account.upload_quota > 0:
+            job = j
+            break
     if not job:
         print_log(TAG, 'No pending upload job available, skip this schedule...')
         return
@@ -129,10 +142,11 @@ def upload_job():
     upload_job_lock = True
 
     video = job.video
+    youtube_account = job.youtube_account
 
     print_log(TAG, 'Start to upload job: ' + str(job.id))
     print_log(TAG, 'Video: ' + video.title)
-    print_log(TAG, 'Youtube account: ' + job.youtube_account.name)
+    print_log(TAG, 'Youtube account: ' + youtube_account.name)
 
     try:
         # update status to *UPLOADING*
@@ -148,7 +162,7 @@ def upload_job():
                 VIDEO_DESCRIPTION.format(video.url, video.description),
                 video.category,
                 video.print_tags(),
-                job.youtube_account.secret_file,
+                youtube_account.secret_file,
                 job.video_file
             ),
             shell=True
@@ -159,6 +173,8 @@ def upload_job():
         # update status to *SUCCESS*
         job.status = PorterStatus.SUCCESS
         job.save(update_fields=['youtube_id', 'status', 'upload_at'])
+        youtube_account.upload_quota = youtube_account.upload_quota - 1
+        youtube_account.save(update_fields=['upload_quota'])
 
     except Exception as e:
         print_log(TAG, 'Failed to upload video: ' + video.title)
@@ -200,6 +216,16 @@ def bilibili_recommend_job():
             continue
         print_log(TAG, 'Create new job from bilibili recommend api: ' + video_url)
         PorterJob(video_url=video_url, youtube_account=account).save()
+
+
+@scheduler.scheduled_job("cron", hour=0, minute=5, id='reset_quota', misfire_grace_time=60, coalesce=True)
+def reset_quota_job():
+    print_log(TAG, 'Reset quota job is started...')
+    accounts = YoutubeAccount.objects.all()
+    for account in accounts:
+        account.upload_quota = YOUTUBE_UPLOAD_QUOTA
+        account.save(update_fields=['upload_quota'])
+
 
 # avoid multi-thread to start multiple schedule jobs
 import fcntl
