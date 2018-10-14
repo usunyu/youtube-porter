@@ -16,6 +16,12 @@ $ cd libs/youtube-upload
 $ sudo python setup.py install
 ```
 
+3. Install [bilibili-get](https://github.com/kamikat/bilibili-get):
+```
+$ npm install -g bilibili-get
+$ brew install ffmpeg aria2
+```
+
 3. Run server:
 ```
 $ python manage.py runserver

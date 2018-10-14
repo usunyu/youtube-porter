@@ -1,4 +1,4 @@
-import requests, json, re
+import requests, json, re, subprocess
 from requests_html import HTMLSession
 from porter.utils import *
 from porter.models import VideoTag
@@ -42,7 +42,7 @@ def download(url):
         print_log(TAG, str(e))
         return None
 
-def bilibili_download(job):
+def bilibili_download_DEPRECATED(job):
     video_url = job.video_url
     video_id = re.findall('.*av([0-9]+)', video_url)[0]
     api_url = BILIBILI_API + video_id
@@ -121,6 +121,77 @@ def bilibili_download(job):
         download_url = d_data['durl'][0]['url']
         print_log(TAG, 'Ready to download video from: ' + download_url)
         return download(download_url)
+
+    print_log(TAG, 'Fetch data error!')
+    return None
+
+def bilibili_download(job):
+    video_url = job.video_url
+    video_id = re.findall('.*av([0-9]+)', video_url)[0]
+    api_url = BILIBILI_API + video_id
+    print_log(TAG, 'Fetch data from ' + api_url)
+    try:
+        response = requests.get(api_url)
+    except Exception as e:
+        print_log(TAG, 'Request api error!')
+        return None
+    payload = json.loads(response.text)
+
+    if payload['err'] == None:
+        data = payload['data']
+        video = job.video
+        if 'title' in data:
+            title = data['title']
+        else:
+            print_log(TAG, 'This video may be removed!')
+            return None
+        typename = ''
+        if 'typename' in data:
+            typename = data['typename']
+        description = ''
+        if 'description' in data:
+            description = data['description']
+        for invalid_char in get_youtube_invalid_content_chars():
+            title = title.replace(invalid_char, '')
+            description = description.replace(invalid_char, '')
+        video.title = title
+        video.description = description
+
+        print_log(TAG, 'Title: ' + title)
+        print_log(TAG, 'Typename: ' + typename)
+        print_log(TAG, 'Description: ' + description)
+
+        # fetch video tags
+        html_session = HTMLSession()
+        html_response = html_session.get(video_url)
+        html_tags = []
+        try:
+            html_tags = html_response.html.find('#v_tag', first=True).find('.tag')
+        except Exception as e:
+            print_log(TAG, 'Error during fetching tags for this video!')
+            print_log(TAG, str(e))
+        for html_tag in html_tags:
+            tag_name = html_tag.text
+            for invalid_char in get_youtube_invalid_tag_chars():
+                tag_name = tag_name.replace(invalid_char, '')
+            # check if tag exists
+            tag = VideoTag.objects.filter(name=tag_name).first()
+            if not tag:
+                # create the tag
+                tag = VideoTag(name=tag_name)
+                tag.save()
+            video.tags.add(tag)
+        video.save(update_fields=['title', 'description'])
+
+        # default first page
+        # TODO deal with multi page video
+        try:
+            subprocess.run(['bilibili-get', video_url, '-o', '"av%(aid)s.%(ext)s"', '-f', 'flv'])
+        except Exception as e:
+            print_log(TAG, 'Download video failed!')
+            print_log(TAG, str(e))
+            return None
+        return 'av{}.flv'.format(video_id)
 
     print_log(TAG, 'Fetch data error!')
     return None
