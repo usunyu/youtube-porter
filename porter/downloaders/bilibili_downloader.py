@@ -1,4 +1,4 @@
-import requests, json, re, subprocess
+import requests, json, re, os, subprocess
 from requests_html import HTMLSession
 from porter.utils import *
 from porter.models import VideoTag
@@ -191,6 +191,12 @@ def bilibili_download(job):
             print_log(TAG, 'Download video failed!')
             print_log(TAG, str(e))
             return None
+
+        # check download file success
+        if not os.path.isfile('av{}.flv'.format(video_id)):
+            print_log(TAG, 'Download video failed, authentication may required!')
+            return None
+
         return 'av{}.flv'.format(video_id)
 
     print_log(TAG, 'Fetch data error!')
