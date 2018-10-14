@@ -21,6 +21,8 @@ $ sudo python setup.py install
 $ npm install -g bilibili-get
 
 $ brew install ffmpeg aria2
+# or in unix
+$ sudo apt-get install ffmpeg aria2
 ```
 
 3. Run server:
