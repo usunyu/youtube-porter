@@ -186,7 +186,7 @@ def bilibili_download(job):
         # default first page
         # TODO deal with multi page video
         try:
-            subprocess.run(['bilibili-get', video_url, '-o', '"av%(aid)s.%(ext)s"', '-f', 'flv'])
+            subprocess.run(['bilibili-get {} -o "av%(aid)s.%(ext)s" -f flv'.format(video_url)], shell=True)
         except Exception as e:
             print_log(TAG, 'Download video failed!')
             print_log(TAG, str(e))
