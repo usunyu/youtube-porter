@@ -58,6 +58,11 @@ $ python manage.py shell < scripts/init_youtube_account.py
 $ python manage.py shell < scripts/init_bilibili_recommend.py
 ```
 
+4. Reset upload failed jobs:
+```
+$ python manage.py shell < scripts/reset_upload_failed_job.py
+```
+
 ### YouTube Channel:
 1. YPort Master:
 
