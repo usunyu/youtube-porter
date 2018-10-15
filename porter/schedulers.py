@@ -218,7 +218,7 @@ def bilibili_recommend_job():
         PorterJob(video_url=video_url, youtube_account=account).save()
 
 
-@scheduler.scheduled_job("cron", hour=0, minute=5, id='reset_quota', misfire_grace_time=60, coalesce=True)
+@scheduler.scheduled_job("cron", hour=14, minute=30, id='reset_quota', misfire_grace_time=60, coalesce=True)
 def reset_quota_job():
     print_log(TAG, 'Reset quota job is started...')
     accounts = YoutubeAccount.objects.all()
