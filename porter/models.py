@@ -6,6 +6,8 @@ class YoutubeAccount(models.Model):
     name = models.CharField(max_length=256)
     secret_file = models.CharField(max_length=256)
     upload_quota = models.PositiveSmallIntegerField(default=0)
+    channel = models.CharField(max_length=256, null=True, blank=True)
+    description = models.TextField(null=True, blank=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
 

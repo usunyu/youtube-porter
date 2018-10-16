@@ -11,6 +11,8 @@ class YoutubeAccountAdmin(admin.ModelAdmin):
         'name',
         'secret_file',
         'upload_quota',
+        'description',
+        'channel',
         'created_at'
     ]
 
