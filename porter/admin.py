@@ -49,6 +49,20 @@ class VideoAdmin(admin.ModelAdmin):
 
 admin.site.register(Video, VideoAdmin)
 
+class ChannelJobAdmin(admin.ModelAdmin):
+
+    list_display = [
+        'id',
+        'url',
+        'name',
+        'video_source',
+        'youtube_account',
+        'last_fetched_at',
+        'created_at'
+    ]
+
+admin.site.register(ChannelJob, ChannelJobAdmin)
+
 class PorterJobAdmin(admin.ModelAdmin):
 
     def video_link(self, obj):

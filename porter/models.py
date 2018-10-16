@@ -44,6 +44,33 @@ class Video(models.Model):
         return ', '.join([tag.name for tag in self.tags.all()])
 
 
+class ChannelJob(models.Model):
+    url = models.CharField(max_length=256)
+    name = models.CharField(max_length=256, null=True, blank=True)
+    VIDEO_SOURCE_CHOICES = (
+        (VideoSource.BILIBILI, 'Bilibili'),
+        (VideoSource.YOUKU, 'Youku')
+    )
+    video_source = models.PositiveSmallIntegerField(
+        choices=VIDEO_SOURCE_CHOICES,
+        default=VideoSource.BILIBILI
+    )
+    youtube_account = models.ForeignKey(
+        YoutubeAccount,
+        on_delete=models.SET_NULL,
+        related_name='channel_jobs',
+        null=True,
+        blank=True)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    last_fetched_at = models.DateTimeField(auto_now_add=False, auto_now=False, null=True, blank=True)
+
+    def __str__(self):
+        if self.name:
+            return self.name
+        return '-'
+
+
 class PorterJob(models.Model):
     video_url = models.CharField(max_length=256)
     VIDEO_SOURCE_CHOICES = (
