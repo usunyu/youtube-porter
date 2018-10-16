@@ -6,13 +6,22 @@ from porter.enums import VideoSource
 
 class YoutubeAccountAdmin(admin.ModelAdmin):
 
+    def channel_link(self, obj):
+        if obj.channel:
+            return format_html('<a href="{}" target="_blank">{}</a>'.format(
+                obj.channel, obj.channel
+            ))
+        return '-'
+
+    channel_link.short_description = 'Channel Link'
+
     list_display = [
         'id',
         'name',
         'secret_file',
         'upload_quota',
         'description',
-        'channel',
+        'channel_link',
         'created_at'
     ]
 
