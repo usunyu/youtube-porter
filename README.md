@@ -62,8 +62,3 @@ $ python manage.py shell < scripts/init_bilibili_recommend.py
 ```
 $ python manage.py shell < scripts/reset_upload_failed_job.py
 ```
-
-### YouTube Channel:
-1. YPort Master:
-
-https://www.youtube.com/channel/UC-EXdAi5baz7XGNjuoJWwmQ
