@@ -39,9 +39,16 @@ admin.site.register(VideoTag, VideoTagAdmin)
 
 class VideoAdmin(admin.ModelAdmin):
 
+    def url_link(self, obj):
+        return format_html('<a href="{}" target="_blank">{}</a>'.format(
+            obj.url, obj.url
+        ))
+
+    url_link.short_description = 'Url'
+
     list_display = [
         'id',
-        'url',
+        'url_link',
         'title',
         'description',
         'print_tags'
@@ -51,14 +58,25 @@ admin.site.register(Video, VideoAdmin)
 
 class ChannelJobAdmin(admin.ModelAdmin):
 
+    def url_link(self, obj):
+        return format_html('<a href="{}" target="_blank">{}</a>'.format(
+            obj.url, obj.url
+        ))
+
+    url_link.short_description = 'Url'
+
     list_display = [
         'id',
-        'url',
+        'url_link',
         'name',
         'video_source',
         'youtube_account',
         'last_fetched_at',
         'created_at'
+    ]
+
+    readonly_fields = [
+        'last_fetched_at'
     ]
 
 admin.site.register(ChannelJob, ChannelJobAdmin)
