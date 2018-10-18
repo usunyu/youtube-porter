@@ -1,7 +1,6 @@
 #Video File
 *.mp4
 *.flv
-*.mkv
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
