@@ -15,7 +15,7 @@ TAG = '[SCHEDULERS]'
 JOB_MULTIPLY = 60
 DOWNLOAD_JOB_INTERVAL = 3.2 * JOB_MULTIPLY
 UPLOAD_JOB_INTERVAL = 2.1 * JOB_MULTIPLY
-YOUTUBE_UPLOAD_QUOTA = 90
+YOUTUBE_UPLOAD_QUOTA = 98
 
 scheduler = BackgroundScheduler()
 scheduler.add_jobstore(DjangoJobStore(), 'default')
