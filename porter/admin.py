@@ -129,6 +129,7 @@ class PorterJobAdmin(admin.ModelAdmin):
         'download_at',
         'youtube_account',
         'youtube_link',
+        'playlist',
         'type',
         'part',
         'upload_at'

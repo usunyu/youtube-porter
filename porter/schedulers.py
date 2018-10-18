@@ -162,17 +162,18 @@ def upload_job():
         print_log(TAG, '*      You may need input password!      *')
         print_log(TAG, '******************************************')
         # upload to youtube
-        output = subprocess.check_output(
-            'sudo youtube-upload --title="{}" --description="{}" --category="{}" --tags="{}" --client-secrets="{}" "{}"'.format(
-                video.title,
-                VIDEO_DESCRIPTION.format(video.url, video.description),
-                video.category,
-                video.print_tags(),
-                youtube_account.secret_file,
-                job.video_file
-            ),
-            shell=True
+        upload_command = 'sudo youtube-upload --title="{}" --description="{}" --category="{}" --tags="{}" --client-secrets="{}" "{}"'.format(
+            video.title,
+            VIDEO_DESCRIPTION.format(video.url, video.description),
+            video.category,
+            video.print_tags(),
+            youtube_account.secret_file,
+            job.video_file
         )
+        if job.playlist:
+            upload_command = upload_command + ' --playlist="' + job.playlist + '"'
+        print('upload_command:', upload_command)
+        output = subprocess.check_output(upload_command, shell=True)
         youtube_id = output.decode("utf-8").strip()
         job.youtube_id = youtube_id
         job.upload_at = get_current_time()
