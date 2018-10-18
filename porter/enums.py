@@ -1,3 +1,5 @@
+UNKNOWN = 'Unknown'
+
 class VideoSource:
     BILIBILI = 0
     YOUKU = 1
@@ -8,7 +10,7 @@ class VideoSource:
             return 'Bilibili'
         if val == VideoSource.YOUKU:
             return 'Youku'
-        return 'Unknown'
+        return UNKNOWN
 
 class PorterStatus:
     PENDING = 0
@@ -38,4 +40,16 @@ class PorterStatus:
             return 'Upload Fail'
         if val == PorterStatus.DUPLICATED:
             return 'Duplicated'
-        return 'Unknown'
+        return UNKNOWN
+
+class PorterJobType:
+    COMPLETE = 0
+    PARTIAL = 1
+
+    @staticmethod
+    def tostr(val):
+        if val == PorterJobType.COMPLETE:
+            return 'Complete'
+        if val == PorterJobType.PARTIAL:
+            return 'Partial'
+        return UNKNOWN

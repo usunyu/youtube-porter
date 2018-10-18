@@ -129,6 +129,8 @@ class PorterJobAdmin(admin.ModelAdmin):
         'download_at',
         'youtube_account',
         'youtube_link',
+        'type',
+        'part',
         'upload_at'
     ]
 
@@ -147,7 +149,9 @@ class SettingsAdmin(admin.ModelAdmin):
         'id',
         'start_download_job',
         'start_upload_job',
+        'start_channel_job',
         'start_bilibili_recommend_job',
+        'start_reset_quota_job',
     ]
 
 admin.site.register(Settings, SettingsAdmin)

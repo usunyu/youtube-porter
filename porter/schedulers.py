@@ -1,20 +1,23 @@
 import os, subprocess, requests, json
-from datetime import datetime
 from apscheduler.schedulers.background import BackgroundScheduler
 from django_apscheduler.jobstores import DjangoJobStore, register_events, register_job
 from django.db.models import Q
 from porter.utils import *
 from porter.downloaders.bilibili_downloader import bilibili_download
+from porter.channel_fetchers.bilibili_channel_fetcher import bilibili_channel_fetch
 from porter.enums import VideoSource, PorterStatus
-from porter.models import Video, PorterJob, YoutubeAccount
+from porter.models import Video, YoutubeAccount, PorterJob, ChannelJob
 
 
 TAG = '[SCHEDULERS]'
+
 # set small for debug
-# JOB_MULTIPLY = 5
-JOB_MULTIPLY = 60
-DOWNLOAD_JOB_INTERVAL = 3.2 * JOB_MULTIPLY
-UPLOAD_JOB_INTERVAL = 2.1 * JOB_MULTIPLY
+# JOB_INTERVAL_UNIT = 1
+JOB_INTERVAL_UNIT = 60 # 1 minute
+DOWNLOAD_JOB_INTERVAL = 3.2 * JOB_INTERVAL_UNIT
+UPLOAD_JOB_INTERVAL = 2.1 * JOB_INTERVAL_UNIT
+CHANNEL_JOB_INTERVAL = 60 * 12 * JOB_INTERVAL_UNIT
+
 YOUTUBE_UPLOAD_QUOTA = 98
 
 scheduler = BackgroundScheduler()
@@ -22,6 +25,9 @@ scheduler.add_jobstore(DjangoJobStore(), 'default')
 
 download_job_lock = False
 upload_job_lock = False
+
+BILIBILI_VIDEO_URL = 'https://www.bilibili.com/video/av{}'
+BILIBILI_RECOMMEND_API = 'http://api.bilibili.cn/recommend'
 
 VIDEO_DESCRIPTION = """所有视频均来自网络资源, 如果侵犯了您的权益请联系yportmaster@gmail.com删除视频.
 如果您喜欢此视频, 请点赞, 留言, 订阅. 非常感谢!
@@ -39,15 +45,15 @@ This video is from: {}
 @scheduler.scheduled_job("interval", seconds=DOWNLOAD_JOB_INTERVAL, id='download')
 def download_job():
     if not is_start_download_job():
-        print_log(TAG, 'Download job is stopped, skip this schedule...')
+        # print_log(TAG, 'Download job is stopped, skip this schedule...')
         return
 
     # find a job with account has quota
     job = None
-    js = PorterJob.objects.filter(status=PorterStatus.PENDING)
-    for j in js:
-        if j.youtube_account.upload_quota > 0:
-            job = j
+    pending_jobs = PorterJob.objects.filter(status=PorterStatus.PENDING)
+    for pending_job in pending_jobs:
+        if pending_job.youtube_account.upload_quota > 0:
+            job = pending_job
             break
     if not job:
         print_log(TAG, 'No pending download job available, skip this schedule...')
@@ -117,15 +123,15 @@ def download_job():
 @scheduler.scheduled_job("interval", seconds=UPLOAD_JOB_INTERVAL, id='upload')
 def upload_job():
     if not is_start_upload_job():
-        print_log(TAG, 'Upload job is stopped, skip this schedule...')
+        # print_log(TAG, 'Upload job is stopped, skip this schedule...')
         return
 
     # find a job with account has quota
     job = None
-    js = PorterJob.objects.filter(status=PorterStatus.DOWNLOADED)
-    for j in js:
-        if j.youtube_account.upload_quota > 0:
-            job = j
+    downloaded_jobs = PorterJob.objects.filter(status=PorterStatus.DOWNLOADED)
+    for downloaded_job in downloaded_jobs:
+        if downloaded_job.youtube_account.upload_quota > 0:
+            job = downloaded_job
             break
     if not job:
         print_log(TAG, 'No pending upload job available, skip this schedule...')
@@ -193,33 +199,62 @@ def upload_job():
     upload_job_lock = False
 
 
-@scheduler.scheduled_job("cron", hour=0, minute=0, id='bilibili_recommend', misfire_grace_time=60, coalesce=True)
+@scheduler.scheduled_job("interval", seconds=CHANNEL_JOB_INTERVAL, id='channel')
+def channel_job():
+    if not is_start_channel_job():
+        # print_log(TAG, 'Channel job is stopped, skip this schedule...')
+        return
+
+    print_log(TAG, 'Channel job is started...')
+
+    jobs = ChannelJob.objects.all()
+    for job in jobs:
+        account = job.youtube_account
+        fetched_videos = []
+        if job.video_source == VideoSource.BILIBILI:
+            fetched_videos = bilibili_channel_fetch(job)
+        for video_url in fetched_videos:
+            if PorterJob.objects.filter(
+                Q(video_url=video_url) &
+                Q(youtube_account=account)
+            ).exists():
+                continue
+            print_log(TAG, 'Create new job from channel fetch: ' + video_url)
+            PorterJob(video_url=video_url, youtube_account=account).save()
+
+
+@scheduler.scheduled_job("cron", hour=0, minute=30, id='bilibili_recommend', misfire_grace_time=60, coalesce=True)
 def bilibili_recommend_job():
     if not is_start_bilibili_recommend_job():
-        print_log(TAG, 'Bilibili recommend job is stopped, skip this schedule...')
+        # print_log(TAG, 'Bilibili recommend job is stopped, skip this schedule...')
         return
 
     print_log(TAG, 'Bilibili recommend job is started...')
-    response = requests.get('http://api.bilibili.cn/recommend')
+    response = requests.get(BILIBILI_RECOMMEND_API)
     list = json.loads(response.text)['list']
 
+    # default to first account
     account = YoutubeAccount.objects.all().first()
 
     for record in list:
-        aid = record['aid']
+        video_id = record['aid']
         # create porter job
-        video_url = '{}{}'.format('https://www.bilibili.com/video/av', aid)
+        video_url = BILIBILI_VIDEO_URL.format(video_id)
         if PorterJob.objects.filter(
             Q(video_url=video_url) &
             Q(youtube_account=account)
         ).exists():
             continue
-        print_log(TAG, 'Create new job from bilibili recommend api: ' + video_url)
+        print_log(TAG, 'Create new job from bilibili recommend: ' + video_url)
         PorterJob(video_url=video_url, youtube_account=account).save()
 
 
 @scheduler.scheduled_job("cron", hour=14, minute=30, id='reset_quota', misfire_grace_time=60, coalesce=True)
 def reset_quota_job():
+    if not is_start_reset_quota_job():
+        # print_log(TAG, 'Reset quota job is stopped, skip this schedule...')
+        return
+
     print_log(TAG, 'Reset quota job is started...')
     accounts = YoutubeAccount.objects.all()
     for account in accounts:

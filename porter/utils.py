@@ -45,11 +45,25 @@ def is_start_upload_job():
     return settings.start_upload_job
 
 
+def is_start_channel_job():
+    settings = Settings.objects.all().first()
+    if not settings:
+        return False
+    return settings.start_channel_job
+
+
 def is_start_bilibili_recommend_job():
     settings = Settings.objects.all().first()
     if not settings:
         return False
     return settings.start_bilibili_recommend_job
+
+
+def is_start_reset_quota_job():
+    settings = Settings.objects.all().first()
+    if not settings:
+        return False
+    return settings.start_reset_quota_job
 
 
 def get_youtube_invalid_content_chars():

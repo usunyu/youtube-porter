@@ -1,5 +1,5 @@
 from django.db import models
-from porter.enums import PorterStatus, VideoSource
+from porter.enums import PorterStatus, VideoSource, PorterJobType
 
 
 class YoutubeAccount(models.Model):
@@ -48,8 +48,8 @@ class ChannelJob(models.Model):
     url = models.CharField(max_length=256)
     name = models.CharField(max_length=256, null=True, blank=True)
     VIDEO_SOURCE_CHOICES = (
-        (VideoSource.BILIBILI, 'Bilibili'),
-        (VideoSource.YOUKU, 'Youku')
+        (VideoSource.BILIBILI, VideoSource.tostr(VideoSource.BILIBILI)),
+        (VideoSource.YOUKU, VideoSource.tostr(VideoSource.YOUKU))
     )
     video_source = models.PositiveSmallIntegerField(
         choices=VIDEO_SOURCE_CHOICES,
@@ -74,8 +74,8 @@ class ChannelJob(models.Model):
 class PorterJob(models.Model):
     video_url = models.CharField(max_length=256)
     VIDEO_SOURCE_CHOICES = (
-        (VideoSource.BILIBILI, 'Bilibili'),
-        (VideoSource.YOUKU, 'Youku')
+        (VideoSource.BILIBILI, VideoSource.tostr(VideoSource.BILIBILI)),
+        (VideoSource.YOUKU, VideoSource.tostr(VideoSource.YOUKU))
     )
     video_source = models.PositiveSmallIntegerField(
         choices=VIDEO_SOURCE_CHOICES,
@@ -91,6 +91,10 @@ class PorterJob(models.Model):
         max_length=32,
         null=True,
         blank=True)
+    playlist = models.CharField(
+        max_length=256,
+        null=True,
+        blank=True)
     video = models.OneToOneField(
         Video,
         on_delete=models.SET_NULL,
@@ -100,19 +104,28 @@ class PorterJob(models.Model):
     )
     video_file = models.CharField(max_length=64, null=True, blank=True)
     PORTER_STATUS_CHOICES = (
-        (PorterStatus.PENDING, 'Pending'),
-        (PorterStatus.DOWNLOADING, 'Downloading'),
-        (PorterStatus.DOWNLOADED, 'Downloaded'),
-        (PorterStatus.UPLOADING, 'Uploading'),
-        (PorterStatus.SUCCESS, 'Success'),
-        (PorterStatus.DOWNLOAD_FAIL, 'Download Fail'),
-        (PorterStatus.UPLOAD_FAIL, 'Upload Fail'),
-        (PorterStatus.DUPLICATED, 'Duplicated'),
+        (PorterStatus.PENDING, PorterStatus.tostr(PorterStatus.PENDING)),
+        (PorterStatus.DOWNLOADING, PorterStatus.tostr(PorterStatus.DOWNLOADING)),
+        (PorterStatus.DOWNLOADED, PorterStatus.tostr(PorterStatus.DOWNLOADED)),
+        (PorterStatus.UPLOADING, PorterStatus.tostr(PorterStatus.UPLOADING)),
+        (PorterStatus.SUCCESS, PorterStatus.tostr(PorterStatus.SUCCESS)),
+        (PorterStatus.DOWNLOAD_FAIL, PorterStatus.tostr(PorterStatus.DOWNLOAD_FAIL)),
+        (PorterStatus.UPLOAD_FAIL, PorterStatus.tostr(PorterStatus.UPLOAD_FAIL)),
+        (PorterStatus.DUPLICATED, PorterStatus.tostr(PorterStatus.DUPLICATED)),
     )
     status = models.PositiveSmallIntegerField(
         choices=PORTER_STATUS_CHOICES,
         default=PorterStatus.PENDING
     )
+    PORTER_JOB_TYPE_CHOICES = (
+        (PorterJobType.COMPLETE, PorterJobType.tostr(PorterJobType.COMPLETE)),
+        (PorterJobType.PARTIAL, PorterJobType.tostr(PorterJobType.PARTIAL)),
+    )
+    type = models.PositiveSmallIntegerField(
+        choices=PORTER_JOB_TYPE_CHOICES,
+        default=PorterJobType.COMPLETE
+    )
+    part = models.PositiveSmallIntegerField(default=1)
 
     created_at = models.DateTimeField(auto_now_add=True)
     download_at = models.DateTimeField(auto_now_add=False, auto_now=False, null=True, blank=True)
@@ -125,4 +138,6 @@ class PorterJob(models.Model):
 class Settings(models.Model):
     start_download_job = models.BooleanField(default=False)
     start_upload_job = models.BooleanField(default=False)
+    start_channel_job = models.BooleanField(default=False)
     start_bilibili_recommend_job = models.BooleanField(default=False)
+    start_reset_quota_job = models.BooleanField(default=False)
