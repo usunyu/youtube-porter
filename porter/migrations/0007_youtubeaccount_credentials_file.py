@@ -13,7 +13,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='youtubeaccount',
             name='credentials_file',
-            field=models.CharField(default='x', max_length=256),
+            field=models.CharField(default='-', max_length=256),
             preserve_default=False,
         ),
     ]
