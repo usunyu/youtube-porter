@@ -18,7 +18,7 @@ DOWNLOAD_JOB_INTERVAL = 3.2 * JOB_INTERVAL_UNIT
 UPLOAD_JOB_INTERVAL = 2.1 * JOB_INTERVAL_UNIT
 CHANNEL_JOB_INTERVAL = 60 * JOB_INTERVAL_UNIT
 
-YOUTUBE_UPLOAD_QUOTA = 98
+YOUTUBE_UPLOAD_QUOTA = 99
 
 scheduler = BackgroundScheduler()
 scheduler.add_jobstore(DjangoJobStore(), 'default')
@@ -161,16 +161,17 @@ def upload_job():
         print_log(TAG, '*      You may need input password!      *')
         print_log(TAG, '******************************************')
         # upload to youtube
-        upload_command = 'sudo youtube-upload --title="{}" --description="{}" --category="{}" --tags="{}" --client-secrets="{}" "{}"'.format(
+        upload_command = 'sudo youtube-upload --title="{}" --description="{}" --category="{}" --tags="{}" --client-secrets="{}"'.format(
             video.title,
             VIDEO_DESCRIPTION.format(video.url, video.description),
             video.category,
             video.print_tags(),
-            youtube_account.secret_file,
-            job.video_file
+            youtube_account.secret_file
         )
         if job.playlist:
             upload_command = upload_command + ' --playlist="' + job.playlist + '"'
+        upload_command = upload_command + ' ' + job.video_file
+        print_log(TAG, 'Run command: ' + upload_command)
         output = subprocess.check_output(upload_command, shell=True)
         youtube_id = output.decode("utf-8").strip()
         job.youtube_id = youtube_id
