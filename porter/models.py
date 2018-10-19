@@ -5,6 +5,7 @@ from porter.enums import PorterStatus, VideoSource, PorterJobType
 class YoutubeAccount(models.Model):
     name = models.CharField(max_length=256)
     secret_file = models.CharField(max_length=256)
+    credentials_file = models.CharField(max_length=256)
     upload_quota = models.PositiveSmallIntegerField(default=0)
     channel = models.CharField(max_length=256, null=True, blank=True)
     description = models.TextField(null=True, blank=True)
