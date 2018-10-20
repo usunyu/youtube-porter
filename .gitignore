@@ -1,7 +1,10 @@
-#Video File
+# Video File
 *.mp4
 *.flv
 *.aria2
+
+# Credentials File
+credentials/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
