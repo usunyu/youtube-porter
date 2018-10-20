@@ -39,7 +39,6 @@ If you like this video, please like, comment and subscribe. Thank you!
 
 
 This video is from: {}
-
 Video description:
 {}
 """
