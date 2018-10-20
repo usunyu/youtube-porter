@@ -32,15 +32,14 @@ upload_job_lock = False
 BILIBILI_VIDEO_URL = 'https://www.bilibili.com/video/av{}'
 BILIBILI_RECOMMEND_API = 'http://api.bilibili.cn/recommend'
 
-VIDEO_DESCRIPTION = """All videos are from online resources. If you find a video that infringes on your rights, please contact yportmaster@gmail.com to delete the video.
+VIDEO_DESCRIPTION = """{}
+
+This video is from: {}
+
+All videos are from online resources. If you find a video that infringes on your rights, please contact yportmaster@gmail.com to delete the video.
 If you like this video, please like, comment and subscribe. Thank you!
 (所有视频均来自网络资源, 如果侵犯了您的权益请联系yportmaster@gmail.com删除视频.
 如果您喜欢此视频, 请点赞, 留言, 订阅. 非常感谢!)
-
-
-This video is from: {}
-Video description:
-{}
 """
 
 @scheduler.scheduled_job("interval", seconds=DOWNLOAD_JOB_INTERVAL, id='download')
@@ -165,7 +164,7 @@ def upload_job():
         # upload to youtube
         upload_command = 'sudo youtube-upload --title="{}" --description="{}" --category="{}" --tags="{}" --client-secrets="{}" --credentials-file="{}"'.format(
             video.title,
-            VIDEO_DESCRIPTION.format(video.url, video.description),
+            VIDEO_DESCRIPTION.format(video.description, video.url),
             video.category,
             video.print_tags(),
             youtube_account.secret_file,
