@@ -12,13 +12,16 @@ from porter.models import Video, YoutubeAccount, PorterJob, ChannelJob
 TAG = '[SCHEDULERS]'
 
 # set small for debug
-# JOB_INTERVAL_UNIT = 1
-JOB_INTERVAL_UNIT = 60 # 1 minute
-DOWNLOAD_JOB_INTERVAL = 3.2 * JOB_INTERVAL_UNIT
-UPLOAD_JOB_INTERVAL = 2.1 * JOB_INTERVAL_UNIT
-CHANNEL_JOB_INTERVAL = 60 * JOB_INTERVAL_UNIT
+# INTERVAL_UNIT = 1
+INTERVAL_UNIT = 60 # 1 minute
+
+DOWNLOAD_JOB_INTERVAL = 3.2 * INTERVAL_UNIT
+UPLOAD_JOB_INTERVAL = 2.1 * INTERVAL_UNIT
+CHANNEL_JOB_INTERVAL = 60 * INTERVAL_UNIT
+RESET_QUOTA_JOB_INTERVAL = 30 * INTERVAL_UNIT
 
 YOUTUBE_UPLOAD_QUOTA = 99
+YOUTUBE_UPLOAD_TIME_INTERVAL = 24 * 60 * INTERVAL_UNIT
 
 scheduler = BackgroundScheduler()
 scheduler.add_jobstore(DjangoJobStore(), 'default')
@@ -235,7 +238,7 @@ def bilibili_recommend_job():
     list = json.loads(response.text)['list']
 
     # default to first account
-    account = YoutubeAccount.objects.all().first()
+    account = YoutubeAccount.objects.first()
 
     for record in list:
         video_id = record['aid']
@@ -250,7 +253,7 @@ def bilibili_recommend_job():
         PorterJob(video_url=video_url, youtube_account=account).save()
 
 
-@scheduler.scheduled_job("cron", hour=14, minute=30, id='reset_quota', misfire_grace_time=60, coalesce=True)
+@scheduler.scheduled_job("interval", seconds=RESET_QUOTA_JOB_INTERVAL, id='reset_quota')
 def reset_quota_job():
     if not is_start_reset_quota_job():
         # print_log(TAG, 'Reset quota job is stopped, skip this schedule...')
@@ -259,8 +262,15 @@ def reset_quota_job():
     print_log(TAG, 'Reset quota job is started...')
     accounts = YoutubeAccount.objects.all()
     for account in accounts:
-        account.upload_quota = YOUTUBE_UPLOAD_QUOTA
-        account.save(update_fields=['upload_quota'])
+        if account.upload_quota > 0:
+            continue
+        # OPTIMIZE, use last 99 job upload time
+        last_success_job = account.porter_jobs.filter(status=PorterStatus.SUCCESS).reverse().first()
+        interval = get_current_time() - last_success_job.upload_at
+        if interval.total_seconds() > YOUTUBE_UPLOAD_TIME_INTERVAL:
+            account.upload_quota = YOUTUBE_UPLOAD_QUOTA
+            account.save(update_fields=['upload_quota'])
+            print_log(TAG, 'Reset quota for account: ' + account.name)
 
 
 # avoid multi-thread to start multiple schedule jobs
