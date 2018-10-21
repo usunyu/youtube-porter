@@ -71,7 +71,9 @@ def download_job():
     if PorterJob.objects.filter(
         Q(video_url=job.video_url) &
         Q(youtube_account=job.youtube_account) &
-        Q(status=PorterStatus.SUCCESS)
+        Q(status=PorterStatus.SUCCESS) &
+        Q(type=job.type) &
+        Q(part=job.part)
     ).exists():
         # update status to *DUPLICATED*
         job.status = PorterStatus.DUPLICATED
