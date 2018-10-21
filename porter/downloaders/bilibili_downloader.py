@@ -197,8 +197,8 @@ def bilibili_download(job):
         if 'pages' in data:
             pages = data['pages']
         if pages > 1 and job.type == PorterJobType.COMPLETE:
-            part = pages
-            while part >= 1:
+            part = 1
+            while part <= pages:
                 # create partial porter job
                 PorterJob(video_url=video_url,
                           youtube_account=job.youtube_account,
@@ -206,7 +206,7 @@ def bilibili_download(job):
                           playlist=video.title,
                           type=PorterJobType.PARTIAL,
                           part=part).save()
-                part = part - 1
+                part = part + 1
             return [PorterStatus.PARTIAL, None]
 
         try:
