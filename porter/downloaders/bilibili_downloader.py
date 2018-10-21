@@ -1,8 +1,8 @@
 import requests, json, re, os, subprocess
 from requests_html import HTMLSession
 from porter.utils import *
-from porter.models import VideoTag
-from porter.enums import PorterStatus
+from porter.models import VideoTag, PorterJob
+from porter.enums import VideoSource, PorterStatus, PorterJobType
 
 
 TAG = '[BILIBILI DOWNLOADER]'
@@ -155,6 +155,14 @@ def bilibili_download(job):
         for invalid_char in get_youtube_invalid_content_chars():
             title = title.replace(invalid_char, '')
             description = description.replace(invalid_char, '')
+        if job.type == PorterJobType.PARTIAL:
+            part = job.part
+            vlist = data['list']
+            vdata = vlist[part - 1]
+            # update title with part information
+            title = title + ' ' + vdata['part']
+            video_url = video_url + '?p=' + str(part)
+
         video.title = title
         video.description = description
 
@@ -184,8 +192,23 @@ def bilibili_download(job):
             video.tags.add(tag)
         video.save(update_fields=['title', 'description'])
 
-        # default first page
-        # TODO deal with multi page video
+        # check if video has multi part
+        pages = 1
+        if 'pages' in data:
+            pages = data['pages']
+        if pages > 1 and job.type == PorterJobType.COMPLETE:
+            part = pages
+            while part >= 1:
+                # create partial porter job
+                PorterJob(video_url=video_url,
+                          youtube_account=job.youtube_account,
+                          video_source=VideoSource.BILIBILI,
+                          playlist=video.title,
+                          type=PorterJobType.PARTIAL,
+                          part=part).save()
+                part = part - 1
+            return [PorterStatus.PARTIAL, None]
+
         try:
             subprocess.run(['bilibili-get {} -o "av%(aid)s.%(ext)s" -f flv'.format(video_url)], shell=True)
         except Exception as e:
