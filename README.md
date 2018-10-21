@@ -30,6 +30,17 @@ $ sudo apt-get install ffmpeg aria2
 $ python manage.py runserver
 ```
 
+### Add YouTube Account:
+
+1. Download secrets file.
+
+2. Add empty credentials file:
+```
+$ touch credentials/yportxxx.json
+```
+
+3. Wait first upload job and enter correct code.
+
 ### Deployment:
 
 1. Attach to screen:
