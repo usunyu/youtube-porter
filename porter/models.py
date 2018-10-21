@@ -113,6 +113,9 @@ class PorterJob(models.Model):
         (PorterStatus.DOWNLOAD_FAIL, PorterStatus.tostr(PorterStatus.DOWNLOAD_FAIL)),
         (PorterStatus.UPLOAD_FAIL, PorterStatus.tostr(PorterStatus.UPLOAD_FAIL)),
         (PorterStatus.DUPLICATED, PorterStatus.tostr(PorterStatus.DUPLICATED)),
+        (PorterStatus.API_ERROR, PorterStatus.tostr(PorterStatus.API_ERROR)),
+        (PorterStatus.VIDEO_NOT_FOUND, PorterStatus.tostr(PorterStatus.VIDEO_NOT_FOUND)),
+        (PorterStatus.PARTIAL, PorterStatus.tostr(PorterStatus.PARTIAL)),
     )
     status = models.PositiveSmallIntegerField(
         choices=PORTER_STATUS_CHOICES,

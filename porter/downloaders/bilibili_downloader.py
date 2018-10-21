@@ -2,6 +2,7 @@ import requests, json, re, os, subprocess
 from requests_html import HTMLSession
 from porter.utils import *
 from porter.models import VideoTag
+from porter.enums import PorterStatus
 
 
 TAG = '[BILIBILI DOWNLOADER]'
@@ -134,7 +135,7 @@ def bilibili_download(job):
         response = requests.get(api_url)
     except Exception as e:
         print_log(TAG, 'Request api error!')
-        return None
+        return [PorterStatus.API_ERROR, None]
     payload = json.loads(response.text)
 
     if payload['err'] == None:
@@ -144,7 +145,7 @@ def bilibili_download(job):
             title = data['title']
         else:
             print_log(TAG, 'This video may be removed!')
-            return None
+            return [PorterStatus.VIDEO_NOT_FOUND, None]
         typename = ''
         if 'typename' in data:
             typename = data['typename']
@@ -190,14 +191,14 @@ def bilibili_download(job):
         except Exception as e:
             print_log(TAG, 'Download video failed!')
             print_log(TAG, str(e))
-            return None
+            return [PorterStatus.DOWNLOAD_FAIL, None]
 
         # check download file success
         if not os.path.isfile('av{}.flv'.format(video_id)):
             print_log(TAG, 'Download video failed, authentication may required!')
-            return None
+            return [PorterStatus.DOWNLOAD_FAIL, None]
 
-        return 'av{}.flv'.format(video_id)
+        return [PorterStatus.DOWNLOADED, 'av{}.flv'.format(video_id)]
 
     print_log(TAG, 'Fetch data error!')
-    return None
+    return [PorterStatus.API_ERROR, None]

@@ -21,6 +21,9 @@ class PorterStatus:
     DOWNLOAD_FAIL = 5
     UPLOAD_FAIL = 6
     DUPLICATED = 7
+    API_ERROR = 8
+    VIDEO_NOT_FOUND = 9
+    PARTIAL = 10
 
     @staticmethod
     def tostr(val):
@@ -40,6 +43,12 @@ class PorterStatus:
             return 'Upload Fail'
         if val == PorterStatus.DUPLICATED:
             return 'Duplicated'
+        if val == PorterStatus.API_ERROR:
+            return 'API Error'
+        if val == PorterStatus.VIDEO_NOT_FOUND:
+            return 'Video Not Found'
+        if val == PorterStatus.PARTIAL:
+            return 'Partial'
         return UNKNOWN
 
 class PorterJobType:

@@ -101,21 +101,22 @@ def download_job():
     job.save(update_fields=['status'])
     # download the video
     if job.video_source == VideoSource.BILIBILI:
-        video_file = bilibili_download(job)
+        download_ret = bilibili_download(job)
     else:
-        video_file = None
+        download_ret = [PorterStatus.DOWNLOAD_FAIL, None]
 
-    if video_file:
+    status = download_ret[0]
+
+    if status == PorterStatus.DOWNLOADED:
+        video_file = download_ret[1]
         # update job video file
         job.video_file = video_file
         job.download_at = get_current_time()
-        # update status to *DOWNLOADED*
-        job.status = PorterStatus.DOWNLOADED
-        job.save(update_fields=['video_file', 'status', 'download_at'])
-    else:
-        # update status to *DOWNLOAD_FAIL*
-        job.status = PorterStatus.DOWNLOAD_FAIL
-        job.save(update_fields=['status'])
+        job.save(update_fields=['video_file', 'download_at'])
+
+    # update status to corresponding status
+    job.status = status
+    job.save(update_fields=['status'])
 
     download_job_lock = False
 
