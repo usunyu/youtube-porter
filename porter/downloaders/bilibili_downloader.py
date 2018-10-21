@@ -155,8 +155,8 @@ def bilibili_download(job):
         for invalid_char in get_youtube_invalid_content_chars():
             title = title.replace(invalid_char, '')
             description = description.replace(invalid_char, '')
+        part = job.part
         if job.type == PorterJobType.PARTIAL:
-            part = job.part
             vlist = data['list']
             vdata = vlist[part - 1]
             # update title with part information
@@ -210,18 +210,18 @@ def bilibili_download(job):
             return [PorterStatus.PARTIAL, None]
 
         try:
-            subprocess.run(['bilibili-get {} -o "av%(aid)s.%(ext)s" -f flv'.format(video_url)], shell=True)
+            subprocess.run(['bilibili-get {} -o "av%(aid)s_{}.%(ext)s" -f flv'.format(video_url, part)], shell=True)
         except Exception as e:
             print_log(TAG, 'Download video failed!')
             print_log(TAG, str(e))
             return [PorterStatus.DOWNLOAD_FAIL, None]
 
         # check download file success
-        if not os.path.isfile('av{}.flv'.format(video_id)):
+        if not os.path.isfile('av{}_{}.flv'.format(video_id, part)):
             print_log(TAG, 'Download video failed, authentication may required!')
             return [PorterStatus.DOWNLOAD_FAIL, None]
 
-        return [PorterStatus.DOWNLOADED, 'av{}.flv'.format(video_id)]
+        return [PorterStatus.DOWNLOADED, 'av{}_{}.flv'.format(video_id, part)]
 
     print_log(TAG, 'Fetch data error!')
     return [PorterStatus.API_ERROR, None]
