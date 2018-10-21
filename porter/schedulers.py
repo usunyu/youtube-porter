@@ -159,6 +159,9 @@ def upload_job():
         # update status to *UPLOADING*
         job.status = PorterStatus.UPLOADING
         job.save(update_fields=['status'])
+        print_log(TAG, '******************************************')
+        print_log(TAG, '*  Attention! Password may be required!  *')
+        print_log(TAG, '******************************************')
         # upload to youtube
         upload_command = 'sudo youtube-upload --title="{}" --description="{}" --category="{}" --tags="{}" --client-secrets="{}" --credentials-file="{}"'.format(
             video.title,
