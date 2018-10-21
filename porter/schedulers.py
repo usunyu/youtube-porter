@@ -160,7 +160,7 @@ def upload_job():
         job.status = PorterStatus.UPLOADING
         job.save(update_fields=['status'])
         # upload to youtube
-        upload_command = 'youtube-upload --title="{}" --description="{}" --category="{}" --tags="{}" --client-secrets="{}" --credentials-file="{}"'.format(
+        upload_command = 'sudo youtube-upload --title="{}" --description="{}" --category="{}" --tags="{}" --client-secrets="{}" --credentials-file="{}"'.format(
             video.title,
             VIDEO_DESCRIPTION.format(video.description, video.url),
             video.category,
