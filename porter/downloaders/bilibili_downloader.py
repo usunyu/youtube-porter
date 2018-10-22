@@ -207,6 +207,7 @@ def bilibili_download(job):
                           type=PorterJobType.PARTIAL,
                           part=part).save()
                 part = part + 1
+            print_log(TAG, 'Added partial {} jobs.'.format(pages))
             return [PorterStatus.PARTIAL, None]
 
         try:
