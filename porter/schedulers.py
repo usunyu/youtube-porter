@@ -176,7 +176,7 @@ def upload_job():
         if job.playlist:
             upload_command = upload_command + ' --playlist="' + job.playlist + '"'
         upload_command = upload_command + ' ' + job.video_file
-        print_log(TAG, 'Run command: ' + upload_command)
+        # print_log(TAG, 'Run command: ' + upload_command)
         output = subprocess.check_output(upload_command, shell=True)
         youtube_id = output.decode("utf-8").strip()
         job.youtube_id = youtube_id
