@@ -138,7 +138,7 @@ class PorterJobAdmin(admin.ModelAdmin):
 
     readonly_fields = [
         'video',
-        'youtube_id',
+        # 'youtube_id',
         'video_file',
         'download_at',
         'upload_at'
