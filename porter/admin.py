@@ -135,6 +135,12 @@ class PorterJobAdmin(admin.ModelAdmin):
         'upload_at'
     ]
 
+    list_filter = [
+        'status',
+        'video_source',
+        'youtube_account'
+    ]
+
     readonly_fields = [
         'video',
         'youtube_id',
