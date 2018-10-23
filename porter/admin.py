@@ -90,10 +90,9 @@ class PorterJobAdmin(admin.ModelAdmin):
         ))
 
     def video_detail(self, obj):
-        video = Video.objects.filter(url=obj.video_url).first()
-        if video:
+        if obj.video:
             return format_html('<a href="/admin/porter/video/{}" target="_blank">{}</a>'.format(
-                video.id, video.id
+                obj.video.id, obj.video.id
             ))
         return '-'
 
@@ -138,7 +137,7 @@ class PorterJobAdmin(admin.ModelAdmin):
 
     readonly_fields = [
         'video',
-        # 'youtube_id',
+        'youtube_id',
         'video_file',
         'download_at',
         'upload_at'
