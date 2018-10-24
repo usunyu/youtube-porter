@@ -23,6 +23,8 @@ RESET_QUOTA_JOB_INTERVAL = 30 * INTERVAL_UNIT
 YOUTUBE_UPLOAD_QUOTA = 90
 YOUTUBE_UPLOAD_TIME_INTERVAL = 24 * 60 * INTERVAL_UNIT
 
+RETRY_LIMIT = 3
+
 scheduler = BackgroundScheduler()
 scheduler.add_jobstore(DjangoJobStore(), 'default')
 
@@ -109,12 +111,21 @@ def download_job():
 
     status = download_ret[0]
 
+    # download video success
     if status == PorterStatus.DOWNLOADED:
         video_file = download_ret[1]
         # update job video file
         job.video_file = video_file
         job.download_at = get_current_time()
         job.save(update_fields=['video_file', 'download_at'])
+
+    # download video failed, check retry
+    if status == PorterJob.DOWNLOAD_FAIL:
+        job.retried = job.retried + 1
+        job.save(update_fields=['retried'])
+        if job.retried < RETRY_LIMIT:
+            # reset status to *PENDING*
+            status = PorterStatus.PENDING
 
     # update status to corresponding status
     job.status = status

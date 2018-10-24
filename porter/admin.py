@@ -132,6 +132,7 @@ class PorterJobAdmin(admin.ModelAdmin):
         'playlist',
         'type',
         'part',
+        'retried',
         'upload_at'
     ]
 

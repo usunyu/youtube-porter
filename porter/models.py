@@ -130,6 +130,7 @@ class PorterJob(models.Model):
         default=PorterJobType.COMPLETE
     )
     part = models.PositiveSmallIntegerField(default=1)
+    retried = models.PositiveSmallIntegerField(default=0)
 
     created_at = models.DateTimeField(auto_now_add=True)
     download_at = models.DateTimeField(auto_now_add=False, auto_now=False, null=True, blank=True)
