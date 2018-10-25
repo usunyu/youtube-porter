@@ -120,7 +120,7 @@ def download_job():
         job.save(update_fields=['video_file', 'download_at'])
 
     # download video failed, check retry
-    if status == PorterJob.DOWNLOAD_FAIL:
+    if status == PorterStatus.DOWNLOAD_FAIL:
         job.retried = job.retried + 1
         job.save(update_fields=['retried'])
         if job.retried < RETRY_LIMIT:
