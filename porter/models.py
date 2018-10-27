@@ -50,7 +50,8 @@ class ChannelJob(models.Model):
     name = models.CharField(max_length=256, null=True, blank=True)
     VIDEO_SOURCE_CHOICES = (
         (VideoSource.BILIBILI, VideoSource.tostr(VideoSource.BILIBILI)),
-        (VideoSource.YOUKU, VideoSource.tostr(VideoSource.YOUKU))
+        (VideoSource.YOUKU, VideoSource.tostr(VideoSource.YOUKU)),
+        (VideoSource.IQIYI, VideoSource.tostr(VideoSource.IQIYI))
     )
     video_source = models.PositiveSmallIntegerField(
         choices=VIDEO_SOURCE_CHOICES,
@@ -76,7 +77,12 @@ class PorterJob(models.Model):
     video_url = models.CharField(max_length=256)
     VIDEO_SOURCE_CHOICES = (
         (VideoSource.BILIBILI, VideoSource.tostr(VideoSource.BILIBILI)),
-        (VideoSource.YOUKU, VideoSource.tostr(VideoSource.YOUKU))
+        (VideoSource.YOUKU, VideoSource.tostr(VideoSource.YOUKU)),
+        (VideoSource.YOUKU, VideoSource.tostr(VideoSource.IQIYI)),
+        (VideoSource.YOUKU, VideoSource.tostr(VideoSource.DOUYIN)),
+        (VideoSource.YOUKU, VideoSource.tostr(VideoSource.MEIPAI)),
+        (VideoSource.YOUKU, VideoSource.tostr(VideoSource.KUAISHOU)),
+        (VideoSource.YOUKU, VideoSource.tostr(VideoSource.HUOSHAN))
     )
     video_source = models.PositiveSmallIntegerField(
         choices=VIDEO_SOURCE_CHOICES,

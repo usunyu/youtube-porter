@@ -2,14 +2,29 @@ UNKNOWN = 'Unknown'
 
 class VideoSource:
     BILIBILI = 0
-    YOUKU = 1
+    YOUKU = 1 # TODO
+    IQIYI = 2 # TODO
+    DOUYIN = 3 # TODO
+    MEIPAI = 4 # TODO
+    KUAISHOU = 5 # TODO
+    HUOSHAN = 6 # TODO
 
     @staticmethod
     def tostr(val):
         if val == VideoSource.BILIBILI:
-            return 'Bilibili'
+            return '哔哩哔哩'
         if val == VideoSource.YOUKU:
-            return 'Youku'
+            return '优酷'
+        if val == VideoSource.IQIYI:
+            return '爱奇艺'
+        if val == VideoSource.DOUYIN:
+            return '抖音'
+        if val == VideoSource.MEIPAI:
+            return '美拍'
+        if val == VideoSource.KUAISHOU:
+            return '快手'
+        if val == VideoSource.HUOSHAN:
+            return '火山'
         return UNKNOWN
 
 class PorterStatus:
