@@ -36,7 +36,7 @@ BILIBILI_RECOMMEND_API = 'http://api.bilibili.cn/recommend'
 
 VIDEO_DESCRIPTION = """{}
 
-This video is from: {}
+This video is from (视频来源, 请支持原作者): {}
 
 All videos are from online resources. If you find a video that infringes on your rights, please contact yportmaster@gmail.com to delete the video.
 If you like this video, please like, comment and subscribe. Thank you!
