@@ -187,7 +187,7 @@ def bilibili_download(job):
             # if video is already downloaded, success
             if os.path.isfile('av{}_{}.flv'.format(video_id, part)):
                 return [PorterStatus.DOWNLOADED, 'av{}_{}.flv'.format(video_id, part)]
-            print_log(TAG, 'Download video failed!')
+            print_log(TAG, 'Download video failed, bilibili-get exception!')
             print_log(TAG, str(e))
             return [PorterStatus.DOWNLOAD_FAIL, None]
 
