@@ -106,7 +106,7 @@ def download_job():
     # download the video
     if job.video_source == VideoSource.BILIBILI:
         download_ret = bilibili_download(job)
-    if job.video_source == VideoSource.DOUYIN:
+    elif job.video_source == VideoSource.DOUYIN:
         download_ret = douyin_download(job)
     else:
         download_ret = [PorterStatus.DOWNLOAD_FAIL, None]

@@ -22,8 +22,8 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '@@z#iju77mkxd$@=u#mq#^6wa-^^(4_!d2%!qgi@60bk7)-gnl'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-# DEBUG = False
+# DEBUG = True
+DEBUG = False
 
 # Schedule job import, turn off before initial migrations
 # IMPORT_SCHEDULE = False
