@@ -181,13 +181,19 @@ def bilibili_download(job):
         try:
             subprocess.run(['bilibili-get {} -o "av%(aid)s_{}.%(ext)s" -f flv'.format(video_url, part)], shell=True)
         except Exception as e:
+            # may rase exception:
+            # error parsing debug value
+            # debug=0
+            # if video is already downloaded, success
+            if os.path.isfile('av{}_{}.flv'.format(video_id, part)):
+                return [PorterStatus.DOWNLOADED, 'av{}_{}.flv'.format(video_id, part)]
             print_log(TAG, 'Download video failed!')
             print_log(TAG, str(e))
             return [PorterStatus.DOWNLOAD_FAIL, None]
 
         # check download file success
         if not os.path.isfile('av{}_{}.flv'.format(video_id, part)):
-            print_log(TAG, 'Download video failed, authentication may required!')
+            print_log(TAG, 'Download video failed, unknown error!')
             return [PorterStatus.DOWNLOAD_FAIL, None]
 
         return [PorterStatus.DOWNLOADED, 'av{}_{}.flv'.format(video_id, part)]

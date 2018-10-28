@@ -4,7 +4,7 @@ from porter.utils import *
 from porter.models import PorterJob, YoutubeAccount
 
 
-TAG = '[BILIBILI CHANNEL]'
+TAG = '[BILIBILI FETCHER]'
 
 BILIBILI_CHANNEL_API = 'https://space.bilibili.com/ajax/member/getSubmitVideos?mid={}&pagesize=30&tid=0&page={}&keyword=&order=pubdate'
 BILIBILI_RECOMMEND_API = 'http://api.bilibili.cn/recommend'
@@ -42,6 +42,7 @@ def bilibili_channel_fetch(job):
             time.sleep(DELAY_INTERVAL)
 
     # create porter job
+    added_jobs = 0
     for video in video_list:
         video_id = video['aid']
         video_url = BILIBILI_VIDEO_URL.format(video_id)
@@ -50,10 +51,11 @@ def bilibili_channel_fetch(job):
             Q(youtube_account=account)
         ).exists():
             continue
-        print_log(TAG, 'Create new job from channel : ' + video_url)
+        added_jobs = added_jobs + 1
         PorterJob(video_url=video_url,
                   playlist=job.name,
                   youtube_account=account).save()
+    print_log(TAG, 'Create {} new jobs from channel'.format(added_jobs))
 
     # update last fetched time
     job.last_fetched_at = get_current_time()
