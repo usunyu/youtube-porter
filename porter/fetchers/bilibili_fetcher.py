@@ -1,12 +1,13 @@
 import requests, json, re
 from django.db.models import Q
 from porter.utils import *
-from porter.models import PorterJob
+from porter.models import PorterJob, YoutubeAccount
 
 
 TAG = '[BILIBILI CHANNEL]'
 
 BILIBILI_CHANNEL_API = 'https://space.bilibili.com/ajax/member/getSubmitVideos?mid={}&pagesize=30&tid=0&page={}&keyword=&order=pubdate'
+BILIBILI_RECOMMEND_API = 'http://api.bilibili.cn/recommend'
 BILIBILI_VIDEO_URL = 'https://www.bilibili.com/video/av{}'
 
 def bilibili_channel_fetch(job):
@@ -56,3 +57,22 @@ def bilibili_channel_fetch(job):
     job.save(update_fields=['last_fetched_at'])
 
     return fetched_videos
+
+def bilibili_recommend_fetch():
+    response = requests.get(BILIBILI_RECOMMEND_API)
+    list = json.loads(response.text)['list']
+
+    # upload to yportmaster account
+    account = YoutubeAccount.objects.filter(name='yportmaster').first()
+
+    for record in list:
+        video_id = record['aid']
+        # create porter job
+        video_url = BILIBILI_VIDEO_URL.format(video_id)
+        if PorterJob.objects.filter(
+            Q(video_url=video_url) &
+            Q(youtube_account=account)
+        ).exists():
+            continue
+        print_log(TAG, 'Create new job from bilibili recommend: ' + video_url)
+        PorterJob(video_url=video_url, youtube_account=account).save()

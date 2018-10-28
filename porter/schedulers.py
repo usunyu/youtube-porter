@@ -4,8 +4,8 @@ from django_apscheduler.jobstores import DjangoJobStore, register_events, regist
 from django.db.models import Q
 from porter.utils import *
 from porter.downloaders.bilibili_downloader import bilibili_download
+from porter.fetchers.bilibili_fetcher import bilibili_channel_fetch, bilibili_recommend_fetch
 from porter.downloaders.kuaiyinshi_downloader import douyin_download
-from porter.channel_fetchers.bilibili_channel_fetcher import bilibili_channel_fetch
 from porter.enums import VideoSource, PorterStatus
 from porter.models import Video, YoutubeAccount, PorterJob, ChannelJob
 
@@ -16,7 +16,7 @@ TAG = '[SCHEDULERS]'
 # INTERVAL_UNIT = 1
 INTERVAL_UNIT = 60 # 1 minute
 
-DOWNLOAD_JOB_INTERVAL = 3 * INTERVAL_UNIT
+DOWNLOAD_JOB_INTERVAL = 6 * INTERVAL_UNIT
 UPLOAD_JOB_INTERVAL = 5 * INTERVAL_UNIT
 CHANNEL_JOB_INTERVAL = 60 * INTERVAL_UNIT
 RESET_QUOTA_JOB_INTERVAL = 30 * INTERVAL_UNIT
@@ -31,9 +31,6 @@ scheduler.add_jobstore(DjangoJobStore(), 'default')
 
 download_job_lock = False
 upload_job_lock = False
-
-BILIBILI_VIDEO_URL = 'https://www.bilibili.com/video/av{}'
-BILIBILI_RECOMMEND_API = 'http://api.bilibili.cn/recommend'
 
 VIDEO_DESCRIPTION = """{}
 
@@ -249,23 +246,8 @@ def bilibili_recommend_job():
         return
 
     print_log(TAG, 'Bilibili recommend job is started...')
-    response = requests.get(BILIBILI_RECOMMEND_API)
-    list = json.loads(response.text)['list']
 
-    # default to first account
-    account = YoutubeAccount.objects.first()
-
-    for record in list:
-        video_id = record['aid']
-        # create porter job
-        video_url = BILIBILI_VIDEO_URL.format(video_id)
-        if PorterJob.objects.filter(
-            Q(video_url=video_url) &
-            Q(youtube_account=account)
-        ).exists():
-            continue
-        print_log(TAG, 'Create new job from bilibili recommend: ' + video_url)
-        PorterJob(video_url=video_url, youtube_account=account).save()
+    bilibili_recommend_fetch()
 
 
 @scheduler.scheduled_job("interval", seconds=RESET_QUOTA_JOB_INTERVAL, id='reset_quota')

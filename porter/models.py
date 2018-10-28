@@ -78,12 +78,13 @@ class PorterJob(models.Model):
     VIDEO_SOURCE_CHOICES = (
         (VideoSource.BILIBILI, VideoSource.tostr(VideoSource.BILIBILI)),
         (VideoSource.YOUKU, VideoSource.tostr(VideoSource.YOUKU)),
-        (VideoSource.YOUKU, VideoSource.tostr(VideoSource.IQIYI)),
-        (VideoSource.YOUKU, VideoSource.tostr(VideoSource.DOUYIN)),
-        (VideoSource.YOUKU, VideoSource.tostr(VideoSource.MEIPAI)),
-        (VideoSource.YOUKU, VideoSource.tostr(VideoSource.KUAISHOU)),
-        (VideoSource.YOUKU, VideoSource.tostr(VideoSource.HUOSHAN))
+        (VideoSource.IQIYI, VideoSource.tostr(VideoSource.IQIYI)),
+        (VideoSource.DOUYIN, VideoSource.tostr(VideoSource.DOUYIN)),
+        (VideoSource.MEIPAI, VideoSource.tostr(VideoSource.MEIPAI)),
+        (VideoSource.KUAISHOU, VideoSource.tostr(VideoSource.KUAISHOU)),
+        (VideoSource.HUOSHAN, VideoSource.tostr(VideoSource.HUOSHAN))
     )
+    download_url = models.CharField(max_length=512, null=True, blank=True)
     video_source = models.PositiveSmallIntegerField(
         choices=VIDEO_SOURCE_CHOICES,
         default=VideoSource.BILIBILI
@@ -130,6 +131,7 @@ class PorterJob(models.Model):
     PORTER_JOB_TYPE_CHOICES = (
         (PorterJobType.COMPLETE, PorterJobType.tostr(PorterJobType.COMPLETE)),
         (PorterJobType.PARTIAL, PorterJobType.tostr(PorterJobType.PARTIAL)),
+        (PorterJobType.MERGE, PorterJobType.tostr(PorterJobType.MERGE)),
     )
     type = models.PositiveSmallIntegerField(
         choices=PORTER_JOB_TYPE_CHOICES,
@@ -138,6 +140,13 @@ class PorterJob(models.Model):
     part = models.PositiveSmallIntegerField(default=1)
     retried = models.PositiveSmallIntegerField(default=0)
 
+    # video statistics
+    views = models.BigIntegerField(default=0)
+    likes = models.BigIntegerField(default=0)
+    comments = models.BigIntegerField(default=0)
+    shares = models.BigIntegerField(default=0)
+
+    # time info
     created_at = models.DateTimeField(auto_now_add=True)
     download_at = models.DateTimeField(auto_now_add=False, auto_now=False, null=True, blank=True)
     upload_at = models.DateTimeField(auto_now_add=False, auto_now=False, null=True, blank=True)

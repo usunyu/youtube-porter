@@ -28,17 +28,32 @@ class VideoSource:
         return UNKNOWN
 
 class PorterStatus:
+    # video is pending for download
     PENDING = 0
+    # video is downloading
     DOWNLOADING = 1
+    # video is downloaded
     DOWNLOADED = 2
+    # video is uploading
     UPLOADING = 3
+    # video is download & upload success
     SUCCESS = 4
+    # video is download failed
     DOWNLOAD_FAIL = 5
+    # video is upload failed
     UPLOAD_FAIL = 6
+    # video is duplicated with other one
     DUPLICATED = 7
+    # error during api request
     API_ERROR = 8
+    # video is not found or deleted
     VIDEO_NOT_FOUND = 9
+    # created new jobs for multi part
     PARTIAL = 10
+    # video is pending for merge
+    PENDING_MERGE = 11
+    # video is merged
+    MERGED = 12
 
     @staticmethod
     def tostr(val):
@@ -64,6 +79,10 @@ class PorterStatus:
             return 'Video Not Found'
         if val == PorterStatus.PARTIAL:
             return 'Partial'
+        if val == PorterStatus.PENDING_MERGE:
+            return 'Pending Merge'
+        if val == PorterStatus.MERGED:
+            return 'Merged'
         return UNKNOWN
 
 class PorterJobType:

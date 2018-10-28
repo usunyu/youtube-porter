@@ -133,7 +133,11 @@ class PorterJobAdmin(admin.ModelAdmin):
         'type',
         'part',
         'retried',
-        'upload_at'
+        'upload_at',
+        'views',
+        'likes',
+        'comments',
+        'shares'
     ]
 
     list_filter = [
@@ -143,11 +147,17 @@ class PorterJobAdmin(admin.ModelAdmin):
     ]
 
     readonly_fields = [
+        'download_url',
         'video',
         'youtube_id',
         'video_file',
+        'retried',
         'download_at',
-        'upload_at'
+        'upload_at',
+        'views',
+        'likes',
+        'comments',
+        'shares'
     ]
 
 admin.site.register(PorterJob, PorterJobAdmin)
