@@ -69,6 +69,7 @@ class PorterStatus:
 class PorterJobType:
     COMPLETE = 0
     PARTIAL = 1
+    MERGE = 2
 
     @staticmethod
     def tostr(val):
@@ -76,4 +77,6 @@ class PorterJobType:
             return 'Complete'
         if val == PorterJobType.PARTIAL:
             return 'Partial'
+        if val == PorterJobType.MERGE:
+            return 'Merge'
         return UNKNOWN

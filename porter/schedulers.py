@@ -4,6 +4,7 @@ from django_apscheduler.jobstores import DjangoJobStore, register_events, regist
 from django.db.models import Q
 from porter.utils import *
 from porter.downloaders.bilibili_downloader import bilibili_download
+from porter.downloaders.kuaiyinshi_downloader import douyin_download
 from porter.channel_fetchers.bilibili_channel_fetcher import bilibili_channel_fetch
 from porter.enums import VideoSource, PorterStatus
 from porter.models import Video, YoutubeAccount, PorterJob, ChannelJob
@@ -20,7 +21,7 @@ UPLOAD_JOB_INTERVAL = 5 * INTERVAL_UNIT
 CHANNEL_JOB_INTERVAL = 60 * INTERVAL_UNIT
 RESET_QUOTA_JOB_INTERVAL = 30 * INTERVAL_UNIT
 
-YOUTUBE_UPLOAD_QUOTA = 95
+YOUTUBE_UPLOAD_QUOTA = 99
 YOUTUBE_UPLOAD_TIME_INTERVAL = 24 * 60 * INTERVAL_UNIT
 
 RETRY_LIMIT = 3
@@ -106,6 +107,8 @@ def download_job():
     # download the video
     if job.video_source == VideoSource.BILIBILI:
         download_ret = bilibili_download(job)
+    if job.video_source == VideoSource.DOUYIN:
+        download_ret = douyin_download(job)
     else:
         download_ret = [PorterStatus.DOWNLOAD_FAIL, None]
 
