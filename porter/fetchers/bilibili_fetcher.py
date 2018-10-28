@@ -1,4 +1,4 @@
-import requests, json, re
+import requests, json, re, time
 from django.db.models import Q
 from porter.utils import *
 from porter.models import PorterJob, YoutubeAccount
@@ -9,6 +9,8 @@ TAG = '[BILIBILI CHANNEL]'
 BILIBILI_CHANNEL_API = 'https://space.bilibili.com/ajax/member/getSubmitVideos?mid={}&pagesize=30&tid=0&page={}&keyword=&order=pubdate'
 BILIBILI_RECOMMEND_API = 'http://api.bilibili.cn/recommend'
 BILIBILI_VIDEO_URL = 'https://www.bilibili.com/video/av{}'
+
+DELAY_INTERVAL = 5
 
 def bilibili_channel_fetch(job):
     channel_url = job.url
@@ -37,6 +39,7 @@ def bilibili_channel_fetch(job):
             vlist.reverse()
             video_list.extend(vlist)
             page = page - 1
+            time.sleep(DELAY_INTERVAL)
 
     # create porter job
     for video in video_list:

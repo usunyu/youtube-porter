@@ -1,4 +1,4 @@
-import os, subprocess, requests, json
+import os, subprocess, requests, json, time
 from apscheduler.schedulers.background import BackgroundScheduler
 from django_apscheduler.jobstores import DjangoJobStore, register_events, register_job
 from django.db.models import Q
@@ -20,6 +20,8 @@ DOWNLOAD_JOB_INTERVAL = 6 * INTERVAL_UNIT
 UPLOAD_JOB_INTERVAL = 5 * INTERVAL_UNIT
 CHANNEL_JOB_INTERVAL = 60 * INTERVAL_UNIT
 RESET_QUOTA_JOB_INTERVAL = 30 * INTERVAL_UNIT
+
+DELAY_INTERVAL = 0.1 * INTERVAL_UNIT
 
 YOUTUBE_UPLOAD_QUOTA = 99
 YOUTUBE_UPLOAD_TIME_INTERVAL = 24 * 60 * INTERVAL_UNIT
@@ -237,6 +239,7 @@ def channel_job():
                 continue
             print_log(TAG, 'Create new job from channel fetch: ' + video_url)
             PorterJob(video_url=video_url, youtube_account=account).save()
+        time.sleep(DELAY_INTERVAL)
 
 
 @scheduler.scheduled_job("cron", hour=0, minute=30, id='bilibili_recommend', misfire_grace_time=60, coalesce=True)
