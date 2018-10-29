@@ -32,8 +32,7 @@ IMPORT_SCHEDULE = True
 ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
-    '52.53.213.76',
-    '54.219.159.181'
+    '54.67.59.180'
 ]
 
 
