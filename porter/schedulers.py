@@ -16,8 +16,8 @@ TAG = '[SCHEDULERS]'
 # INTERVAL_UNIT = 1
 INTERVAL_UNIT = 60 # 1 minute
 
-DOWNLOAD_JOB_INTERVAL = 6 * INTERVAL_UNIT
-UPLOAD_JOB_INTERVAL = 5 * INTERVAL_UNIT
+DOWNLOAD_JOB_INTERVAL = 5 * INTERVAL_UNIT
+UPLOAD_JOB_INTERVAL = 4 * INTERVAL_UNIT
 CHANNEL_JOB_INTERVAL = 60 * INTERVAL_UNIT
 RESET_QUOTA_JOB_INTERVAL = 30 * INTERVAL_UNIT
 
@@ -122,7 +122,7 @@ def download_job():
         job.save(update_fields=['video_file', 'download_at'])
 
     # download video failed, check retry
-    if status == PorterStatus.DOWNLOAD_FAIL:
+    if status == PorterStatus.DOWNLOAD_FAIL or status == PorterStatus.API_EXCEPTION:
         job.retried = job.retried + 1
         job.save(update_fields=['retried'])
         if job.retried < RETRY_LIMIT:

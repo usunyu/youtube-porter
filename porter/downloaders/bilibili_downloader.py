@@ -101,9 +101,9 @@ def bilibili_download(job):
     try:
         response = requests.get(api_url)
     except Exception as e:
-        print_log(TAG, 'Request api error!')
+        print_log(TAG, 'Request api exception!')
         print_log(TAG, str(e))
-        return [PorterStatus.API_ERROR, None]
+        return [PorterStatus.API_EXCEPTION, None]
     payload = json.loads(response.text)
 
     if payload['err'] == None:

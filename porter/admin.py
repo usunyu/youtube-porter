@@ -85,6 +85,12 @@ admin.site.register(ChannelJob, ChannelJobAdmin)
 class PorterJobAdmin(admin.ModelAdmin):
 
     def video_link(self, obj):
+        if obj.video_url == '-':
+            if obj.download_url:
+                return format_html('<a href="{}" target="_blank">{}</a>'.format(
+                    obj.download_url, 'Download Link'
+                ))
+            return '-'
         return format_html('<a href="{}" target="_blank">{}</a>'.format(
             obj.video_url, obj.video_url
         ))

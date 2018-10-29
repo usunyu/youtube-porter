@@ -50,7 +50,7 @@ $ screen -r
 
 2. Run server:
 ```
-$ python manage.py runserver --insecure 0.0.0.0:9528 (9346)
+$ python manage.py runserver --insecure 0.0.0.0:9652
 ```
 
 ### Executable Scripts:

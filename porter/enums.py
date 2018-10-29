@@ -54,6 +54,8 @@ class PorterStatus:
     PENDING_MERGE = 11
     # video is merged
     MERGED = 12
+    # exception during api request
+    API_EXCEPTION = 13
 
     @staticmethod
     def tostr(val):
@@ -83,6 +85,8 @@ class PorterStatus:
             return 'Pending Merge'
         if val == PorterStatus.MERGED:
             return 'Merged'
+        if val == PorterStatus.API_EXCEPTION:
+            return 'API Exception'
         return UNKNOWN
 
 class PorterJobType:
