@@ -275,6 +275,9 @@ def reset_quota_job():
             should_reset = True
         if should_reset:
             account.upload_quota = YOUTUBE_UPLOAD_QUOTA
+            # TODO, see https://github.com/usunyu/youtube-porter/issues/49
+            if account.name == 'yportdance':
+                account.upload_quota = 20
             account.save(update_fields=['upload_quota'])
             print_log(TAG, 'Reset quota for account: ' + account.name)
 
