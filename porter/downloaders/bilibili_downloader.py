@@ -160,6 +160,13 @@ def bilibili_download(job):
             video.tags.add(tag)
         video.save(update_fields=['title', 'description'])
 
+        # update video statistics
+        if 'play' in data:
+            job.views = data['play']
+        if 'coins' in data:
+            job.likes = data['coins']
+        job.save(update_fields=['views', 'likes'])
+
         # check if video has multi part
         pages = 1
         if 'pages' in data:
