@@ -60,6 +60,8 @@ def download_job():
             if pending_job.youtube_account.upload_quota > 0:
                 job = pending_job
                 break
+        if job:
+            break
     if not job:
         print_log(TAG, 'No pending download job available, skip this schedule...')
         return
