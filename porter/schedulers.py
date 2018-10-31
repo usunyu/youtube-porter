@@ -52,11 +52,14 @@ def download_job():
 
     # find a job with account has quota
     job = None
-    pending_jobs = PorterJob.objects.filter(status=PorterStatus.PENDING)
-    for pending_job in pending_jobs:
-        if pending_job.youtube_account.upload_quota > 0:
-            job = pending_job
-            break
+    accounts = YoutubeAccount.objects.all()
+    for account in accounts:
+        pending_jobs = PorterJob.objects.filter(Q(status=PorterStatus.PENDING) &
+                                                Q(youtube_account=account))
+        for pending_job in pending_jobs:
+            if pending_job.youtube_account.upload_quota > 0:
+                job = pending_job
+                break
     if not job:
         print_log(TAG, 'No pending download job available, skip this schedule...')
         return
