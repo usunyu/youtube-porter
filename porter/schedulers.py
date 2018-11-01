@@ -197,6 +197,8 @@ def upload_job():
         # print_log(TAG, 'Run command: ' + upload_command)
         output = subprocess.check_output(upload_command, shell=True)
         youtube_id = output.decode("utf-8").strip()
+        if 'Enter verification code: ' in youtube_id:
+            youtube_id = youtube_id.replace('Enter verification code: ', '')
         job.youtube_id = youtube_id
         job.upload_at = get_current_time()
         # update status to *SUCCESS*
