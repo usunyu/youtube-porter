@@ -19,8 +19,8 @@ def douyin_recommend_fetch():
     if payload['code'] == 200:
         data = payload['data']
 
-        # upload to yportmaster2 account
-        account = YoutubeAccount.objects.filter(name='yportmaster2').first()
+        # upload to yportvideo account
+        account = YoutubeAccount.objects.filter(name='yportvideo').first()
 
         for record in data:
             download_url = data['video_url']

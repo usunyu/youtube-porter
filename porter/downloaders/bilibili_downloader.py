@@ -161,10 +161,14 @@ def bilibili_download(job):
         video.save(update_fields=['title', 'description'])
 
         # update video statistics
-        if 'play' in data:
+        try:
             job.views = data['play']
-        if 'coins' in data:
+        except Exception:
+            job.views = 0
+        try:
             job.likes = data['coins']
+        except Exception:
+            job.likes = 0
         job.save(update_fields=['views', 'likes'])
 
         # check if video has multi part
