@@ -162,11 +162,11 @@ def bilibili_download(job):
 
         # update video statistics
         try:
-            job.views = data['play']
+            job.views = int(data['play'])
         except Exception:
             job.views = 0
         try:
-            job.likes = data['coins']
+            job.likes = int(data['coins'])
         except Exception:
             job.likes = 0
         job.save(update_fields=['views', 'likes'])
