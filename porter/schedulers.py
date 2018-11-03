@@ -6,6 +6,7 @@ from porter.utils import *
 from porter.downloaders.bilibili_downloader import bilibili_download
 from porter.fetchers.bilibili_fetcher import bilibili_channel_fetch, bilibili_recommend_fetch
 from porter.downloaders.kuaiyinshi_downloader import douyin_download
+from porter.fetchers.kuaiyinshi_fetcher import douyin_recommend_fetch
 from porter.enums import VideoSource, PorterStatus
 from porter.models import Video, YoutubeAccount, PorterJob, ChannelJob
 
@@ -22,6 +23,7 @@ CHANNEL_JOB_INTERVAL = 60 * INTERVAL_UNIT
 RESET_QUOTA_JOB_INTERVAL = 30 * INTERVAL_UNIT
 
 DELAY_INTERVAL = 0.1 * INTERVAL_UNIT
+DELAY_START = 5 * INTERVAL_UNIT
 
 YOUTUBE_UPLOAD_QUOTA = 90
 YOUTUBE_UPLOAD_TIME_INTERVAL = 24 * 60 * INTERVAL_UNIT
@@ -258,6 +260,17 @@ def bilibili_recommend_job():
     print_log(TAG, 'Bilibili recommend job is started...')
 
     bilibili_recommend_fetch()
+
+
+@scheduler.scheduled_job("interval", seconds=RESET_QUOTA_JOB_INTERVAL, id='reset_quota')
+def kuaiyinshi_recommend_job():
+    if not is_start_kuaiyinshi_recommend_job():
+        return
+
+    print_log(TAG, 'Kuaiyinshi recommend job is started...')
+
+    time.sleep(DELAY_START)
+    douyin_recommend_fetch()
 
 
 @scheduler.scheduled_job("interval", seconds=RESET_QUOTA_JOB_INTERVAL, id='reset_quota')

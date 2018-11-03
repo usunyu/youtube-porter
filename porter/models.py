@@ -160,4 +160,5 @@ class Settings(models.Model):
     start_upload_job = models.BooleanField(default=False)
     start_channel_job = models.BooleanField(default=False)
     start_bilibili_recommend_job = models.BooleanField(default=False)
+    start_kuaiyinshi_recommend_job = models.BooleanField(default=False)
     start_reset_quota_job = models.BooleanField(default=False)

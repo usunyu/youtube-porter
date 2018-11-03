@@ -59,6 +59,13 @@ def is_start_bilibili_recommend_job():
     return settings.start_bilibili_recommend_job
 
 
+def is_start_kuaiyinshi_recommend_job():
+    settings = Settings.objects.all().first()
+    if not settings:
+        return False
+    return settings.start_kuaiyinshi_recommend_job
+
+
 def is_start_reset_quota_job():
     settings = Settings.objects.all().first()
     if not settings:
