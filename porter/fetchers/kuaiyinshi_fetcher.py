@@ -20,17 +20,19 @@ def douyin_recommend_fetch():
         data = payload['data']
 
         # upload to yportvideo account
-        account = YoutubeAccount.objects.filter(name='yportvideo').first()
-
+        # account = YoutubeAccount.objects.filter(name='yportvideo').first()
+        # TODO, this is for testing
+        account = YoutubeAccount.objects.filter(name='usunyu').first()
+        added_jobs = 0
         for record in data:
-            download_url = data['video_url']
+            download_url = record['video_url']
             if PorterJob.objects.filter(
                 Q(download_url=download_url) &
                 Q(youtube_account=account)
             ).exists():
                 continue
-            title = data['desc']
-            statistics = data['statistics']
+            title = record['desc']
+            statistics = record['statistics']
             likes = statistics['zan']
             comments = statistics['comment']
             shares = statistics['share']
@@ -42,3 +44,5 @@ def douyin_recommend_fetch():
                       likes=likes,
                       comments=comments,
                       shares=shares).save()
+            added_jobs = added_jobs + 1
+        print_log(TAG, 'Create {} new jobs from Douyin'.format(added_jobs))

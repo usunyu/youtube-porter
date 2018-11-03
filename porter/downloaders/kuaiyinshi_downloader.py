@@ -11,5 +11,5 @@ TAG = '[DOUYIN DOWNLOADER]'
 def douyin_download(job):
     # TODO
 
-    print_log(TAG, 'Fetch data error!')
+    print_log(TAG, 'Douyin download not implemented!')
     return [PorterStatus.API_ERROR, None]

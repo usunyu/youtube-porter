@@ -20,6 +20,7 @@ INTERVAL_UNIT = 60 # 1 minute
 DOWNLOAD_JOB_INTERVAL = 5 * INTERVAL_UNIT
 UPLOAD_JOB_INTERVAL = 4 * INTERVAL_UNIT
 CHANNEL_JOB_INTERVAL = 60 * INTERVAL_UNIT
+KUAIYINSHI_JOB_INTERVAL = 60 * INTERVAL_UNIT
 RESET_QUOTA_JOB_INTERVAL = 30 * INTERVAL_UNIT
 
 DELAY_INTERVAL = 0.1 * INTERVAL_UNIT
@@ -246,7 +247,7 @@ def channel_job():
                 Q(youtube_account=account)
             ).exists():
                 continue
-            print_log(TAG, 'Create new job from channel fetch: ' + video_url)
+            # print_log(TAG, 'Create new job from channel fetch: ' + video_url)
             PorterJob(video_url=video_url, youtube_account=account).save()
         time.sleep(DELAY_INTERVAL)
 
@@ -262,7 +263,7 @@ def bilibili_recommend_job():
     bilibili_recommend_fetch()
 
 
-@scheduler.scheduled_job("interval", seconds=RESET_QUOTA_JOB_INTERVAL, id='reset_quota')
+@scheduler.scheduled_job("interval", seconds=KUAIYINSHI_JOB_INTERVAL, id='kuaiyinshi_recommend')
 def kuaiyinshi_recommend_job():
     if not is_start_kuaiyinshi_recommend_job():
         return
