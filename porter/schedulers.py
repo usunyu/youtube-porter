@@ -216,6 +216,9 @@ def upload_job():
         # update status to *UPLOAD_FAIL*
         job.status = PorterStatus.UPLOAD_FAIL
         job.save(update_fields=['status'])
+        # set account quota 0 to avoid continue upload fail
+        youtube_account.upload_quota = 0
+        youtube_account.save(update_fields=['upload_quota'])
     # clean video file
     try:
         os.remove(job.video_file)
