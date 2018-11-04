@@ -26,7 +26,7 @@ RESET_QUOTA_JOB_INTERVAL = 30 * INTERVAL_UNIT
 DELAY_INTERVAL = 0.1 * INTERVAL_UNIT
 DELAY_START = 5 * INTERVAL_UNIT
 
-YOUTUBE_UPLOAD_QUOTA = 90
+YOUTUBE_UPLOAD_QUOTA = 20
 YOUTUBE_UPLOAD_TIME_INTERVAL = 24 * 60 * INTERVAL_UNIT
 
 RETRY_LIMIT = 3
@@ -296,9 +296,6 @@ def reset_quota_job():
             should_reset = True
         if should_reset:
             account.upload_quota = YOUTUBE_UPLOAD_QUOTA
-            # TODO, see https://github.com/usunyu/youtube-porter/issues/49
-            if account.name == 'yportdance':
-                account.upload_quota = 20
             account.save(update_fields=['upload_quota'])
             print_log(TAG, 'Reset quota for account: ' + account.name)
 
