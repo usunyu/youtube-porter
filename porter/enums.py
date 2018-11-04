@@ -89,6 +89,28 @@ class PorterStatus:
             return 'API Exception'
         return UNKNOWN
 
+class PorterCoverStatus:
+    # default cover image
+    DEFAULT = 0
+    # checked original cover, but use default
+    SKIPPED = 1
+    # use original cover
+    UPDATED = 2
+    # update with original cover failed
+    FAILED = 3
+
+    @staticmethod
+    def tostr(val):
+        if val == PorterCoverStatus.DEFAULT:
+            return 'Default'
+        if val == PorterCoverStatus.SKIPPED:
+            return 'Skipped'
+        if val == PorterCoverStatus.UPDATED:
+            return 'Updated'
+        if val == PorterCoverStatus.FAILED:
+            return 'Failed'
+        return UNKNOWN
+
 class PorterJobType:
     COMPLETE = 0
     PARTIAL = 1

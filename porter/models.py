@@ -1,5 +1,5 @@
 from django.db import models
-from porter.enums import PorterStatus, VideoSource, PorterJobType
+from porter.enums import PorterStatus, PorterCoverStatus, VideoSource, PorterJobType
 
 
 class YoutubeAccount(models.Model):
@@ -128,6 +128,17 @@ class PorterJob(models.Model):
         choices=PORTER_STATUS_CHOICES,
         default=PorterStatus.PENDING
     )
+    # TODO
+    # PORTER_COVER_STATUS_CHOICES = (
+    #     (PorterCoverStatus.DEFAULT, PorterCoverStatus.tostr(PorterCoverStatus.DEFAULT)),
+    #     (PorterCoverStatus.SKIPPED, PorterCoverStatus.tostr(PorterCoverStatus.SKIPPED)),
+    #     (PorterCoverStatus.UPDATED, PorterCoverStatus.tostr(PorterCoverStatus.UPDATED)),
+    #     (PorterCoverStatus.FAILED, PorterCoverStatus.tostr(PorterCoverStatus.FAILED)),
+    # )
+    # cover_status = models.PositiveSmallIntegerField(
+    #     choices=PORTER_COVER_STATUS_CHOICES,
+    #     default=PorterCoverStatus.DEFAULT
+    # )
     PORTER_JOB_TYPE_CHOICES = (
         (PorterJobType.COMPLETE, PorterJobType.tostr(PorterJobType.COMPLETE)),
         (PorterJobType.PARTIAL, PorterJobType.tostr(PorterJobType.PARTIAL)),

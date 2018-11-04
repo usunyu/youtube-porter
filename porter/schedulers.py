@@ -21,15 +21,15 @@ DOWNLOAD_JOB_INTERVAL = 5 * INTERVAL_UNIT
 UPLOAD_JOB_INTERVAL = 4 * INTERVAL_UNIT
 CHANNEL_JOB_INTERVAL = 60 * INTERVAL_UNIT
 KUAIYINSHI_JOB_INTERVAL = 60 * INTERVAL_UNIT
-RESET_QUOTA_JOB_INTERVAL = 30 * INTERVAL_UNIT
+RESET_QUOTA_JOB_INTERVAL = 24 * 60 * INTERVAL_UNIT
 
 DELAY_INTERVAL = 0.1 * INTERVAL_UNIT
 DELAY_START = 5 * INTERVAL_UNIT
 
-YOUTUBE_UPLOAD_QUOTA = 20
-YOUTUBE_UPLOAD_TIME_INTERVAL = 12 * 60 * INTERVAL_UNIT
+YOUTUBE_UPLOAD_QUOTA = 90
+YOUTUBE_UPLOAD_TIME_INTERVAL = 24 * 60 * INTERVAL_UNIT
 
-RETRY_LIMIT = 3
+MAX_DOWNLOAD_RETRIES = 3
 
 scheduler = BackgroundScheduler()
 scheduler.add_jobstore(DjangoJobStore(), 'default')
@@ -133,7 +133,7 @@ def download_job():
     if status == PorterStatus.DOWNLOAD_FAIL or status == PorterStatus.API_EXCEPTION:
         job.retried = job.retried + 1
         job.save(update_fields=['retried'])
-        if job.retried < RETRY_LIMIT:
+        if job.retried < MAX_DOWNLOAD_RETRIES:
             # reset status to *PENDING*
             status = PorterStatus.PENDING
 
