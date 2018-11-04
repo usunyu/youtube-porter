@@ -213,6 +213,8 @@ def upload_job():
     except Exception as e:
         print_log(TAG, 'Failed to upload video: ' + video.title)
         print_log(TAG, str(e))
+        # TODO, check exception upload limit or playlist limit
+        # if playlist limit, upload status still should be true
         # update status to *UPLOAD_FAIL*
         job.status = PorterStatus.UPLOAD_FAIL
         job.save(update_fields=['status'])
