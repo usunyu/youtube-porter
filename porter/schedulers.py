@@ -3,12 +3,11 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from django_apscheduler.jobstores import DjangoJobStore, register_events, register_job
 from django.db.models import Q
 from porter.utils import *
-from porter.downloaders.bilibili_downloader import bilibili_download
+from porter.downloaders.downloader import download
 from porter.fetchers.bilibili_fetcher import bilibili_channel_fetch, bilibili_recommend_fetch
-from porter.downloaders.kuaiyinshi_downloader import douyin_download
 from porter.fetchers.kuaiyinshi_fetcher import douyin_recommend_fetch
 from porter.enums import VideoSource, PorterStatus
-from porter.models import Video, YoutubeAccount, PorterJob, ChannelJob
+from porter.models import YoutubeAccount, PorterJob, ChannelJob
 
 
 TAG = '[SCHEDULERS]'
@@ -28,8 +27,6 @@ DELAY_START = 5 * INTERVAL_UNIT
 
 YOUTUBE_UPLOAD_QUOTA = 90
 YOUTUBE_UPLOAD_TIME_INTERVAL = 24 * 60 * INTERVAL_UNIT
-
-MAX_DOWNLOAD_RETRIES = 3
 
 scheduler = BackgroundScheduler()
 scheduler.add_jobstore(DjangoJobStore(), 'default')
@@ -77,70 +74,8 @@ def download_job():
 
     print_log(TAG, 'Download job is started...')
 
-    # check if job is duplicated
-    if PorterJob.objects.filter(
-        Q(video_url=job.video_url) &
-        Q(youtube_account=job.youtube_account) &
-        Q(status=PorterStatus.SUCCESS) &
-        Q(type=job.type) &
-        Q(part=job.part)
-    ).exists():
-        # update status to *DUPLICATED*
-        job.status = PorterStatus.DUPLICATED
-        job.save(update_fields=['status'])
-        print_log(TAG, 'Download job is duplicated, skip this schedule...')
-        return
-
     download_job_lock = True
-
-    print_log(TAG, 'Start to download job: ' + str(job.id))
-    print_log(TAG, 'Video url: ' + job.video_url)
-    print_log(TAG, 'Video source: ' + VideoSource.tostr(job.video_source))
-    print_log(TAG, 'Youtube account: ' + job.youtube_account.name)
-
-    video = job.video
-    if not video:
-        # create video object if not existed
-        video = Video(
-            url=job.video_url,
-            category='Entertainment' # default to entertainment category
-        )
-        video.save()
-        job.video = video
-        job.save(update_fields=['video'])
-    # update status to *DOWNLOADING*
-    job.status = PorterStatus.DOWNLOADING
-    job.save(update_fields=['status'])
-    # download the video
-    if job.video_source == VideoSource.BILIBILI:
-        download_ret = bilibili_download(job)
-    elif job.video_source == VideoSource.DOUYIN:
-        download_ret = douyin_download(job)
-    else:
-        download_ret = [PorterStatus.DOWNLOAD_FAIL, None]
-
-    status = download_ret[0]
-
-    # download video success
-    if status == PorterStatus.DOWNLOADED:
-        video_file = download_ret[1]
-        # update job video file
-        job.video_file = video_file
-        job.download_at = get_current_time()
-        job.save(update_fields=['video_file', 'download_at'])
-
-    # download video failed, check retry
-    if status == PorterStatus.DOWNLOAD_FAIL or status == PorterStatus.API_EXCEPTION:
-        job.retried = job.retried + 1
-        job.save(update_fields=['retried'])
-        if job.retried < MAX_DOWNLOAD_RETRIES:
-            # reset status to *PENDING*
-            status = PorterStatus.PENDING
-
-    # update status to corresponding status
-    job.status = status
-    job.save(update_fields=['status'])
-
+    download(job)
     download_job_lock = False
 
 
