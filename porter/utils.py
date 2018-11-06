@@ -82,8 +82,7 @@ def get_youtube_invalid_content_chars():
         '"',
         '`',
         "'",
-        '”',
-        '“',
+        '\',
     ]
 
 
@@ -96,6 +95,7 @@ def get_youtube_invalid_tag_chars():
         '"',
         '`',
         "'",
+        "\",
     ]
 
 
