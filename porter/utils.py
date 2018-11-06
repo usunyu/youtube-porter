@@ -82,6 +82,8 @@ def get_youtube_invalid_content_chars():
         '"',
         '`',
         "'",
+        '”',
+        '“',
     ]
 
 
