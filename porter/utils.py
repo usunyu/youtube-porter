@@ -1,7 +1,9 @@
 import logging
 import logging.handlers
 from django.utils import timezone
-from porter.models import Settings
+from django.db.models import Q
+from porter.enums import PorterStatus
+from porter.models import PorterJob, YoutubeAccount, Settings
 
 
 LOG_FILE = 'debug.log'
@@ -93,3 +95,19 @@ def get_youtube_invalid_tag_chars():
         '`',
         "'",
     ]
+
+
+def find_youtube_job_has_quota(status):
+    job = None
+    accounts = YoutubeAccount.objects.all()
+    for account in accounts:
+        available_jobs = PorterJob.objects.filter(Q(status=status) &
+                                                  Q(youtube_account=account))
+        for available_job in available_jobs:
+            # find a job with account has quota
+            if available_job.youtube_account.upload_quota > 0:
+                job = available_job
+                break
+        if job:
+            break
+    return job
