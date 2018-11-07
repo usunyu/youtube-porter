@@ -1,5 +1,5 @@
 from django.db import models
-from porter.enums import PorterStatus, PorterCoverStatus, VideoSource, PorterJobType
+from porter.enums import PorterStatus, PorterThumbnailStatus, VideoSource, PorterJobType
 
 
 class YoutubeAccount(models.Model):
@@ -85,6 +85,7 @@ class PorterJob(models.Model):
         (VideoSource.HUOSHAN, VideoSource.tostr(VideoSource.HUOSHAN))
     )
     download_url = models.CharField(max_length=512, null=True, blank=True)
+    thumbnail_url = models.CharField(max_length=512, null=True, blank=True)
     video_source = models.PositiveSmallIntegerField(
         choices=VIDEO_SOURCE_CHOICES,
         default=VideoSource.BILIBILI
@@ -111,6 +112,7 @@ class PorterJob(models.Model):
         blank=True
     )
     video_file = models.CharField(max_length=64, null=True, blank=True)
+    thumbnail_file = models.CharField(max_length=64, null=True, blank=True)
     PORTER_STATUS_CHOICES = (
         (PorterStatus.PENDING, PorterStatus.tostr(PorterStatus.PENDING)),
         (PorterStatus.DOWNLOADING, PorterStatus.tostr(PorterStatus.DOWNLOADING)),
@@ -128,17 +130,16 @@ class PorterJob(models.Model):
         choices=PORTER_STATUS_CHOICES,
         default=PorterStatus.PENDING
     )
-    # TODO
-    # PORTER_COVER_STATUS_CHOICES = (
-    #     (PorterCoverStatus.DEFAULT, PorterCoverStatus.tostr(PorterCoverStatus.DEFAULT)),
-    #     (PorterCoverStatus.SKIPPED, PorterCoverStatus.tostr(PorterCoverStatus.SKIPPED)),
-    #     (PorterCoverStatus.UPDATED, PorterCoverStatus.tostr(PorterCoverStatus.UPDATED)),
-    #     (PorterCoverStatus.FAILED, PorterCoverStatus.tostr(PorterCoverStatus.FAILED)),
-    # )
-    # cover_status = models.PositiveSmallIntegerField(
-    #     choices=PORTER_COVER_STATUS_CHOICES,
-    #     default=PorterCoverStatus.DEFAULT
-    # )
+    PORTER_THUMBNAIL_STATUS_CHOICES = (
+        (PorterThumbnailStatus.DEFAULT, PorterThumbnailStatus.tostr(PorterThumbnailStatus.DEFAULT)),
+        (PorterThumbnailStatus.SKIPPED, PorterThumbnailStatus.tostr(PorterThumbnailStatus.SKIPPED)),
+        (PorterThumbnailStatus.UPDATED, PorterThumbnailStatus.tostr(PorterThumbnailStatus.UPDATED)),
+        (PorterThumbnailStatus.FAILED, PorterThumbnailStatus.tostr(PorterThumbnailStatus.FAILED)),
+    )
+    thumbnail_status = models.PositiveSmallIntegerField(
+        choices=PORTER_THUMBNAIL_STATUS_CHOICES,
+        default=PorterThumbnailStatus.DEFAULT
+    )
     PORTER_JOB_TYPE_CHOICES = (
         (PorterJobType.COMPLETE, PorterJobType.tostr(PorterJobType.COMPLETE)),
         (PorterJobType.PARTIAL, PorterJobType.tostr(PorterJobType.PARTIAL)),

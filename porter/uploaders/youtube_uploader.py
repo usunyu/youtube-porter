@@ -1,4 +1,5 @@
-import os, subprocess
+#!/usr/bin/python
+import os, subprocess, httplib2, sys
 from porter.utils import *
 from porter.enums import PorterStatus
 
@@ -72,4 +73,88 @@ def youtube_upload(job):
         print_log(TAG, 'Deleted video: ' + job.video_file)
     except Exception as e:
         print_log(TAG, 'Failed to delete video: ' + job.video_file)
+        print_log(TAG, str(e))
+
+
+from apiclient.discovery import build
+from apiclient.errors import HttpError
+from oauth2client.client import flow_from_clientsecrets
+from oauth2client.file import Storage
+from oauth2client.tools import argparser, run_flow
+
+# https://github.com/youtube/api-samples/blob/master/python/upload_thumbnail.py
+#
+# The CLIENT_SECRETS_FILE variable specifies the name of a file that contains
+# the OAuth 2.0 information for this application, including its client_id and
+# client_secret. You can acquire an OAuth 2.0 client ID and client secret from
+# the {{ Google Cloud Console }} at
+# {{ https://cloud.google.com/console }}.
+# Please ensure that you have enabled the YouTube Data API for your project.
+# For more information about using OAuth2 to access the YouTube Data API, see:
+#   https://developers.google.com/youtube/v3/guides/authentication
+# For more information about the client_secrets.json file format, see:
+#   https://developers.google.com/api-client-library/python/guide/aaa_client_secrets
+# CLIENT_SECRETS_FILE = "client_secrets.json"
+
+# This OAuth 2.0 access scope allows for full read/write access to the
+# authenticated user's account.
+YOUTUBE_READ_WRITE_SCOPE = "https://www.googleapis.com/auth/youtube"
+YOUTUBE_API_SERVICE_NAME = "youtube"
+YOUTUBE_API_VERSION = "v3"
+
+# This variable defines a message to display if the CLIENT_SECRETS_FILE is
+# missing.
+MISSING_CLIENT_SECRETS_MESSAGE = """
+WARNING: Please configure OAuth 2.0
+To make this sample run you will need to populate the client_secrets.json file
+found at:
+    {}
+with information from the Cloud Console
+https://cloud.google.com/console
+For more information about the client_secrets.json file format, please visit:
+https://developers.google.com/api-client-library/python/guide/aaa_client_secrets
+"""
+
+def get_authenticated_service(account):
+    flow = flow_from_clientsecrets(account.secret_file,
+                                   scope=YOUTUBE_READ_WRITE_SCOPE,
+                                   message=MISSING_CLIENT_SECRETS_MESSAGE.format(account.secret_file))
+
+    storage = Storage(account.credentials_file)
+    credentials = storage.get()
+
+    return build(YOUTUBE_API_SERVICE_NAME, YOUTUBE_API_VERSION,
+                 http=credentials.authorize(httplib2.Http()))
+
+# Call the API's thumbnails.set method to upload the thumbnail image and
+# associate it with the appropriate video.
+def upload_thumbnail(youtube, video_id, file):
+    youtube.thumbnails().set(
+        videoId=video_id,
+        media_body=file).execute()
+
+
+def youtube_thumbnail_upload(job):
+    if not job.thumbnail_status == PorterThumbnailStatus.DEFAULT:
+        print_log(TAG, 'Thumbnail not need updated, skipped...')
+        return
+
+    if not os.path.exists(job.thumbnail_file):
+        print_log(TAG, 'Thumbnail file not found!')
+        return
+
+    youtube = get_authenticated_service(job.youtube_account)
+    try:
+        upload_thumbnail(youtube, job.youtube_id, job.thumbnail_file)
+    except HttpError as e:
+        print_log(TAG, 'An HTTP error %d occurred:\n%s' % (e.resp.status, e.content))
+    else:
+        print_log(TAG, 'The custom thumbnail was successfully set.')
+
+    # clean thumbnail file
+    try:
+        os.remove(job.thumbnail_file)
+        print_log(TAG, 'Deleted thumbnail: ' + job.thumbnail_file)
+    except Exception as e:
+        print_log(TAG, 'Failed to delete thumbnail: ' + job.thumbnail_file)
         print_log(TAG, str(e))

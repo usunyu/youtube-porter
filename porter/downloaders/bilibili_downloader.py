@@ -202,6 +202,8 @@ def bilibili_download(job):
             print_log(TAG, str(e))
             return [PorterStatus.DOWNLOAD_FAIL, None]
 
+        # TODO, download thumbnail
+
         # check download file success
         if not os.path.isfile('av{}_{}.flv'.format(video_id, part)):
             print_log(TAG, 'Download video failed, unknown error!')

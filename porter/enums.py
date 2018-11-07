@@ -89,7 +89,7 @@ class PorterStatus:
             return 'API Exception'
         return UNKNOWN
 
-class PorterCoverStatus:
+class PorterThumbnailStatus:
     # default cover image
     DEFAULT = 0
     # checked original cover, but use default
@@ -101,13 +101,13 @@ class PorterCoverStatus:
 
     @staticmethod
     def tostr(val):
-        if val == PorterCoverStatus.DEFAULT:
+        if val == PorterThumbnailStatus.DEFAULT:
             return 'Default'
-        if val == PorterCoverStatus.SKIPPED:
+        if val == PorterThumbnailStatus.SKIPPED:
             return 'Skipped'
-        if val == PorterCoverStatus.UPDATED:
+        if val == PorterThumbnailStatus.UPDATED:
             return 'Updated'
-        if val == PorterCoverStatus.FAILED:
+        if val == PorterThumbnailStatus.FAILED:
             return 'Failed'
         return UNKNOWN
 

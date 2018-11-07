@@ -7,4 +7,5 @@ def upload(job):
 
     if job.youtube_account:
         youtube_upload(job)
+
     # TODO, support upload to other account
