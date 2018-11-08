@@ -2,13 +2,15 @@ import requests, json, re, os, subprocess
 from requests_html import HTMLSession
 from porter.utils import *
 from porter.models import VideoTag, PorterJob
-from porter.enums import VideoSource, PorterStatus, PorterJobType
+from porter.enums import VideoSource, PorterStatus, PorterThumbnailStatus, PorterJobType
 from porter.downloaders.url_downloader import url_download
 
 
 TAG = '[BILIBILI DOWNLOADER]'
 
 BILIBILI_API = 'https://www.kanbilibili.com/api/video/'
+
+MIN_THUMBNAIL_SIZE = 51200 # 50 KB
 
 # use bilibili-get for stable download
 def bilibili_download_DEPRECATED(job):
@@ -103,7 +105,7 @@ def bilibili_download(job):
     except Exception as e:
         print_log(TAG, 'Request api exception!')
         print_log(TAG, str(e))
-        return [PorterStatus.API_EXCEPTION, None]
+        return PorterStatus.API_EXCEPTION
     payload = json.loads(response.text)
 
     if payload['err'] == None:
@@ -113,7 +115,7 @@ def bilibili_download(job):
             title = data['title']
         else:
             print_log(TAG, 'This video may be removed!')
-            return [PorterStatus.VIDEO_NOT_FOUND, None]
+            return PorterStatus.VIDEO_NOT_FOUND
         typename = ''
         if 'typename' in data:
             typename = data['typename']
@@ -123,6 +125,9 @@ def bilibili_download(job):
         for invalid_char in get_youtube_invalid_content_chars():
             title = title.replace(invalid_char, '')
             description = description.replace(invalid_char, '')
+        if 'pic' in data:
+            job.thumbnail_url = data['pic']
+            job.save(update_fields=['thumbnail_url'])
         part = job.part
         if job.type == PorterJobType.PARTIAL:
             vlist = data['list']
@@ -186,8 +191,8 @@ def bilibili_download(job):
                           type=PorterJobType.PARTIAL,
                           part=part).save()
                 part = part + 1
-            print_log(TAG, 'Added partial {} jobs.'.format(pages))
-            return [PorterStatus.PARTIAL, None]
+            print_log(TAG, 'Added {} partial jobs.'.format(pages))
+            return PorterStatus.PARTIAL
 
         try:
             subprocess.run(['bilibili-get {} -o "av%(aid)s_{}.%(ext)s" -f flv'.format(video_url, part)], shell=True)
@@ -196,20 +201,37 @@ def bilibili_download(job):
             # error parsing debug value
             # debug=0
             # if video is already downloaded, success
-            if os.path.isfile('av{}_{}.flv'.format(video_id, part)):
-                return [PorterStatus.DOWNLOADED, 'av{}_{}.flv'.format(video_id, part)]
+            video_file = 'av{}_{}.flv'.format(video_id, part)
+            if os.path.isfile(video_file):
+                job.video_file = video_file
+                job.save(update_fields=['video_file'])
+                return PorterStatus.DOWNLOADED
             print_log(TAG, 'Download video failed, bilibili-get exception!')
             print_log(TAG, str(e))
-            return [PorterStatus.DOWNLOAD_FAIL, None]
+            return PorterStatus.DOWNLOAD_FAIL
 
-        # TODO, download thumbnail
+        # download thumbnail
+        if job.thumbnail_url:
+            # check image file size
+            response = requests.get(job.thumbnail_url, headers=get_client_headers())
+            image_size = int(response.headers['content-length'])
+            if image_size >= MIN_THUMBNAIL_SIZE:
+                job.thumbnail_file = url_download(job.thumbnail_url)
+                job.save(update_fields=['thumbnail_file'])
+            else:
+                job.thumbnail_status = PorterThumbnailStatus.SKIPPED
+                job.save(update_fields=['thumbnail_status'])
 
+        video_file = 'av{}_{}.flv'.format(video_id, part)
         # check download file success
-        if not os.path.isfile('av{}_{}.flv'.format(video_id, part)):
+        if not os.path.isfile(video_file):
             print_log(TAG, 'Download video failed, unknown error!')
-            return [PorterStatus.DOWNLOAD_FAIL, None]
+            return PorterStatus.DOWNLOAD_FAIL
 
-        return [PorterStatus.DOWNLOADED, 'av{}_{}.flv'.format(video_id, part)]
+        job.video_file = video_file
+        job.save(update_fields=['video_file'])
+        # TODO, modify job directly
+        return PorterStatus.DOWNLOADED
 
     print_log(TAG, 'Fetch data error!')
-    return [PorterStatus.API_ERROR, None]
+    return PorterStatus.API_ERROR

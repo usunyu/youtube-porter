@@ -45,30 +45,26 @@ def download(job):
     job.save(update_fields=['status'])
     # download the video
     if job.video_source == VideoSource.BILIBILI:
-        download_ret = bilibili_download(job)
+        download_status = bilibili_download(job)
     elif job.video_source == VideoSource.DOUYIN:
-        download_ret = douyin_download(job)
+        download_status = douyin_download(job)
     else:
-        download_ret = [PorterStatus.DOWNLOAD_FAIL, None]
-
-    status = download_ret[0]
+        download_status = PorterStatus.DOWNLOAD_FAIL
 
     # download video success
-    if status == PorterStatus.DOWNLOADED:
-        video_file = download_ret[1]
+    if download_status == PorterStatus.DOWNLOADED:
         # update job video file
-        job.video_file = video_file
         job.download_at = get_current_time()
-        job.save(update_fields=['video_file', 'download_at'])
+        job.save(update_fields=['download_at'])
 
     # download video failed, check retry
-    if status == PorterStatus.DOWNLOAD_FAIL or status == PorterStatus.API_EXCEPTION:
+    if download_status == PorterStatus.DOWNLOAD_FAIL or download_status == PorterStatus.API_EXCEPTION:
         job.retried = job.retried + 1
         job.save(update_fields=['retried'])
         if job.retried < MAX_DOWNLOAD_RETRIES:
             # reset status to *PENDING*
-            status = PorterStatus.PENDING
+            download_status = PorterStatus.PENDING
 
     # update status to corresponding status
-    job.status = status
+    job.status = download_status
     job.save(update_fields=['status'])

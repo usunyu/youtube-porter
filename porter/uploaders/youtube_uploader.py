@@ -1,7 +1,7 @@
 #!/usr/bin/python
 import os, subprocess, httplib2, sys
 from porter.utils import *
-from porter.enums import PorterStatus
+from porter.enums import PorterStatus, PorterThumbnailStatus
 
 
 TAG = '[YOUTUBE UPLOADER]'
@@ -147,8 +147,12 @@ def youtube_thumbnail_upload(job):
     try:
         upload_thumbnail(youtube, job.youtube_id, job.thumbnail_file)
     except HttpError as e:
+        job.thumbnail_status = PorterThumbnailStatus.FAILED
+        job.save(update_fields=['thumbnail_status'])
         print_log(TAG, 'An HTTP error %d occurred:\n%s' % (e.resp.status, e.content))
     else:
+        job.thumbnail_status = PorterThumbnailStatus.UPDATED
+        job.save(update_fields=['thumbnail_status'])
         print_log(TAG, 'The custom thumbnail was successfully set.')
 
     # clean thumbnail file

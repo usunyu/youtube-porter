@@ -24,6 +24,10 @@ def print_log(tag, msg):
     logger.debug(msg)
 
 
+def get_client_headers():
+    return {'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.92 Safari/537.36'}
+
+
 def get_current_time():
     return timezone.now()
 

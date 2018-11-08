@@ -141,6 +141,7 @@ class PorterJobAdmin(admin.ModelAdmin):
         'part',
         'retried',
         'upload_at',
+        'thumbnail_status',
         'views',
         'likes',
         'comments',
@@ -155,9 +156,11 @@ class PorterJobAdmin(admin.ModelAdmin):
 
     readonly_fields = [
         'download_url',
+        'thumbnail_url',
         'video',
         'youtube_id',
         'video_file',
+        'thumbnail_file',
         'retried',
         'download_at',
         'upload_at',
