@@ -8,10 +8,8 @@ TAG = '[YOUTUBE UPLOADER]'
 
 VIDEO_DESCRIPTION = """{}
 
-视频来源和原始版权来自并归属原创作者, 论点和本频道无关. 本频道致力于视频影片的推广, 传播和学习工作.
-影片相关内容分享, 如果侵犯了您的权益请留言告知, 本频道会遵照著作权保护法相关规定马上删除影片, 停止分享! 谢谢.
-
-Notice: I have no intention of tort; If there is any doubts of tort, please contact me and I will remove the video immediately!
+视频来源和原始版权归属原创作者, 影片论点和本频道无关. 本频道致力于视频影片的推广, 学习和传播工作.
+如果侵犯了您的权益请留言告知, 本频道会遵照著作权保护法相关规定马上删除影片并且停止分享! 非常感谢.
 """
 
 def youtube_upload(job):
