@@ -91,7 +91,7 @@ def channel_job():
 
     print_log(TAG, 'Channel job is started...')
 
-    jobs = ChannelJob.objects.all()
+    jobs = ChannelJob.objects.filter(active=True)
     for job in jobs:
         account = job.youtube_account
         fetched_videos = []
