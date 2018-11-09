@@ -8,12 +8,10 @@ TAG = '[YOUTUBE UPLOADER]'
 
 VIDEO_DESCRIPTION = """{}
 
-This video is from (视频来源, 请支持原作者): {}
+视频来源和原始版权来自并归属原创作者, 论点和本频道无关. 本频道致力于视频影片的推广, 传播和学习工作.
+影片相关内容分享, 如果侵犯了您的权益请留言告知, 本频道会遵照著作权保护法相关规定马上删除影片, 停止分享! 谢谢.
 
-All videos are from online resources. If you find a video that infringes on your rights, please contact yportmaster@gmail.com to delete the video.
-If you like this video, please like, comment and subscribe. Thank you!
-(所有视频均来自网络资源, 如果侵犯了您的权益请联系yportmaster@gmail.com删除视频.
-如果您喜欢此视频, 请点赞, 留言, 订阅. 非常感谢!)
+Notice: I have no intention of tort; If there is any doubts of tort, please contact me and I will remove the video immediately!
 """
 
 def youtube_upload(job):
@@ -34,7 +32,7 @@ def youtube_upload(job):
         # upload to youtube
         upload_command = 'sudo youtube-upload --title="{}" --description="{}" --category="{}" --tags="{}" --client-secrets="{}" --credentials-file="{}"'.format(
             video.title,
-            VIDEO_DESCRIPTION.format(video.description, video.url),
+            VIDEO_DESCRIPTION.format(video.description),
             video.category,
             video.print_tags(),
             youtube_account.secret_file,
