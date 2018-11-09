@@ -56,6 +56,8 @@ class PorterStatus:
     MERGED = 12
     # exception during api request
     API_EXCEPTION = 13
+    # stop this porter job
+    STOP = 14
 
     @staticmethod
     def tostr(val):
@@ -87,6 +89,8 @@ class PorterStatus:
             return 'Merged'
         if val == PorterStatus.API_EXCEPTION:
             return 'API Exception'
+        if val == PorterStatus.STOP:
+            return 'Stop'
         return UNKNOWN
 
 class PorterThumbnailStatus:

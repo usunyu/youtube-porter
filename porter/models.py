@@ -63,6 +63,7 @@ class ChannelJob(models.Model):
         related_name='channel_jobs',
         null=True,
         blank=True)
+    active = models.BooleanField(default=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
     last_fetched_at = models.DateTimeField(auto_now_add=False, auto_now=False, null=True, blank=True)
@@ -125,6 +126,7 @@ class PorterJob(models.Model):
         (PorterStatus.API_ERROR, PorterStatus.tostr(PorterStatus.API_ERROR)),
         (PorterStatus.VIDEO_NOT_FOUND, PorterStatus.tostr(PorterStatus.VIDEO_NOT_FOUND)),
         (PorterStatus.PARTIAL, PorterStatus.tostr(PorterStatus.PARTIAL)),
+        (PorterStatus.STOP, PorterStatus.tostr(PorterStatus.STOP)),
     )
     status = models.PositiveSmallIntegerField(
         choices=PORTER_STATUS_CHOICES,
