@@ -20,8 +20,8 @@ def bilibili_download_DEPRECATED(job):
     print_log(TAG, 'Fetch data from ' + api_url)
     try:
         response = requests.get(api_url)
-    except Exception as e:
-        print_log(TAG, 'Request api error!')
+    except:
+        print_exception(TAG, 'Request api exception!')
         return None
     payload = json.loads(response.text)
 
@@ -55,9 +55,8 @@ def bilibili_download_DEPRECATED(job):
         html_tags = []
         try:
             html_tags = html_response.html.find('#v_tag', first=True).find('.tag')
-        except Exception as e:
-            print_log(TAG, 'Error during fetching tags for this video!')
-            print_log(TAG, str(e))
+        except:
+            print_exception(TAG, 'Fetch video tags exception!')
         for html_tag in html_tags:
             tag_name = html_tag.text
             for invalid_char in get_youtube_invalid_tag_chars():
@@ -102,9 +101,8 @@ def bilibili_download(job):
     print_log(TAG, 'Fetch data from ' + api_url)
     try:
         response = requests.get(api_url)
-    except Exception as e:
-        print_log(TAG, 'Request api exception!')
-        print_log(TAG, str(e))
+    except:
+        print_exception(TAG, 'Request api exception!')
         return PorterStatus.API_EXCEPTION
     payload = json.loads(response.text)
 
@@ -149,9 +147,8 @@ def bilibili_download(job):
         html_tags = []
         try:
             html_tags = html_response.html.find('#v_tag', first=True).find('.tag')
-        except Exception as e:
-            print_log(TAG, 'Error during fetching tags for this video!')
-            print_log(TAG, str(e))
+        except:
+            print_exception(TAG, 'Fetch video tags exception!')
         for html_tag in html_tags:
             tag_name = html_tag.text
             for invalid_char in get_youtube_invalid_tag_chars():
@@ -196,7 +193,7 @@ def bilibili_download(job):
 
         try:
             subprocess.run(['bilibili-get {} -o "av%(aid)s_{}.%(ext)s" -f flv'.format(video_url, part)], shell=True)
-        except Exception as e:
+        except:
             # may rase exception:
             # error parsing debug value
             # debug=0
@@ -206,8 +203,7 @@ def bilibili_download(job):
                 job.video_file = video_file
                 job.save(update_fields=['video_file'])
                 return PorterStatus.DOWNLOADED
-            print_log(TAG, 'Download video failed, bilibili-get exception!')
-            print_log(TAG, str(e))
+            print_exception(TAG, 'Download video failed, bilibili-get exception!')
             return PorterStatus.DOWNLOAD_FAIL
 
         # download thumbnail

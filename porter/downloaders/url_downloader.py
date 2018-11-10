@@ -39,7 +39,6 @@ def url_download(url):
         file.close()
         print_log(TAG, 'Download finish!')
         return filename
-    except Exception as e:
-        print_log(TAG, 'Exception during url download!')
-        print_log(TAG, str(e))
+    except:
+        print_exception(TAG, 'Url download exception!')
         return None

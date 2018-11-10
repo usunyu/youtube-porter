@@ -52,9 +52,8 @@ def youtube_upload(job):
         youtube_account.upload_quota = youtube_account.upload_quota - 1
         youtube_account.save(update_fields=['upload_quota'])
 
-    except Exception as e:
-        print_log(TAG, 'Failed to upload video: ' + video.title)
-        print_log(TAG, str(e))
+    except:
+        print_exception(TAG, 'Upload video: ' + video.title + ' exception!')
         # TODO, check exception upload limit or playlist limit
         # if playlist limit, upload status still should be true
         # update status to *UPLOAD_FAIL*
@@ -67,9 +66,8 @@ def youtube_upload(job):
     try:
         os.remove(job.video_file)
         print_log(TAG, 'Deleted video: ' + job.video_file)
-    except Exception as e:
-        print_log(TAG, 'Failed to delete video: ' + job.video_file)
-        print_log(TAG, str(e))
+    except:
+        print_exception(TAG, 'Delete video: ' + job.video_file + ' exception!')
 
 
 from apiclient.discovery import build
@@ -146,11 +144,10 @@ def youtube_thumbnail_upload(job):
     #     job.thumbnail_status = PorterThumbnailStatus.FAILED
     #     job.save(update_fields=['thumbnail_status'])
     #     print_log(TAG, 'An HTTP error %d occurred:\n%s' % (e.resp.status, e.content))
-    except Exception as e:
+    except:
         job.thumbnail_status = PorterThumbnailStatus.FAILED
         job.save(update_fields=['thumbnail_status'])
-        print_log(TAG, 'Failed to upload thumbnail: ' + job.thumbnail_file)
-        print_log(TAG, str(e))
+        print_exception(TAG, 'Upload thumbnail ' + job.thumbnail_file + ' exception!')
 
     job.thumbnail_status = PorterThumbnailStatus.UPDATED
     job.save(update_fields=['thumbnail_status'])
@@ -160,6 +157,5 @@ def youtube_thumbnail_upload(job):
     try:
         os.remove(job.thumbnail_file)
         print_log(TAG, 'Deleted thumbnail: ' + job.thumbnail_file)
-    except Exception as e:
-        print_log(TAG, 'Failed to delete thumbnail: ' + job.thumbnail_file)
-        print_log(TAG, str(e))
+    except:
+        print_exception(TAG, 'Delete thumbnail: ' + job.thumbnail_file + ' exception!')
