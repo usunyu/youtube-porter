@@ -139,17 +139,22 @@ def youtube_thumbnail_upload(job):
         print_log(TAG, 'Thumbnail file not found!')
         return
 
-    youtube = get_authenticated_service(job.youtube_account)
     try:
+        youtube = get_authenticated_service(job.youtube_account)
         upload_thumbnail(youtube, job.youtube_id, job.thumbnail_file)
-    except HttpError as e:
+    # except HttpError as e:
+    #     job.thumbnail_status = PorterThumbnailStatus.FAILED
+    #     job.save(update_fields=['thumbnail_status'])
+    #     print_log(TAG, 'An HTTP error %d occurred:\n%s' % (e.resp.status, e.content))
+    except Exception as e:
         job.thumbnail_status = PorterThumbnailStatus.FAILED
         job.save(update_fields=['thumbnail_status'])
-        print_log(TAG, 'An HTTP error %d occurred:\n%s' % (e.resp.status, e.content))
-    else:
-        job.thumbnail_status = PorterThumbnailStatus.UPDATED
-        job.save(update_fields=['thumbnail_status'])
-        print_log(TAG, 'The custom thumbnail was successfully set.')
+        print_log(TAG, 'Failed to upload thumbnail: ' + job.thumbnail_file)
+        print_log(TAG, str(e))
+
+    job.thumbnail_status = PorterThumbnailStatus.UPDATED
+    job.save(update_fields=['thumbnail_status'])
+    print_log(TAG, 'The custom thumbnail was successfully set.')
 
     # clean thumbnail file
     try:
