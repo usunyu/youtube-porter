@@ -144,6 +144,10 @@ def reset_quota_job():
         # OPTIMIZE, use last 99 job upload time
         last_success_job = account.porter_jobs.filter(status=PorterStatus.SUCCESS).reverse().first()
         should_reset = False
+        # hack to fix last_success_job.upload_at if None
+        if last_success_job.upload_at == None:
+            last_success_job.upload_at = get_current_time()
+            last_success_job.save(update_fields=['upload_at'])
         if last_success_job:
             interval = get_current_time() - last_success_job.upload_at
             if interval.total_seconds() > YOUTUBE_UPLOAD_TIME_INTERVAL:
