@@ -137,6 +137,10 @@ def youtube_thumbnail_upload(job):
         print_log(TAG, 'Thumbnail file not found!')
         return
 
+    if not job.youtube_id:
+        print_log(TAG, 'No youtube id found, skipped...')
+        return
+
     try:
         youtube = get_authenticated_service(job.youtube_account)
         upload_thumbnail(youtube, job.youtube_id, job.thumbnail_file)
