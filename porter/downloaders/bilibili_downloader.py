@@ -184,7 +184,7 @@ def bilibili_download(job):
                 PorterJob(video_url=video_url,
                           youtube_account=job.youtube_account,
                           video_source=VideoSource.BILIBILI,
-                          playlist=video.title,
+                          playlist=job.playlist, # still use channel name to avoid create playlist limit
                           type=PorterJobType.PARTIAL,
                           part=part).save()
                 part = part + 1
