@@ -123,3 +123,7 @@ def find_youtube_job_has_quota(status):
         if job:
             break
     return job
+
+
+def get_no_playlist_accounts():
+    return ['yportshort']
