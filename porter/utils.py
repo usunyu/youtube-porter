@@ -127,3 +127,13 @@ def find_youtube_job_has_quota(status):
 
 def get_no_playlist_accounts():
     return ['yportshort']
+
+
+def get_youtube_quota_settings():
+    return {
+        'yportmaster': 30,
+        'yportdance': 40,
+        'yportgame': 10,
+        'yportcomment': 90,
+        'yportshort': 90
+    }

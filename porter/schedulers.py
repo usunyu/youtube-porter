@@ -26,7 +26,6 @@ RESET_QUOTA_JOB_INTERVAL = 60 * INTERVAL_UNIT
 DELAY_INTERVAL = 0.1 * INTERVAL_UNIT
 DELAY_START = 5 * INTERVAL_UNIT
 
-YOUTUBE_UPLOAD_QUOTA = 90
 YOUTUBE_UPLOAD_TIME_INTERVAL = 24 * 60 * INTERVAL_UNIT
 
 scheduler = BackgroundScheduler()
@@ -155,7 +154,7 @@ def reset_quota_job():
         else:
             should_reset = True
         if should_reset:
-            account.upload_quota = YOUTUBE_UPLOAD_QUOTA
+            account.upload_quota = get_youtube_quota_settings()[account.name]
             account.save(update_fields=['upload_quota'])
             print_log(TAG, 'Reset quota for account: ' + account.name)
 
