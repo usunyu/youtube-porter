@@ -63,11 +63,7 @@ def youtube_upload(job):
         youtube_account.upload_quota = 0
         youtube_account.save(update_fields=['upload_quota'])
     # clean video file
-    try:
-        os.remove(job.video_file)
-        print_log(TAG, 'Deleted video: ' + job.video_file)
-    except:
-        print_exception(TAG, 'Delete video: ' + job.video_file + ' exception!')
+    clean_file(job.video_file)
 
 
 from apiclient.discovery import build
@@ -129,16 +125,18 @@ def upload_thumbnail(youtube, video_id, file):
 
 
 def youtube_thumbnail_upload(job):
-    if not job.thumbnail_status == PorterThumbnailStatus.DEFAULT:
-        print_log(TAG, 'Thumbnail not need updated, skipped...')
-        return
-
     if not os.path.exists(job.thumbnail_file):
         print_log(TAG, 'Thumbnail file not found!')
         return
 
+    if not job.thumbnail_status == PorterThumbnailStatus.DEFAULT:
+        print_log(TAG, 'Thumbnail not need updated, skipped...')
+        clean_file(job.thumbnail_file)
+        return
+
     if not job.youtube_id:
         print_log(TAG, 'No youtube id found, skipped...')
+        clean_file(job.thumbnail_file)
         return
 
     try:
@@ -158,8 +156,4 @@ def youtube_thumbnail_upload(job):
     print_log(TAG, 'The custom thumbnail was successfully set.')
 
     # clean thumbnail file
-    try:
-        os.remove(job.thumbnail_file)
-        print_log(TAG, 'Deleted thumbnail: ' + job.thumbnail_file)
-    except:
-        print_exception(TAG, 'Delete thumbnail: ' + job.thumbnail_file + ' exception!')
+    clean_file(job.thumbnail_file)

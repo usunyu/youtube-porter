@@ -1,4 +1,4 @@
-import logging
+import logging, os
 import logging.handlers
 from django.utils import timezone
 from django.db.models import Q
@@ -137,3 +137,13 @@ def get_youtube_quota_settings():
         'yportcomment': 90,
         'yportshort': 90
     }
+
+
+def clean_file(file):
+    if not os.path.exists(file):
+        return
+    try:
+        os.remove(file)
+        print_log(TAG, 'Deleted file: ' + file)
+    except:
+        print_exception(TAG, 'Delete file: ' + file + ' exception!')
