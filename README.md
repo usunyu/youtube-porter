@@ -39,7 +39,7 @@ $ python manage.py runserver
 $ touch credentials/yportxxx.json
 ```
 
-3. Wait first upload job and enter correct code.
+3. Run upload job and enter correct code in local, upload credentials file to server.
 
 ### Deployment:
 
