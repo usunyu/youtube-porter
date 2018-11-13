@@ -63,7 +63,7 @@ def youtube_upload(job):
         youtube_account.upload_quota = 0
         youtube_account.save(update_fields=['upload_quota'])
     # clean video file
-    clean_file(job.video_file)
+    clean_file(TAG, job.video_file)
 
 
 from apiclient.discovery import build
@@ -131,12 +131,12 @@ def youtube_thumbnail_upload(job):
 
     if not job.thumbnail_status == PorterThumbnailStatus.DEFAULT:
         print_log(TAG, 'Thumbnail not need updated, skipped...')
-        clean_file(job.thumbnail_file)
+        clean_file(TAG, job.thumbnail_file)
         return
 
     if not job.youtube_id:
         print_log(TAG, 'No youtube id found, skipped...')
-        clean_file(job.thumbnail_file)
+        clean_file(TAG, job.thumbnail_file)
         return
 
     try:
@@ -156,4 +156,4 @@ def youtube_thumbnail_upload(job):
     print_log(TAG, 'The custom thumbnail was successfully set.')
 
     # clean thumbnail file
-    clean_file(job.thumbnail_file)
+    clean_file(TAG, job.thumbnail_file)

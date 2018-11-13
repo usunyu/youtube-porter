@@ -135,11 +135,11 @@ def get_youtube_quota_settings():
         'yportdance': 40,
         'yportgame': 10,
         'yportcomment': 90,
-        'yportshort': 90
+        'yportshort': 10
     }
 
 
-def clean_file(file):
+def clean_file(TAG, file):
     if not os.path.exists(file):
         return
     try:
