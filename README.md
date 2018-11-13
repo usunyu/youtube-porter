@@ -32,14 +32,16 @@ $ python manage.py runserver
 
 ### Add YouTube Account:
 
-1. Download secrets file.
-
-2. Add empty credentials file:
+1. Download secrets file and upload it to server.
 ```
-$ touch credentials/yportxxx.json
+secrets/yportxxx.json (upload)
 ```
 
-3. Run upload job and enter correct code in local, upload credentials file to server.
+2. Run upload job and enter correct code in local, upload credentials file to server.
+```
+touch credentials/yportxxx.json
+credentials/yportxxx.json (upload)
+```
 
 ### Deployment:
 
