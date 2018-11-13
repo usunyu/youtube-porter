@@ -135,7 +135,7 @@ def get_youtube_quota_settings():
         'yportdance': 50,
         'yportgame': 50,
         'yportcomment': 10,
-        'yportshort': 10
+        'yportshort': 20
     }
 
 
