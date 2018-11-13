@@ -52,6 +52,10 @@ def youtube_upload(job):
         youtube_account.upload_quota = youtube_account.upload_quota - 1
         youtube_account.save(update_fields=['upload_quota'])
 
+    except subprocess.CalledProcessError as e:
+        print("Command '{}' return with error (code {}): {}".format(e.cmd, e.returncode, e.output))
+        print_exception(TAG, 'Upload video: ' + video.title + ' CalledProcessError exception!')
+
     except:
         print_exception(TAG, 'Upload video: ' + video.title + ' exception!')
         # TODO, check exception upload limit or playlist limit
