@@ -127,6 +127,7 @@ class PorterJob(models.Model):
         (PorterStatus.VIDEO_NOT_FOUND, PorterStatus.tostr(PorterStatus.VIDEO_NOT_FOUND)),
         (PorterStatus.PARTIAL, PorterStatus.tostr(PorterStatus.PARTIAL)),
         (PorterStatus.STOP, PorterStatus.tostr(PorterStatus.STOP)),
+        (PorterStatus.REMOVED, PorterStatus.tostr(PorterStatus.REMOVED)),
     )
     status = models.PositiveSmallIntegerField(
         choices=PORTER_STATUS_CHOICES,

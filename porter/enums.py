@@ -58,6 +58,8 @@ class PorterStatus:
     API_EXCEPTION = 13
     # stop this porter job
     STOP = 14
+    # video is removed from online
+    REMOVED = 15
 
     @staticmethod
     def tostr(val):
@@ -91,6 +93,8 @@ class PorterStatus:
             return 'API Exception'
         if val == PorterStatus.STOP:
             return 'Stop'
+        if val == PorterStatus.REMOVED:
+            return 'Removed'
         return UNKNOWN
 
 class PorterThumbnailStatus:
