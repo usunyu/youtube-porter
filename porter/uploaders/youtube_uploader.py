@@ -125,6 +125,10 @@ def upload_thumbnail(youtube, video_id, file):
 
 
 def youtube_thumbnail_upload(job):
+    if not job.thumbnail_file:
+        print_log(TAG, 'Thumbnail file too small, skipped...')
+        return
+
     if not os.path.exists(job.thumbnail_file):
         print_log(TAG, 'Thumbnail file not found!')
         return
