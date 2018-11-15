@@ -206,8 +206,9 @@ def bilibili_download(job):
             print_exception(TAG, 'Download video failed, bilibili-get exception!')
             return PorterStatus.DOWNLOAD_FAIL
 
-        # download thumbnail
-        if job.thumbnail_url:
+        video_file = 'av{}_{}.flv'.format(video_id, part)
+        # download thumbnail if video downloaded
+        if job.thumbnail_url and os.path.isfile(video_file):
             # check image file size
             response = requests.get(job.thumbnail_url, headers=get_client_headers())
             image_size = int(response.headers['content-length'])
@@ -218,7 +219,6 @@ def bilibili_download(job):
                 job.thumbnail_status = PorterThumbnailStatus.SKIPPED
                 job.save(update_fields=['thumbnail_status'])
 
-        video_file = 'av{}_{}.flv'.format(video_id, part)
         # check download file success
         if not os.path.isfile(video_file):
             print_log(TAG, 'Download video failed, unknown error!')
