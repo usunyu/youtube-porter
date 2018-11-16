@@ -132,7 +132,7 @@ def get_no_playlist_accounts():
 def get_youtube_quota_settings():
     return {
         'yportmaster': 20,
-        'yportdance': 20,
+        'yportdance': 30,
         'yportgame': 10,
         'yportcomment': 90,
         'yportshort': 90
