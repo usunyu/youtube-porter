@@ -152,7 +152,8 @@ class PorterJobAdmin(admin.ModelAdmin):
     list_filter = [
         'status',
         'video_source',
-        'youtube_account'
+        'youtube_account',
+        'playlist'
     ]
 
     readonly_fields = [
