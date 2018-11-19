@@ -111,8 +111,12 @@ def get_youtube_invalid_tag_chars():
 
 def find_youtube_job_has_quota(status):
     job = None
-    accounts = YoutubeAccount.objects.filter(active=True)
-    for account in accounts:
+    account_order = get_youtube_account_order()
+    for account_name in account_order:
+        account = YoutubeAccount.objects.filter(name=account_name).first()
+        if not account:
+            continue
+
         available_jobs = PorterJob.objects.filter(Q(status=status) &
                                                   Q(youtube_account=account))
         for available_job in available_jobs:
@@ -122,6 +126,7 @@ def find_youtube_job_has_quota(status):
                 break
         if job:
             break
+
     return job
 
 
@@ -137,6 +142,15 @@ def get_youtube_quota_settings():
         'yportcomment': 90,
         'yportshort': 2
     }
+
+
+def get_youtube_account_order():
+    return [
+        'yportcomment',
+        'yportdance',
+        'yportmaster',
+        'yportgame',
+    ]
 
 
 def clean_file(TAG, file):
