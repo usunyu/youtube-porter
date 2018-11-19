@@ -9,6 +9,7 @@ class YoutubeAccount(models.Model):
     upload_quota = models.PositiveSmallIntegerField(default=0)
     channel = models.CharField(max_length=256, null=True, blank=True)
     description = models.TextField(null=True, blank=True)
+    active = models.BooleanField(default=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
 

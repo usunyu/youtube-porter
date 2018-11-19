@@ -23,6 +23,7 @@ class YoutubeAccountAdmin(admin.ModelAdmin):
         'upload_quota',
         'description',
         'channel_link',
+        'active',
         'created_at'
     ]
 

@@ -111,7 +111,7 @@ def get_youtube_invalid_tag_chars():
 
 def find_youtube_job_has_quota(status):
     job = None
-    accounts = YoutubeAccount.objects.all()
+    accounts = YoutubeAccount.objects.filter(active=True)
     for account in accounts:
         available_jobs = PorterJob.objects.filter(Q(status=status) &
                                                   Q(youtube_account=account))

@@ -16,7 +16,7 @@ pages = payload['pages']
 num = payload['num']
 print('Total pages:' + str(pages) + ', num: ' + str(num))
 
-account = YoutubeAccount.objects.all().first()
+account = YoutubeAccount.objects.filter(name='yportmaster').first()
 print('Target account: ' + account.name)
 
 print('Parsing data and creating jobs...')

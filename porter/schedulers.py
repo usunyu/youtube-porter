@@ -136,7 +136,7 @@ def reset_quota_job():
         return
 
     print_log(TAG, 'Reset quota job is started...')
-    accounts = YoutubeAccount.objects.all()
+    accounts = YoutubeAccount.objects.filter(active=True)
     for account in accounts:
         if account.upload_quota > 0:
             continue

@@ -5,7 +5,7 @@ from porter.models import YoutubeAccount
 YOUTUBE_UPLOAD_QUOTA = 90
 YOUTUBE_UPLOAD_TIME_INTERVAL = 24 * 60 * 60
 
-accounts = YoutubeAccount.objects.all()
+accounts = YoutubeAccount.objects.filter(active=True)
 for account in accounts:
     if account.upload_quota > 0:
         continue
