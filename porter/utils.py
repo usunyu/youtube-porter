@@ -1,4 +1,4 @@
-import logging, os
+import logging, os, subprocess
 import logging.handlers
 from PIL import Image
 from django.utils import timezone
@@ -183,3 +183,10 @@ def merge_images(images, target):
         left += width
         right = left + width
         targetfile.save(target, quality=100)
+
+
+def get_video_duration(video_file):
+    command = 'ffprobe -v quiet -of csv=p=0 -show_entries format=duration "{}"'.format(video_file)
+    output = subprocess.check_output(command, shell=True)
+    duration = int(output.decode('utf-8').strip().split('.')[0])
+    return duration
