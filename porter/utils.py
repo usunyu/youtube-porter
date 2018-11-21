@@ -1,5 +1,6 @@
 import logging, os
 import logging.handlers
+from PIL import Image
 from django.utils import timezone
 from django.db.models import Q
 from porter.enums import PorterStatus
@@ -161,3 +162,24 @@ def clean_file(TAG, file):
         print_log(TAG, 'Deleted file: ' + file)
     except:
         print_exception(TAG, 'Delete file: ' + file + ' exception!')
+
+
+def merge_images(images, target):
+    imagefiles = []
+    total_width = 0
+    max_height = 0
+    for image in images:
+        imagefile = Image.open(image)
+        imagefiles.append(imagefile)
+        total_width = total_width + imagefile.width
+        if imagefile.height > max_height:
+            max_height = imagefile.height
+    targetfile = Image.new('RGB', (total_width, max_height))
+    width = imagefiles[0].width
+    left = 0
+    right = width # use first width
+    for image in imagefiles:
+        targetfile.paste(image, (left, 0, right, max_height))
+        left += width
+        right = left + width
+        targetfile.save(target, quality=100)
