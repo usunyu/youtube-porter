@@ -5,11 +5,12 @@ from django.db.models import Q
 from porter.utils import *
 from porter.downloaders.downloader import download
 from porter.uploaders.uploader import upload
-from porter.fetchers.bilibili_fetcher import bilibili_channel_fetch, bilibili_recommend_fetch
+from porter.fetchers.channel_fetcher import channel_fetch
+from porter.fetchers.bilibili_fetcher import bilibili_recommend_fetch
 from porter.fetchers.kuaiyinshi_fetcher import douyin_recommend_fetch
 from porter.mergers.kuaiyinshi_merger import douyin_video_merge
-from porter.enums import VideoSource, PorterStatus
-from porter.models import YoutubeAccount, PorterJob, ChannelJob
+from porter.enums import PorterStatus
+from porter.models import YoutubeAccount
 
 
 TAG = '[SCHEDULERS]'
@@ -24,7 +25,6 @@ CHANNEL_JOB_INTERVAL = 60 * INTERVAL_UNIT
 KUAIYINSHI_JOB_INTERVAL = 60 * INTERVAL_UNIT
 RESET_QUOTA_JOB_INTERVAL = 60 * INTERVAL_UNIT
 
-DELAY_INTERVAL = 0.1 * INTERVAL_UNIT
 DELAY_START = 5 * INTERVAL_UNIT
 
 YOUTUBE_UPLOAD_TIME_INTERVAL = 24 * 60 * INTERVAL_UNIT
@@ -91,21 +91,7 @@ def channel_job():
 
     print_log(TAG, 'Channel job is started...')
 
-    jobs = ChannelJob.objects.filter(active=True)
-    for job in jobs:
-        account = job.youtube_account
-        fetched_videos = []
-        if job.video_source == VideoSource.BILIBILI:
-            fetched_videos = bilibili_channel_fetch(job)
-        for video_url in fetched_videos:
-            if PorterJob.objects.filter(
-                Q(video_url=video_url) &
-                Q(youtube_account=account)
-            ).exists():
-                continue
-            # print_log(TAG, 'Create new job from channel fetch: ' + video_url)
-            PorterJob(video_url=video_url, youtube_account=account).save()
-        time.sleep(DELAY_INTERVAL)
+    channel_fetch()
 
 
 @scheduler.scheduled_job("cron", hour=0, minute=30, id='bilibili_recommend', misfire_grace_time=60, coalesce=True)
