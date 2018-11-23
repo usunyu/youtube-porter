@@ -7,6 +7,7 @@ from porter.downloaders.downloader import download
 from porter.uploaders.uploader import upload
 from porter.fetchers.bilibili_fetcher import bilibili_channel_fetch, bilibili_recommend_fetch
 from porter.fetchers.kuaiyinshi_fetcher import douyin_recommend_fetch
+from porter.mergers.kuaiyinshi_merger import douyin_video_merge
 from porter.enums import VideoSource, PorterStatus
 from porter.models import YoutubeAccount, PorterJob, ChannelJob
 
@@ -123,10 +124,25 @@ def kuaiyinshi_recommend_job():
     if not is_start_kuaiyinshi_recommend_job():
         return
 
+    time.sleep(DELAY_START)
+
     print_log(TAG, 'Kuaiyinshi recommend job is started...')
 
-    time.sleep(DELAY_START)
     douyin_recommend_fetch()
+
+    # time.sleep(DELAY_START)
+
+
+@scheduler.scheduled_job("interval", seconds=KUAIYINSHI_JOB_INTERVAL, id='kuaiyinshi_merge')
+def kuaiyinshi_merge_job():
+    if not is_start_kuaiyinshi_merge_job():
+        return
+
+    time.sleep(DELAY_START * 2)
+
+    print_log(TAG, 'Kuaiyinshi merge job is started...')
+
+    douyin_video_merge()
 
 
 @scheduler.scheduled_job("interval", seconds=RESET_QUOTA_JOB_INTERVAL, id='reset_quota')

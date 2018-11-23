@@ -19,8 +19,8 @@ def douyin_recommend_fetch():
     if payload['code'] == 200:
         data = payload['data']
 
-        # upload to yportvideo account
-        # account = YoutubeAccount.objects.filter(name='yportvideo').first()
+        # upload to yporttiktok account
+        # account = YoutubeAccount.objects.filter(name='yporttiktok').first()
         # TODO, this is for testing
         account = YoutubeAccount.objects.filter(name='usunyu').first()
         added_jobs = 0

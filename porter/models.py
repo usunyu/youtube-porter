@@ -31,6 +31,7 @@ class Video(models.Model):
     title = models.CharField(max_length=256, null=True, blank=True)
     description = models.TextField(null=True, blank=True)
     category = models.CharField(max_length=64, null=True, blank=True)
+    duration = models.PositiveIntegerField(default=0)
     tags = models.ManyToManyField(VideoTag, related_name='videos')
 
     created_at = models.DateTimeField(auto_now_add=True)
@@ -177,4 +178,5 @@ class Settings(models.Model):
     start_channel_job = models.BooleanField(default=False)
     start_bilibili_recommend_job = models.BooleanField(default=False)
     start_kuaiyinshi_recommend_job = models.BooleanField(default=False)
+    start_kuaiyinshi_merge_job = models.BooleanField(default=False)
     start_reset_quota_job = models.BooleanField(default=False)

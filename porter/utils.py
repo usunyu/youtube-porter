@@ -79,6 +79,13 @@ def is_start_kuaiyinshi_recommend_job():
     return settings.start_kuaiyinshi_recommend_job
 
 
+def is_start_kuaiyinshi_merge_job():
+    settings = Settings.objects.all().first()
+    if not settings:
+        return False
+    return settings.start_kuaiyinshi_merge_job
+
+
 def is_start_reset_quota_job():
     settings = Settings.objects.all().first()
     if not settings:
@@ -183,6 +190,10 @@ def merge_images(images, target):
         left += width
         right = left + width
         targetfile.save(target, quality=100)
+
+
+def get_video_job_score(job):
+    return 4 * job.shares + 3 * job.comments + 2 * job.likes + job.views
 
 
 def get_video_duration(video_file):

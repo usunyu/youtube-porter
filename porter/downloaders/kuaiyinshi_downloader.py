@@ -1,15 +1,28 @@
-import requests, json, re, os, subprocess
-from requests_html import HTMLSession
 from porter.utils import *
-from porter.models import VideoTag, PorterJob
-from porter.enums import VideoSource, PorterStatus, PorterJobType
+from porter.enums import PorterStatus
 from porter.downloaders.url_downloader import url_download
 
-TAG = '[DOUYIN DOWNLOADER]'
+TAG = '[KUAIYINSHI DOWNLOADER]'
 
+
+def download(job, source):
+    file = url_download(job.download_url)
+    duration = get_video_duration(file)
+    # update video duration
+    video = job.video
+    video.duration = duration
+    video.save(update_fields=['duration'])
+    print_log(TAG, 'Downloaded {} video {}'.format(source, file))
+    return PorterStatus.PENDING_MERGE
 
 def douyin_download(job):
-    # TODO
+    return download(job, 'DouYin')
 
-    print_log(TAG, 'Douyin download not implemented!')
-    return [PorterStatus.API_ERROR, None]
+def meipai_download(job):
+    return download(job, 'MeiPai')
+
+def kuaishou_download(job):
+    return download(job, 'KuaiShou')
+
+def huoshan_download(job):
+    return download(job, 'HuoShan')

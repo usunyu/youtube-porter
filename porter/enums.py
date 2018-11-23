@@ -4,10 +4,10 @@ class VideoSource:
     BILIBILI = 0
     YOUKU = 1 # TODO
     IQIYI = 2 # TODO
-    DOUYIN = 3 # TODO
-    MEIPAI = 4 # TODO
-    KUAISHOU = 5 # TODO
-    HUOSHAN = 6 # TODO
+    DOUYIN = 3
+    MEIPAI = 4
+    KUAISHOU = 5
+    HUOSHAN = 6
 
     @staticmethod
     def tostr(val):

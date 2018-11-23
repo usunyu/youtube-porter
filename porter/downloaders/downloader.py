@@ -1,7 +1,7 @@
 from django.db.models import Q
 from porter.utils import *
 from porter.downloaders.bilibili_downloader import bilibili_download
-from porter.downloaders.kuaiyinshi_downloader import douyin_download
+from porter.downloaders.kuaiyinshi_downloader import douyin_download, meipai_download, kuaishou_download, huoshan_download
 from porter.models import YoutubeAccount, PorterJob, Video
 from porter.enums import PorterStatus, VideoSource
 
@@ -48,6 +48,12 @@ def download(job):
         download_status = bilibili_download(job)
     elif job.video_source == VideoSource.DOUYIN:
         download_status = douyin_download(job)
+    elif job.video_source == VideoSource.MEIPAI:
+        download_status = meipai_download(job)
+    elif job.video_source == VideoSource.KUAISHOU:
+        download_status = kuaishou_download(job)
+    elif job.video_source == VideoSource.HUOSHAN:
+        download_status = huoshan_download(job)
     else:
         download_status = PorterStatus.DOWNLOAD_FAIL
 

@@ -53,6 +53,7 @@ class VideoAdmin(admin.ModelAdmin):
         'url_link',
         'title',
         'description',
+        'duration',
         'print_tags'
     ]
 
