@@ -1,4 +1,5 @@
 from porter.utils import *
+from porter.models import PorterJob, YoutubeAccount
 from porter.enums import PorterStatus
 from porter.downloaders.url_downloader import url_download
 
@@ -9,40 +10,63 @@ TEN_MINUTES = 600
 
 def video_merge(source):
     # all jobs needs merge
-    douyin_jobs = PorterJob.objects.filter(
+    pending_jobs = PorterJob.objects.filter(
         Q(video_source=source) &
         Q(status=PorterStatus.PENDING_MERGE))
     total_duration = 0
     # check if videos has enough duration
     merge_jobs = []
-    for job in douyin_jobs:
+    for job in pending_jobs:
         total_duration += job.video.duration
         merge_jobs.append(job)
         if total_duration >= TEN_MINUTES:
             break
+    # should merge video and create porter job
     if total_duration >= TEN_MINUTES:
-        top_3 = []
+        # upload to yporttiktok account
+        # account = YoutubeAccount.objects.filter(name='yporttiktok').first()
+        # TODO, this is for testing
+        account = YoutubeAccount.objects.filter(name='usunyu').first()
+        porter_job = PorterJob(video_url='-',
+                  youtube_account=account,
+                  video_source=source)
+        porter_job.save()
+
+        top_3_jobs = []
         # find top 3 video and merge thumbnail
         for job in merge_jobs:
             # fill the top 3 first
-            if len(top_3) < 3:
-                top_3.append(job)
+            if len(top_3_jobs) < 3:
+                top_3_jobs.append(job)
                 continue
             # find the lowest score job in top 3
             lowest_index = 0
-            for i in range(1, len(top_3)):
-                if get_video_job_score(top_3[lowest_index]) > get_video_job_score(top_3[i]):
+            for i in range(1, len(top_3_jobs)):
+                if get_video_job_score(top_3_jobs[lowest_index]) > get_video_job_score(top_3_jobs[i]):
                     lowest_index = i
             # check if current job is higher than lowest in top 3
-            if get_video_job_score(job) > get_video_job_score(top_3[lowest_index]):
+            if get_video_job_score(job) > get_video_job_score(top_3_jobs[lowest_index]):
                 # replace the job
-                top_3[lowest_index] = job
-        if len(top_3) == 3:
+                top_3_jobs[lowest_index] = job
+        # process thumbnail
+        if len(top_3_jobs) == 3:
+            # download top 3 thumbnails
+            top_3_thumbnails = []
+            for top_job in top_3_jobs:
+                thumbnail_file = url_download(top_job.thumbnail_url)
+                top_job.thumbnail_file = thumbnail_file
+                top_job.save(update_fields=['thumbnail_file'])
+                top_3_thumbnails.append(thumbnail_file)
+            # merge top 3 thumbnails
             merged_thumbnail = get_time_str() + '.jpeg'
-            # TODO, download top 3 thumbnails
-            # merge_images([top_3[]], merged_thumbnail)
-
+            merge_images(top_3_thumbnails, merged_thumbnail)
+            porter_job.thumbnail_file = merged_thumbnail
+            porter_job.save(update_fields=['thumbnail_file'])
+            # delete used 3 thumbnails
+            for thumbnail in top_3_thumbnails:
+                clean_file(TAG, thumbnail)
         # TODO, merge videos
+
 
 def douyin_video_merge():
     video_merge(VideoSource.DOUYIN)
