@@ -139,7 +139,7 @@ def find_youtube_job_has_quota(status):
 
 
 def get_no_playlist_accounts():
-    return ['yportshort']
+    return ['yportshort', 'yportkitty']
 
 
 def get_youtube_quota_settings():
@@ -148,7 +148,8 @@ def get_youtube_quota_settings():
         'yportdance': 5,
         'yportgame': 5,
         'yportcomment': 10,
-        'yportshort': 0
+        'yportshort': 0,
+        'yportkitty': 30,
     }
 
 
@@ -156,6 +157,7 @@ def get_youtube_account_order():
     return [
         'yportcomment',
         'yportdance',
+        'yportkitty',
         'yportmaster',
         'yportgame',
     ]
