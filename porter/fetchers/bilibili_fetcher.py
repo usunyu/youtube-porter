@@ -68,7 +68,7 @@ def bilibili_recommend_fetch():
     list = json.loads(response.text)['list']
 
     # upload to yportmaster account
-    account = YoutubeAccount.objects.filter(name='yportmaster').first()
+    account = get_youtube_yportmaster_account()
 
     for record in list:
         video_id = record['aid']

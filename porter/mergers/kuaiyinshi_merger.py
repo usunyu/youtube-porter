@@ -24,9 +24,9 @@ def video_merge(source):
     # should merge video and create porter job
     if total_duration >= TEN_MINUTES:
         # upload to yporttiktok account
-        # account = YoutubeAccount.objects.filter(name='yporttiktok').first()
+        # account = get_youtube_yporttiktok_account()
         # TODO, this is for testing
-        account = YoutubeAccount.objects.filter(name='usunyu').first()
+        account = get_youtube_test_account()
         porter_job = PorterJob(video_url='-',
                   youtube_account=account,
                   video_source=source)

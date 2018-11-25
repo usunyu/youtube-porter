@@ -4,6 +4,7 @@ Parsing data from http://api.bilibili.cn/recommend and
 creating corresponding PorterJob.
 '''
 import requests, json
+from porter.utils import *
 from porter.models import PorterJob, YoutubeAccount
 
 API_URL = 'http://api.bilibili.cn/recommend'
@@ -16,7 +17,7 @@ pages = payload['pages']
 num = payload['num']
 print('Total pages:' + str(pages) + ', num: ' + str(num))
 
-account = YoutubeAccount.objects.filter(name='yportmaster').first()
+account = get_youtube_yportmaster_account()
 print('Target account: ' + account.name)
 
 print('Parsing data and creating jobs...')

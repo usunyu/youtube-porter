@@ -117,6 +117,26 @@ def get_youtube_invalid_tag_chars():
     ]
 
 
+def get_youtube_test_account():
+    account = YoutubeAccount.objects.filter(name='usunyu').first()
+    return account
+
+
+def get_youtube_yportmaster_account():
+    account = YoutubeAccount.objects.filter(name='yportmaster').first()
+    return account
+
+
+def get_youtube_yporttiktok_account():
+    account = YoutubeAccount.objects.filter(name='yporttiktok').first()
+    return account
+
+
+def get_youtube_yportcomment_account():
+    account = YoutubeAccount.objects.filter(name='yportcomment').first()
+    return account
+
+
 def find_youtube_job_has_quota(status):
     job = None
     account_order = get_youtube_account_order()

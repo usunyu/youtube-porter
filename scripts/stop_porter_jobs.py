@@ -4,10 +4,11 @@ Set the target porter jobs to STOP status.
 '''
 
 from django.db.models import Q
+from porter.utils import *
 from porter.models import PorterJob, YoutubeAccount
 from porter.enums import PorterStatus
 
-account = YoutubeAccount.objects.filter(name='yportcomment').first()
+account = get_youtube_yportcomment_account()
 
 jobs = PorterJob.objects.filter(
     # Q(status=PorterStatus.PENDING) &
