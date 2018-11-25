@@ -184,6 +184,7 @@ class SettingsAdmin(admin.ModelAdmin):
         'start_channel_job',
         'start_bilibili_recommend_job',
         'start_kuaiyinshi_recommend_job',
+        'start_kuaiyinshi_merge_job',
         'start_reset_quota_job',
     ]
 
