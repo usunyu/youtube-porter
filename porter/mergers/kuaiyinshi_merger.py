@@ -62,9 +62,6 @@ def video_merge(source):
             merge_images(top_3_thumbnails, merged_thumbnail)
             porter_job.thumbnail_file = merged_thumbnail
             porter_job.save(update_fields=['thumbnail_file'])
-            # delete used 3 thumbnails
-            for thumbnail in top_3_thumbnails:
-                clean_file(TAG, thumbnail)
         # TODO, merge videos
 
 

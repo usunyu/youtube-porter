@@ -163,17 +163,18 @@ def get_youtube_account_order():
     ]
 
 
-def clean_file(TAG, file):
+def clean_file(tag, file):
     if not os.path.exists(file):
         return
     try:
         os.remove(file)
-        print_log(TAG, 'Deleted file: ' + file)
+        print_log(tag, 'Deleted file: ' + file)
     except:
-        print_exception(TAG, 'Delete file: ' + file + ' exception!')
+        print_exception(tag, 'Delete file: ' + file + ' exception!')
 
 
-def merge_images(images, target):
+def merge_images(images, target, clean_files=True):
+    tag = '[MERGE IMAGES]'
     imagefiles = []
     total_width = 0
     max_height = 0
@@ -192,6 +193,36 @@ def merge_images(images, target):
         left += width
         right = left + width
         targetfile.save(target, quality=100)
+    if clean_files:
+        for image in images:
+            clean_file(tag, image)
+
+
+def merge_videos(videos, target, clean_files=True):
+    tag = '[MERGE VIDEOS]'
+    concat_command = ''
+    # re-encode videos
+    for i in range(0, len(videos)):
+        video = videos[i]
+        temp_file = 'tempvideo' + str(i) + '.mpg'
+        subprocess.run(['ffmpeg -i {} -qscale:v 1 {}'.format(video, temp_file)], shell=True)
+        # delete origin files
+        if clean_files:
+            clean_file(tag, video)
+        if concat_command:
+            concat_command = concat_command + '|' + temp_file
+        else:
+            concat_command = temp_file
+    # merge videos
+    subprocess.run(['ffmpeg -i concat:"{}" -c copy temptarget.mpg'.format(concat_command)], shell=True)
+    # re-encode to origin format
+    subprocess.run(['ffmpeg -i temptarget.mpg -qscale:v 2 {}'.format(target)], shell=True)
+    # clean files
+    if clean_files:
+        for i in range(0, len(videos)):
+            temp_file = 'tempvideo' + str(i) + '.mpg'
+            clean_file(tag, temp_file)
+        clean_file(tag, 'temptarget.mpg')
 
 
 def get_video_job_score(job):
