@@ -62,7 +62,14 @@ def video_merge(source):
             merge_images(top_3_thumbnails, merged_thumbnail)
             porter_job.thumbnail_file = merged_thumbnail
             porter_job.save(update_fields=['thumbnail_file'])
-        # TODO, merge videos
+        # merge videos
+        pending_videos = []
+        for job in pending_jobs:
+            pending_videos.append(job.video_file)
+        merged_video = get_time_str() + '.mp4'
+        merge_videos(pending_videos, merged_video)
+        porter_job.video_file = merged_video
+        porter_job.save(update_fields=['video_file'])
 
 
 def douyin_video_merge():
