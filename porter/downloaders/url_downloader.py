@@ -11,7 +11,7 @@ def url_download(url):
         response = requests.get(url, headers=get_client_headers(), stream=True)
         total_size = int(response.headers['content-length'])
         format = response.headers['Content-Type']
-        filename = get_time_str()
+        filename = get_random_16_code()
         if format == 'video/mp4':
             filename = filename + '.mp4'
         elif format == 'video/x-flv':

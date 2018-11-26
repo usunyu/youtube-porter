@@ -16,8 +16,8 @@ from porter.models import YoutubeAccount
 TAG = '[SCHEDULERS]'
 
 # set small for debug
-# INTERVAL_UNIT = 1
 INTERVAL_UNIT = 60 # 1 minute
+# INTERVAL_UNIT = 1
 
 DOWNLOAD_JOB_INTERVAL = 5 * INTERVAL_UNIT
 UPLOAD_JOB_INTERVAL = 4 * INTERVAL_UNIT

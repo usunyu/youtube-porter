@@ -128,6 +128,9 @@ class PorterJob(models.Model):
         (PorterStatus.API_ERROR, PorterStatus.tostr(PorterStatus.API_ERROR)),
         (PorterStatus.VIDEO_NOT_FOUND, PorterStatus.tostr(PorterStatus.VIDEO_NOT_FOUND)),
         (PorterStatus.PARTIAL, PorterStatus.tostr(PorterStatus.PARTIAL)),
+        (PorterStatus.PENDING_MERGE, PorterStatus.tostr(PorterStatus.PENDING_MERGE)),
+        (PorterStatus.MERGED, PorterStatus.tostr(PorterStatus.MERGED)),
+        (PorterStatus.API_EXCEPTION, PorterStatus.tostr(PorterStatus.API_EXCEPTION)),
         (PorterStatus.STOP, PorterStatus.tostr(PorterStatus.STOP)),
         (PorterStatus.REMOVED, PorterStatus.tostr(PorterStatus.REMOVED)),
     )

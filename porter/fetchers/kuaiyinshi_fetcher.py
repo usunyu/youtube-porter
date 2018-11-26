@@ -1,7 +1,7 @@
 import requests, json, re, time
 from django.db.models import Q
 from porter.utils import *
-from porter.models import PorterJob, YoutubeAccount
+from porter.models import PorterJob, Video, YoutubeAccount
 from porter.enums import VideoSource, PorterJobType
 
 
@@ -25,7 +25,7 @@ def douyin_recommend_fetch():
         account = get_youtube_test_account()
         added_jobs = 0
         for record in data:
-            download_url = record['video_url']
+            download_url = 'http:' + record['video_url']
             if PorterJob.objects.filter(
                 Q(download_url=download_url) &
                 Q(youtube_account=account)
@@ -36,10 +36,15 @@ def douyin_recommend_fetch():
             likes = statistics['zan']
             comments = statistics['comment']
             shares = statistics['share']
+            thumbnail_url = 'http:' + record['video_img']
+            video = Video(url='-', title=title)
+            video.save()
             PorterJob(video_url='-',
                       download_url=download_url,
+                      thumbnail_url=thumbnail_url,
                       youtube_account=account,
                       video_source=VideoSource.DOUYIN,
+                      video=video,
                       type=PorterJobType.MERGE,
                       likes=likes,
                       comments=comments,

@@ -1,6 +1,6 @@
 from porter.utils import *
 from porter.models import PorterJob, YoutubeAccount
-from porter.enums import PorterStatus
+from porter.enums import PorterStatus, VideoSource
 from porter.downloaders.url_downloader import url_download
 
 TAG = '[KUAIYINSHI MERGER]'
@@ -58,7 +58,7 @@ def video_merge(source):
                 top_job.save(update_fields=['thumbnail_file'])
                 top_3_thumbnails.append(thumbnail_file)
             # merge top 3 thumbnails
-            merged_thumbnail = get_time_str() + '.jpeg'
+            merged_thumbnail = get_random_16_code() + '.jpeg'
             merge_images(top_3_thumbnails, merged_thumbnail)
             porter_job.thumbnail_file = merged_thumbnail
             porter_job.save(update_fields=['thumbnail_file'])
@@ -66,7 +66,7 @@ def video_merge(source):
         pending_videos = []
         for job in pending_jobs:
             pending_videos.append(job.video_file)
-        merged_video = get_time_str() + '.mp4'
+        merged_video = get_random_16_code() + '.mp4'
         merge_videos(pending_videos, merged_video)
         porter_job.video_file = merged_video
         porter_job.save(update_fields=['video_file'])

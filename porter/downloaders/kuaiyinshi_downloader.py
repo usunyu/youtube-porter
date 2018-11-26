@@ -7,6 +7,9 @@ TAG = '[KUAIYINSHI DOWNLOADER]'
 
 def download(job, source):
     file = url_download(job.download_url)
+    # update video file
+    job.video_file = file
+    job.save(update_fields=['video_file'])
     duration = get_video_duration(file)
     # update video duration
     video = job.video

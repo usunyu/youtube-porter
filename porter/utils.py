@@ -1,4 +1,4 @@
-import logging, os, subprocess
+import logging, os, subprocess, random, string
 import logging.handlers
 from PIL import Image
 from django.utils import timezone
@@ -37,6 +37,14 @@ def get_client_headers():
 
 def get_current_time():
     return timezone.now()
+
+
+def get_random_code(count):
+    return ''.join(random.choice(string.ascii_letters + string.digits) for _ in range(count))
+
+
+def get_random_16_code():
+    return get_random_code(16)
 
 
 def get_time_str():
@@ -180,6 +188,7 @@ def get_youtube_account_order():
         'yportkitty',
         'yportmaster',
         'yportgame',
+        'usunyu',
     ]
 
 

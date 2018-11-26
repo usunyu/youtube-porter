@@ -3,6 +3,11 @@
 *.flv
 *.aria2
 
+# Image File
+*.jpg
+*.jpeg
+*.png
+
 # Credentials File
 credentials/
 
