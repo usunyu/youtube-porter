@@ -178,12 +178,14 @@ def get_youtube_quota_settings():
         'yportcomment': 10,
         'yportshort': 0,
         'yportkitty': 30,
+        'potatosixdao': 10,
     }
 
 
 def get_youtube_account_order():
     return [
         'yportcomment',
+        'potatosixdao',
         'yportdance',
         'yportkitty',
         'yportmaster',
