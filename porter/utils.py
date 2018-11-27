@@ -167,7 +167,7 @@ def find_youtube_job_has_quota(status):
 
 
 def get_no_playlist_accounts():
-    return ['yportshort']
+    return ['yportshort', 'potatosixdao']
 
 
 def get_youtube_quota_settings():
