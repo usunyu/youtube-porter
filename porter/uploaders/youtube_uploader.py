@@ -6,11 +6,17 @@ from porter.enums import PorterStatus, PorterThumbnailStatus
 
 TAG = '[YOUTUBE UPLOADER]'
 
-VIDEO_DESCRIPTION = """{}
+DEFAULT_DESCRIPTION = """{}
 
 视频来源和原始版权归属原创作者, 影片论点和本频道无关. 本频道致力于视频影片的推广, 学习和传播工作.
 如果侵犯了您的权益请留言告知, 本频道会遵照著作权保护法相关规定马上删除影片并且停止分享! 非常感谢.
 """
+
+def get_desc_by_account(account):
+    if account.name == 'potatosixdao':
+        return """{}"""
+    else:
+        return DEFAULT_DESCRIPTION
 
 def youtube_upload(job):
     video = job.video
@@ -28,9 +34,10 @@ def youtube_upload(job):
         print_log(TAG, '*  Attention! Password may be required!  *')
         print_log(TAG, '******************************************')
         # upload to youtube
+        DESC = get_desc_by_account(youtube_account)
         upload_command = 'sudo youtube-upload --title="{}" --description="{}" --category="{}" --tags="{}" --client-secrets="{}" --credentials-file="{}"'.format(
             video.title,
-            VIDEO_DESCRIPTION.format(video.description),
+            DESC.format(video.description),
             video.category,
             video.print_tags(),
             youtube_account.secret_file,
