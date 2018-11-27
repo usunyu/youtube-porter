@@ -34,13 +34,16 @@ $ python manage.py runserver
 
 1. Download secrets file and upload it to server.
 ```
-secrets/xxxxxx.json (download from console, put it in repo)
+# download from console, put it in repo
+secrets/xxxxxx.json
 ```
 
 2. Run upload job and enter correct code in local, upload credentials file to server.
 ```
 touch credentials/xxxxxx.json
-credentials/xxxxxx.json (generate from local, copy to aws server)
+# generate from local, copy to aws server
+# do not put it in repo, it always change
+credentials/xxxxxx.json
 ```
 
 ### Deployment:
