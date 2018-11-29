@@ -181,20 +181,24 @@ def merge_images(images, target, clean=True):
     imagefiles = []
     total_width = 0
     max_height = 0
+    widths = []
+    heights = []
     for image in images:
         imagefile = Image.open(image)
         imagefiles.append(imagefile)
         total_width = total_width + imagefile.width
+        widths.append(imagefile.width)
+        heights.append(imagefile.height)
         if imagefile.height > max_height:
             max_height = imagefile.height
     targetfile = Image.new('RGB', (total_width, max_height))
-    width = imagefiles[0].width
     left = 0
-    right = width # use first width
-    for image in imagefiles:
-        targetfile.paste(image, (left, 0, right, max_height))
-        left += width
-        right = left + width
+    for i in range(0, len(imagefiles)):
+        image = imagefiles[i]
+        right = widths[i]
+        targetfile.paste(image, (left, 0))
+        left += widths[i]
+        right = left + widths[i]
         targetfile.save(target, quality=100)
     if clean:
         for image in images:
