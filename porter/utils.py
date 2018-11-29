@@ -176,7 +176,7 @@ def clean_file(tag, file):
         print_exception(tag, 'Delete file: ' + file + ' exception!')
 
 
-def merge_images(images, target, clean_files=True):
+def merge_images(images, target, clean=True):
     tag = '[MERGE IMAGES]'
     imagefiles = []
     total_width = 0
@@ -196,32 +196,44 @@ def merge_images(images, target, clean_files=True):
         left += width
         right = left + width
         targetfile.save(target, quality=100)
-    if clean_files:
+    if clean:
         for image in images:
             clean_file(tag, image)
 
 
-def merge_videos(videos, target, clean_files=True):
+def resize_video(video, width, height, target, clean=True):
+    tag = '[RESIZE VIDEO]'
+    command = 'ffmpeg -i {} -vf "scale={}:{}:force_original_aspect_ratio=decrease,pad={}:{}:(ow-iw)/2:(oh-ih)/2" {}'.format(
+        video,
+        width, height,
+        width, height,
+        target)
+    subprocess.run([command], shell=True)
+    if clean:
+        clean_file(tag, video)
+
+
+def merge_videos(videos, target, clean=True):
     tag = '[MERGE VIDEOS]'
-    concat_command = ''
+    concat_params = ''
     # re-encode videos
     for i in range(0, len(videos)):
         video = videos[i]
         temp_file = 'tempvideo' + str(i) + '.mpg'
         subprocess.run(['ffmpeg -i {} -qscale:v 1 {}'.format(video, temp_file)], shell=True)
         # delete origin files
-        if clean_files:
+        if clean:
             clean_file(tag, video)
-        if concat_command:
-            concat_command = concat_command + '|' + temp_file
+        if concat_params:
+            concat_params = concat_params + '|' + temp_file
         else:
-            concat_command = temp_file
+            concat_params = temp_file
     # merge videos
-    subprocess.run(['ffmpeg -i concat:"{}" -c copy temptarget.mpg'.format(concat_command)], shell=True)
+    subprocess.run(['ffmpeg -i concat:"{}" -c copy temptarget.mpg'.format(concat_params)], shell=True)
     # re-encode to origin format
     subprocess.run(['ffmpeg -i temptarget.mpg -qscale:v 2 {}'.format(target)], shell=True)
     # clean files
-    if clean_files:
+    if clean:
         for i in range(0, len(videos)):
             temp_file = 'tempvideo' + str(i) + '.mpg'
             clean_file(tag, temp_file)
