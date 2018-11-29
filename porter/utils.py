@@ -258,14 +258,14 @@ def get_no_copyright_desc_accounts():
 
 def get_youtube_quota_settings():
     return {
-        'yportmaster': 10,
-        'yportdance': 10,
-        'yportgame': 10,
-        'yportcomment': 10,
+        'yportmaster': 20,
+        'yportdance': 20,
+        'yportgame': 20,
+        'yportcomment': 20,
         'yportshort': 0,
         'yportkitty': 30,
-        'potatosixdao': 10,
-        'cailaobanwork': 10,
+        'potatosixdao': 20,
+        'cailaobanwork': 20,
     }
 
 
