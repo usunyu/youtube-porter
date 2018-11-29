@@ -7,6 +7,8 @@ TAG = '[KUAIYINSHI MERGER]'
 
 
 TEN_MINUTES = 600
+VIDEO_WIDTH = 2276
+VIDEO_HEIGHT = 1280
 
 def video_merge(source):
     # all jobs needs merge
@@ -64,8 +66,12 @@ def video_merge(source):
             porter_job.save(update_fields=['thumbnail_file'])
         # merge videos
         pending_videos = []
-        for job in pending_jobs:
-            pending_videos.append(job.video_file)
+        for i in range(0, len(pending_jobs)):
+            job = pending_jobs[i]
+            # resize video
+            resize_file = 'resizevideo' + str(i) + '.mp4'
+            resize_video(job.video_file, VIDEO_WIDTH, VIDEO_HEIGHT, resize_file)
+            pending_videos.append(resize_file)
         merged_video = get_random_16_code() + '.mp4'
         merge_videos(pending_videos, merged_video)
         porter_job.video_file = merged_video
