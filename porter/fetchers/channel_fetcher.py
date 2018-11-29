@@ -1,8 +1,7 @@
 import time
-from django.db.models import Q
 from porter.utils import *
 from porter.enums import VideoSource
-from porter.models import PorterJob, ChannelJob
+from porter.models import ChannelJob
 from porter.fetchers.bilibili_fetcher import bilibili_channel_fetch
 
 
