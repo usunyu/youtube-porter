@@ -31,7 +31,8 @@ def video_merge(source):
         account = get_youtube_test_account()
         porter_job = PorterJob(video_url='-',
                   youtube_account=account,
-                  video_source=source)
+                  video_source=source,
+                  status=PorterStatus.DOWNLOADING)
         porter_job.save()
 
         top_3_jobs = []
@@ -72,10 +73,15 @@ def video_merge(source):
             resize_file = 'resizevideo' + str(i) + '.mp4'
             resize_video(job.video_file, VIDEO_WIDTH, VIDEO_HEIGHT, resize_file)
             pending_videos.append(resize_file)
+            # update job status to *MERGED*
+            job.status = PorterStatus.MERGED
+            job.save(update_fields=['status'])
         merged_video = get_random_16_code() + '.mp4'
         merge_videos(pending_videos, merged_video)
         porter_job.video_file = merged_video
-        porter_job.save(update_fields=['video_file'])
+        # update final job status to *DOWNLOADED*
+        porter_job.status = PorterStatus.DOWNLOADED
+        porter_job.save(update_fields=['video_file', 'status'])
 
 
 def douyin_video_merge():
