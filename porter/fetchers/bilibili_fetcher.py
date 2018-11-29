@@ -21,7 +21,6 @@ def bilibili_channel_fetch(job):
     if not payload['status']:
         print_log(TAG, 'Fetch channel ' + channel_url + ' failed!')
         return []
-    fetched_videos = []
     video_list = []
     # this channel already fetched before
     if job.last_fetched_at:
@@ -61,7 +60,6 @@ def bilibili_channel_fetch(job):
     job.last_fetched_at = get_current_time()
     job.save(update_fields=['last_fetched_at'])
 
-    return fetched_videos
 
 def bilibili_recommend_fetch():
     response = requests.get(BILIBILI_RECOMMEND_API)
