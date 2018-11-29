@@ -13,7 +13,7 @@ DEFAULT_DESCRIPTION = """{}
 """
 
 def get_desc_by_account(account):
-    if account.name == 'potatosixdao':
+    if account.name in get_no_copyright_desc_accounts():
         return """{}"""
     else:
         return DEFAULT_DESCRIPTION

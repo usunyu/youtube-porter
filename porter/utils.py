@@ -166,34 +166,6 @@ def find_youtube_job_has_quota(status):
     return job
 
 
-def get_no_playlist_accounts():
-    return ['yportshort', 'potatosixdao']
-
-
-def get_youtube_quota_settings():
-    return {
-        'yportmaster': 5,
-        'yportdance': 5,
-        'yportgame': 5,
-        'yportcomment': 10,
-        'yportshort': 0,
-        'yportkitty': 30,
-        'potatosixdao': 10,
-    }
-
-
-def get_youtube_account_order():
-    return [
-        'yportcomment',
-        'potatosixdao',
-        'yportdance',
-        'yportkitty',
-        'yportmaster',
-        'yportgame',
-        'usunyu',
-    ]
-
-
 def clean_file(tag, file):
     if not os.path.exists(file):
         return
@@ -265,3 +237,46 @@ def get_video_duration(video_file):
     output = subprocess.check_output(command, shell=True)
     duration = int(output.decode('utf-8').strip().split('.')[0])
     return duration
+
+
+# Account Settings
+
+def get_no_playlist_accounts():
+    return [
+        'yportshort',
+        'potatosixdao',
+        'cailaobanwork',
+    ]
+
+
+def get_no_copyright_desc_accounts():
+    return [
+        'potatosixdao',
+        'cailaobanwork',
+    ]
+
+
+def get_youtube_quota_settings():
+    return {
+        'yportmaster': 5,
+        'yportdance': 5,
+        'yportgame': 5,
+        'yportcomment': 10,
+        'yportshort': 0,
+        'yportkitty': 30,
+        'potatosixdao': 10,
+        'cailaobanwork': 10,
+    }
+
+
+def get_youtube_account_order():
+    return [
+        'yportcomment',
+        'potatosixdao',
+        'cailaobanwork',
+        'yportdance',
+        'yportkitty',
+        'yportmaster',
+        'yportgame',
+        'usunyu',
+    ]
