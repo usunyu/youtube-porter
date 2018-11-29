@@ -284,7 +284,7 @@ def get_youtube_quota_settings():
         'yportkitty': 30,
         'potatosixdao': 20,
         'cailaobanwork': 20,
-        'renrenvideotv': 20,
+        'renrenvideotv': 30,
     }
 
 
