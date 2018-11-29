@@ -34,10 +34,13 @@ def youtube_upload(job):
         print_log(TAG, '*  Attention! Password may be required!  *')
         print_log(TAG, '******************************************')
         # upload to youtube
-        DESC = get_desc_by_account(youtube_account)
+        DESC_TEMPLATE = get_desc_by_account(youtube_account)
+        video_desc = ''
+        if video.description:
+            video_desc = video.description
         upload_command = 'sudo youtube-upload --title="{}" --description="{}" --category="{}" --tags="{}" --client-secrets="{}" --credentials-file="{}"'.format(
             video.title,
-            DESC.format(video.description),
+            DESC_TEMPLATE.format(video_desc),
             video.category,
             video.print_tags(),
             youtube_account.secret_file,

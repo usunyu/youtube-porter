@@ -1,5 +1,5 @@
 from porter.utils import *
-from porter.models import PorterJob, YoutubeAccount
+from porter.models import PorterJob, Video, VideoTag, YoutubeAccount
 from porter.enums import PorterStatus, VideoSource
 from porter.downloaders.url_downloader import url_download
 
@@ -29,9 +29,13 @@ def video_merge(source):
         # account = get_youtube_yporttiktok_account()
         # TODO, this is for testing
         account = get_youtube_test_account()
+        porter_video = Video(url='-')
+        porter_video.save()
         porter_job = PorterJob(video_url='-',
                   youtube_account=account,
+                  video=porter_video,
                   video_source=source,
+                  category='Entertainment',
                   status=PorterStatus.DOWNLOADING)
         porter_job.save()
 
@@ -51,6 +55,21 @@ def video_merge(source):
             if get_video_job_score(job) > get_video_job_score(top_3_jobs[lowest_index]):
                 # replace the job
                 top_3_jobs[lowest_index] = job
+        # add video title
+        for job in top_3_jobs:
+            if job.video.title:
+                porter_video.title = job.video.title
+                porter_video.save(update_fields=['title'])
+                break
+        # TODO, fetch more accurate tags
+        tag_names = ['搞笑', '美女', '短视频', '合集', '热门', '抖音', 'Tik Tok', 'Funny', 'Beauty', 'Short video', 'Featured']
+        for tag_name in tag_names:
+            tag = VideoTag.objects.filter(name=tag_name).first()
+            if not tag:
+                # create the tag
+                tag = VideoTag(name=tag_name)
+                tag.save()
+            porter_video.tags.add(tag)
         # process thumbnail
         if len(top_3_jobs) == 3:
             # download top 3 thumbnails
