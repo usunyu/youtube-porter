@@ -6,9 +6,9 @@ TAG = '[URL DOWNLOADER]'
 
 CHUNK_SIZE = 1024
 
-def url_download(url):
+def url_download(url, headers=get_browser_headers()):
     try:
-        response = requests.get(url, headers=get_client_headers(), stream=True)
+        response = requests.get(url, headers=headers, stream=True)
         total_size = int(response.headers['content-length'])
         format = response.headers['Content-Type']
         filename = get_random_16_code()

@@ -3,6 +3,7 @@ import logging.handlers
 from PIL import Image
 from django.utils import timezone
 from django.db.models import Q
+from ipaddress import ip_address
 from porter.enums import PorterStatus
 from porter.models import PorterJob, YoutubeAccount, Settings
 
@@ -19,6 +20,8 @@ logger = logging.getLogger('debug')
 logger.addHandler(handler)
 logger.setLevel(logging.DEBUG)
 
+IP_ADDR = None
+
 def print_log(tag, msg):
     dt = timezone.localtime(timezone.now())
     print(tag, dt.strftime('%Y-%m-%d %H:%M:%S'), msg)
@@ -31,8 +34,37 @@ def print_exception(tag, msg):
     logger.exception(msg)
 
 
-def get_client_headers():
+def set_ip_addr(ip):
+    global IP_ADDR
+    IP_ADDR = ip
+
+def prepare_ip():
+    global IP_ADDR
+    if IP_ADDR:
+        return
+    rip = ip_address('0.0.0.0')
+    while rip.is_private:
+        rip = ip_address('.'.join(map(str, (random.randint(0, 255) for _ in range(4)))))
+    IP_ADDR = rip
+
+
+def get_browser_headers():
     return {'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.92 Safari/537.36'}
+
+
+def get_douyin_headers():
+    prepare_ip()
+    return {
+        'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+		'accept-encoding': 'gzip, deflate, br',
+		'accept-language': 'zh-CN,zh;q=0.9',
+		'pragma': 'no-cache',
+		'cache-control': 'no-cache',
+		'upgrade-insecure-requests': '1',
+		'user-agent': 'Mozilla/5.0 (Linux; U; Android 5.1.1; zh-cn; MI 4S Build/LMY47V) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/53.0.2785.146 Mobile Safari/537.36 XiaoMi/MiuiBrowser/9.1.3',
+		'X-Real-IP': str(IP_ADDR),
+		'X-Forwarded-For': str(IP_ADDR),
+    }
 
 
 def get_current_time():

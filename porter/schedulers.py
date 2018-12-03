@@ -17,7 +17,7 @@ TAG = '[SCHEDULERS]'
 
 # set small for debug
 INTERVAL_UNIT = 60 # 1 minute
-# INTERVAL_UNIT = 1
+INTERVAL_UNIT = 1
 
 DOWNLOAD_JOB_INTERVAL = 5 * INTERVAL_UNIT
 UPLOAD_JOB_INTERVAL = 4 * INTERVAL_UNIT
@@ -37,6 +37,7 @@ upload_job_lock = False
 
 @scheduler.scheduled_job("interval", seconds=DOWNLOAD_JOB_INTERVAL, id='download')
 def download_job():
+    get_douyin_headers()
     if not is_start_download_job():
         # print_log(TAG, 'Download job is stopped, skip this schedule...')
         return

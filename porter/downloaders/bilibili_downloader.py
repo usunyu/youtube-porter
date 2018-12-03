@@ -210,7 +210,7 @@ def bilibili_download(job):
         # download thumbnail if video downloaded
         if job.thumbnail_url and os.path.isfile(video_file):
             # check image file size
-            response = requests.get(job.thumbnail_url, headers=get_client_headers())
+            response = requests.get(job.thumbnail_url, headers=get_browser_headers())
             image_size = int(response.headers['content-length'])
             if image_size >= MIN_THUMBNAIL_SIZE:
                 job.thumbnail_file = url_download(job.thumbnail_url)
