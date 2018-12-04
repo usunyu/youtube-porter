@@ -29,13 +29,12 @@ def video_merge(source):
         # account = get_youtube_yporttiktok_account()
         # TODO, this is for testing
         account = get_youtube_test_account()
-        porter_video = Video(url='-')
+        porter_video = Video(url='-', category='Entertainment')
         porter_video.save()
         porter_job = PorterJob(video_url='-',
                   youtube_account=account,
                   video=porter_video,
                   video_source=source,
-                  category='Entertainment',
                   status=PorterStatus.DOWNLOADING)
         porter_job.save()
 
@@ -90,6 +89,7 @@ def video_merge(source):
             job = pending_jobs[i]
             # resize video
             resize_file = 'resizevideo' + str(i) + '.mp4'
+            print_log(TAG, 'Resizing video {}/{}'.format(i + 1, len(pending_jobs)))
             resize_video(job.video_file, VIDEO_WIDTH, VIDEO_HEIGHT, resize_file)
             pending_videos.append(resize_file)
             # update job status to *MERGED*

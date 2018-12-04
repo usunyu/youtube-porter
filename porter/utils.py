@@ -256,6 +256,7 @@ def merge_videos(videos, target, clean=True):
     for i in range(0, len(videos)):
         video = videos[i]
         temp_file = 'tempvideo' + str(i) + '.mpg'
+        print_log(tag, 'Merging video {}/{}'.format(i + 1, len(videos)))
         subprocess.run(['ffmpeg -i {} -qscale:v 1 {}'.format(video, temp_file)], shell=True)
         # delete origin files
         if clean:

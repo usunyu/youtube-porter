@@ -37,7 +37,6 @@ upload_job_lock = False
 
 @scheduler.scheduled_job("interval", seconds=DOWNLOAD_JOB_INTERVAL, id='download')
 def download_job():
-    get_douyin_headers()
     if not is_start_download_job():
         # print_log(TAG, 'Download job is stopped, skip this schedule...')
         return
