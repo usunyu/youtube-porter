@@ -296,6 +296,7 @@ def get_no_playlist_accounts():
         'cailaobanwork',
         'renrenvideotv',
         'flowerdirtyprpr',
+        'jushuoshow',
     ]
 
 
@@ -303,8 +304,9 @@ def get_no_copyright_desc_accounts():
     return [
         'potatosixdao',
         'cailaobanwork',
-        'renrenvideotv',
+        'jushuoshow',
         'flowerdirtyprpr',
+        'renrenvideotv',
     ]
 
 
@@ -320,6 +322,7 @@ def get_youtube_quota_settings():
         'cailaobanwork': 20,
         'renrenvideotv': 30,
         'flowerdirtyprpr': 15,
+        'jushuoshow': 15,
     }
 
 
@@ -327,6 +330,7 @@ def get_youtube_account_order():
     return [
         'yportcomment',
         'potatosixdao',
+        'jushuoshow',
         'flowerdirtyprpr',
         'cailaobanwork',
         'renrenvideotv',
