@@ -51,3 +51,8 @@ def douyin_recommend_fetch():
                       shares=shares).save()
             added_jobs = added_jobs + 1
         print_log(TAG, 'Create {} new jobs from Douyin'.format(added_jobs))
+
+
+def douyin_channel_fetch(job):
+    # TODO
+    pass

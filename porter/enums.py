@@ -60,6 +60,10 @@ class PorterStatus:
     STOP = 14
     # video is removed from online
     REMOVED = 15
+    # pending for manual review
+    PENDING_REVIEW = 16
+    # general failed
+    FAILED = 17
 
     @staticmethod
     def tostr(val):
@@ -95,6 +99,10 @@ class PorterStatus:
             return 'Stop'
         if val == PorterStatus.REMOVED:
             return 'Removed'
+        if val == PorterStatus.PENDING_REVIEW:
+            return 'Pending Review'
+        if val == PorterStatus.FAILED:
+            return 'Failed'
         return UNKNOWN
 
 class PorterThumbnailStatus:

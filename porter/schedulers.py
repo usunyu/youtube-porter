@@ -116,8 +116,6 @@ def kuaiyinshi_recommend_job():
 
     douyin_recommend_fetch()
 
-    # time.sleep(DELAY_START)
-
 
 @scheduler.scheduled_job("interval", seconds=KUAIYINSHI_JOB_INTERVAL, id='kuaiyinshi_merge')
 def kuaiyinshi_merge_job():

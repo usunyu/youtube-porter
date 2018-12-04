@@ -53,7 +53,11 @@ class ChannelJob(models.Model):
     VIDEO_SOURCE_CHOICES = (
         (VideoSource.BILIBILI, VideoSource.tostr(VideoSource.BILIBILI)),
         (VideoSource.YOUKU, VideoSource.tostr(VideoSource.YOUKU)),
-        (VideoSource.IQIYI, VideoSource.tostr(VideoSource.IQIYI))
+        (VideoSource.IQIYI, VideoSource.tostr(VideoSource.IQIYI)),
+        (VideoSource.DOUYIN, VideoSource.tostr(VideoSource.DOUYIN)),
+        (VideoSource.MEIPAI, VideoSource.tostr(VideoSource.MEIPAI)),
+        (VideoSource.KUAISHOU, VideoSource.tostr(VideoSource.KUAISHOU)),
+        (VideoSource.HUOSHAN, VideoSource.tostr(VideoSource.HUOSHAN)),
     )
     video_source = models.PositiveSmallIntegerField(
         choices=VIDEO_SOURCE_CHOICES,
@@ -133,6 +137,7 @@ class PorterJob(models.Model):
         (PorterStatus.API_EXCEPTION, PorterStatus.tostr(PorterStatus.API_EXCEPTION)),
         (PorterStatus.STOP, PorterStatus.tostr(PorterStatus.STOP)),
         (PorterStatus.REMOVED, PorterStatus.tostr(PorterStatus.REMOVED)),
+        (PorterStatus.PENDING_REVIEW, PorterStatus.tostr(PorterStatus.PENDING_REVIEW)),
     )
     status = models.PositiveSmallIntegerField(
         choices=PORTER_STATUS_CHOICES,
@@ -173,6 +178,31 @@ class PorterJob(models.Model):
 
     def __str__(self):
         return self.video_url
+
+
+class ManualMergeJob(models.Model):
+    job_id_list = models.CharField(max_length=512)
+    thumbnail_id_list = models.CharField(max_length=64)
+    video_title = models.CharField(max_length=256, null=True, blank=True)
+    video_description = models.TextField(null=True, blank=True)
+    video_tags = models.CharField(max_length=256, null=True, blank=True)
+    PORTER_STATUS_CHOICES = (
+        (PorterStatus.PENDING, PorterStatus.tostr(PorterStatus.PENDING)),
+        (PorterStatus.SUCCESS, PorterStatus.tostr(PorterStatus.SUCCESS)),
+        (PorterStatus.STOP, PorterStatus.tostr(PorterStatus.STOP)),
+        (PorterStatus.FAILED, PorterStatus.tostr(PorterStatus.FAILED)),
+    )
+    status = models.PositiveSmallIntegerField(
+        choices=PORTER_STATUS_CHOICES,
+        default=PorterStatus.PENDING
+    )
+
+    # time info
+    created_at = models.DateTimeField(auto_now_add=True)
+    merge_at = models.DateTimeField(auto_now_add=False, auto_now=False, null=True, blank=True)
+
+    def __str__(self):
+        return self.job_id_list
 
 
 class Settings(models.Model):

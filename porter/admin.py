@@ -176,6 +176,25 @@ class PorterJobAdmin(admin.ModelAdmin):
 
 admin.site.register(PorterJob, PorterJobAdmin)
 
+class ManualMergeJobAdmin(admin.ModelAdmin):
+
+    list_display = [
+        'id',
+        'status',
+        'job_id_list',
+        'thumbnail_id_list',
+        'video_title',
+        'video_description',
+        'video_tags',
+        'created_at',
+        'merge_at'
+    ]
+
+    list_filter = [
+        'status'
+    ]
+
+
 class SettingsAdmin(admin.ModelAdmin):
     list_display = [
         'id',
