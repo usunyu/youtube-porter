@@ -2,14 +2,12 @@ import requests, json, re, time
 from django.db.models import Q
 from porter.utils import *
 from porter.models import PorterJob, Video, YoutubeAccount
-from porter.enums import VideoSource, PorterJobType
+from porter.enums import VideoSource, PorterStatus, PorterJobType
 
 
 TAG = '[KUAIYINSHI FETCHER]'
 
 KUAIYINSHI_RECOMMEND_API = 'https://kuaiyinshi.com/api/hot/videos/?source={}&page={}&st={}'
-
-DELAY_INTERVAL = 5
 
 def douyin_recommend_fetch():
     headers = {'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.92 Safari/537.36'}
@@ -31,13 +29,14 @@ def douyin_recommend_fetch():
                 Q(youtube_account=account)
             ).exists():
                 continue
+            user_name = record['nickname']
             title = record['desc']
             statistics = record['statistics']
             likes = statistics['zan']
             comments = statistics['comment']
             shares = statistics['share']
             thumbnail_url = 'http:' + record['video_img']
-            video = Video(url='-', title=title)
+            video = Video(url='-', title='@' + user_name + ' ' + title)
             video.save()
             PorterJob(video_url='-',
                       download_url=download_url,
@@ -45,6 +44,7 @@ def douyin_recommend_fetch():
                       youtube_account=account,
                       video_source=VideoSource.DOUYIN,
                       video=video,
+                      status=PorterStatus.PENDING_REVIEW,
                       type=PorterJobType.MERGE,
                       likes=likes,
                       comments=comments,

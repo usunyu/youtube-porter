@@ -186,14 +186,21 @@ class ManualMergeJobAdmin(admin.ModelAdmin):
         'video_title',
         'video_description',
         'video_tags',
+        'video_source',
         'created_at',
         'merge_at'
     ]
 
     list_filter = [
-        'status'
+        'status',
+        'video_source'
     ]
 
+    readonly_fields = [
+        'merge_at'
+    ]
+
+admin.site.register(ManualMergeJob, ManualMergeJobAdmin)
 
 class SettingsAdmin(admin.ModelAdmin):
     list_display = [

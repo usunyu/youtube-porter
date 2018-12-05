@@ -82,6 +82,8 @@ class ChannelJob(models.Model):
 
 class PorterJob(models.Model):
     video_url = models.CharField(max_length=256)
+    download_url = models.CharField(max_length=512, null=True, blank=True)
+    thumbnail_url = models.CharField(max_length=512, null=True, blank=True)
     VIDEO_SOURCE_CHOICES = (
         (VideoSource.BILIBILI, VideoSource.tostr(VideoSource.BILIBILI)),
         (VideoSource.YOUKU, VideoSource.tostr(VideoSource.YOUKU)),
@@ -91,8 +93,6 @@ class PorterJob(models.Model):
         (VideoSource.KUAISHOU, VideoSource.tostr(VideoSource.KUAISHOU)),
         (VideoSource.HUOSHAN, VideoSource.tostr(VideoSource.HUOSHAN))
     )
-    download_url = models.CharField(max_length=512, null=True, blank=True)
-    thumbnail_url = models.CharField(max_length=512, null=True, blank=True)
     video_source = models.PositiveSmallIntegerField(
         choices=VIDEO_SOURCE_CHOICES,
         default=VideoSource.BILIBILI
@@ -179,15 +179,28 @@ class PorterJob(models.Model):
     def __str__(self):
         return self.video_url
 
+def get_default_tiktok_tags():
+    return '搞笑,短视频,合集,美女,热门,精选,抖音,Tik Tok,Funny,Pretty girl,Short video,Featured'
 
 class ManualMergeJob(models.Model):
     job_id_list = models.CharField(max_length=512)
     thumbnail_id_list = models.CharField(max_length=64)
     video_title = models.CharField(max_length=256, null=True, blank=True)
     video_description = models.TextField(null=True, blank=True)
-    video_tags = models.CharField(max_length=256, null=True, blank=True)
+    video_tags = models.CharField(default=get_default_tiktok_tags(), max_length=256, null=True, blank=True)
+    VIDEO_SOURCE_CHOICES = (
+        (VideoSource.DOUYIN, VideoSource.tostr(VideoSource.DOUYIN)),
+        (VideoSource.MEIPAI, VideoSource.tostr(VideoSource.MEIPAI)),
+        (VideoSource.KUAISHOU, VideoSource.tostr(VideoSource.KUAISHOU)),
+        (VideoSource.HUOSHAN, VideoSource.tostr(VideoSource.HUOSHAN))
+    )
+    video_source = models.PositiveSmallIntegerField(
+        choices=VIDEO_SOURCE_CHOICES,
+        default=VideoSource.DOUYIN
+    )
     PORTER_STATUS_CHOICES = (
         (PorterStatus.PENDING, PorterStatus.tostr(PorterStatus.PENDING)),
+        (PorterStatus.DOWNLOADING, PorterStatus.tostr(PorterStatus.DOWNLOADING)),
         (PorterStatus.SUCCESS, PorterStatus.tostr(PorterStatus.SUCCESS)),
         (PorterStatus.STOP, PorterStatus.tostr(PorterStatus.STOP)),
         (PorterStatus.FAILED, PorterStatus.tostr(PorterStatus.FAILED)),

@@ -8,7 +8,7 @@ from porter.uploaders.uploader import upload
 from porter.fetchers.channel_fetcher import channel_fetch
 from porter.fetchers.bilibili_fetcher import bilibili_recommend_fetch
 from porter.fetchers.kuaiyinshi_fetcher import douyin_recommend_fetch
-from porter.mergers.kuaiyinshi_merger import douyin_video_merge
+from porter.mergers.kuaiyinshi_merger import kuaiyinshi_video_merge
 from porter.enums import PorterStatus
 from porter.models import YoutubeAccount
 
@@ -22,7 +22,7 @@ INTERVAL_UNIT = 60 # 1 minute
 DOWNLOAD_JOB_INTERVAL = 5 * INTERVAL_UNIT
 UPLOAD_JOB_INTERVAL = 4 * INTERVAL_UNIT
 CHANNEL_JOB_INTERVAL = 60 * INTERVAL_UNIT
-KUAIYINSHI_JOB_INTERVAL = 60 * INTERVAL_UNIT
+KUAIYINSHI_JOB_INTERVAL = 5 * INTERVAL_UNIT
 RESET_QUOTA_JOB_INTERVAL = 60 * INTERVAL_UNIT
 
 DELAY_START = 5 * INTERVAL_UNIT
@@ -110,8 +110,6 @@ def kuaiyinshi_recommend_job():
     if not is_start_kuaiyinshi_recommend_job():
         return
 
-    time.sleep(DELAY_START)
-
     print_log(TAG, 'Kuaiyinshi recommend job is started...')
 
     douyin_recommend_fetch()
@@ -122,11 +120,11 @@ def kuaiyinshi_merge_job():
     if not is_start_kuaiyinshi_merge_job():
         return
 
-    time.sleep(DELAY_START * 2)
+    time.sleep(DELAY_START)
 
     print_log(TAG, 'Kuaiyinshi merge job is started...')
 
-    douyin_video_merge()
+    kuaiyinshi_video_merge()
 
 
 @scheduler.scheduled_job("interval", seconds=RESET_QUOTA_JOB_INTERVAL, id='reset_quota')

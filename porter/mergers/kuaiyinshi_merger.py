@@ -1,16 +1,115 @@
 from porter.utils import *
-from porter.models import PorterJob, Video, VideoTag, YoutubeAccount
+from porter.models import PorterJob, ManualMergeJob, Video, VideoTag, YoutubeAccount
 from porter.enums import PorterStatus, VideoSource
 from porter.downloaders.url_downloader import url_download
 
 TAG = '[KUAIYINSHI MERGER]'
 
 
-TEN_MINUTES = 600
 VIDEO_WIDTH = 2276
 VIDEO_HEIGHT = 1280
 
-def video_merge(source):
+def kuaiyinshi_video_merge():
+    # try get first pending manual merge job
+    manual_merge_job = ManualMergeJob.objects.filter(status=PorterStatus.PENDING).first()
+    if not manual_merge_job:
+        return
+    # parse porter job id list
+    porter_job_list = manual_merge_job.job_id_list.split(',')
+    # parse thumbnail job id list
+    thumbnail_job_list = manual_merge_job.thumbnail_id_list.split(',')
+    # check if job is pending for merge
+    merge_ready = True
+    for job_id in porter_job_list:
+        job = PorterJob.objects.get(pk=job_id)
+        if job.status != PorterStatus.PENDING_MERGE:
+            merge_ready = False
+        if job.status == PorterStatus.PENDING_REVIEW:
+            # already reviewed, update status to *PENDING*
+            job.status = PorterStatus.PENDING
+            job.save(update_fields=['status'])
+    if not merge_ready:
+        return
+    manual_merge_job.status = PorterStatus.DOWNLOADING
+    manual_merge_job.save(update_fields=['status'])
+    # upload to yporttiktok account
+    # account = get_youtube_yporttiktok_account()
+    # TODO, this is for testing
+    account = get_youtube_test_account()
+    porter_video = Video(url='-',
+                         title=manual_merge_job.video_title,
+                         category='Entertainment')
+    porter_video.save()
+    tag_names = manual_merge_job.video_tags.split(',')
+    for tag_name in tag_names:
+        tag = VideoTag.objects.filter(name=tag_name).first()
+        if not tag:
+            # create the tag
+            tag = VideoTag(name=tag_name)
+            tag.save()
+        porter_video.tags.add(tag)
+    # create upload porter job
+    porter_job = PorterJob(video_url='-',
+                           youtube_account=account,
+                           video=porter_video,
+                           video_source=manual_merge_job.video_source,
+                           status=PorterStatus.DOWNLOADING)
+    porter_job.save()
+    # merging video
+    pending_videos = []
+    for job_id in porter_job_list:
+        job = PorterJob.objects.get(pk=job_id)
+        # resize video
+        resize_file = get_random_16_code() + '.mp4'
+        resize_video(job.video_file, VIDEO_WIDTH, VIDEO_HEIGHT, resize_file)
+        pending_videos.append(resize_file)
+    merged_video = get_random_16_code() + '.mp4'
+    try:
+        merge_videos(pending_videos, merged_video)
+    except:
+        print_exception(TAG, 'Merge videos exception!')
+        manual_merge_job.status = PorterStatus.FAILED
+        manual_merge_job.save(update_fields=['status'])
+        return
+    # merged
+    for job_id in porter_job_list:
+        job = PorterJob.objects.get(pk=job_id)
+        # update job status to *MERGED*
+        job.status = PorterStatus.MERGED
+        job.save(update_fields=['status'])
+    porter_job.video_file = merged_video
+    # generate thumbnail
+    pending_thumbnails = []
+    for thumb_id in thumbnail_job_list:
+        job = PorterJob.objects.get(pk=thumb_id)
+        thumbnail_file = url_download(job.thumbnail_url)
+        job.thumbnail_file = thumbnail_file
+        job.save(update_fields=['thumbnail_file'])
+        pending_thumbnails.append(thumbnail_file)
+    # merge 3 thumbnails
+    merged_thumbnail = get_random_16_code() + '.jpeg'
+    try:
+        merge_images(pending_thumbnails, merged_thumbnail)
+    except:
+        print_exception(TAG, 'Merge thumbnails exception!')
+        manual_merge_job.status = PorterStatus.FAILED
+        manual_merge_job.save(update_fields=['status'])
+        return
+    porter_job.thumbnail_file = merged_thumbnail
+
+    # update final job status to *DOWNLOADED*
+    porter_job.status = PorterStatus.DOWNLOADED
+    porter_job.save(update_fields=['video_file', 'thumbnail_file', 'status'])
+
+    porter_job.merge_at = get_current_time()
+    manual_merge_job.status = PorterStatus.SUCCESS
+    manual_merge_job.save(update_fields=['status', 'merge_at'])
+
+
+TEN_MINUTES = 600
+
+# use manual merge job
+def video_merge_DEPRECATED(source=VideoSource.DOUYIN):
     # all jobs needs merge
     pending_jobs = PorterJob.objects.filter(
         Q(video_source=source) &
@@ -85,11 +184,11 @@ def video_merge(source):
             porter_job.save(update_fields=['thumbnail_file'])
         # merge videos
         pending_videos = []
-        for i in range(0, len(pending_jobs)):
-            job = pending_jobs[i]
+        for i in range(0, len(merge_jobs)):
+            job = merge_jobs[i]
             # resize video
             resize_file = 'resizevideo' + str(i) + '.mp4'
-            print_log(TAG, 'Resizing video {}/{}'.format(i + 1, len(pending_jobs)))
+            print_log(TAG, 'Resizing video {}/{}'.format(i + 1, len(merge_jobs)))
             resize_video(job.video_file, VIDEO_WIDTH, VIDEO_HEIGHT, resize_file)
             pending_videos.append(resize_file)
             # update job status to *MERGED*
@@ -101,7 +200,3 @@ def video_merge(source):
         # update final job status to *DOWNLOADED*
         porter_job.status = PorterStatus.DOWNLOADED
         porter_job.save(update_fields=['video_file', 'status'])
-
-
-def douyin_video_merge():
-    video_merge(VideoSource.DOUYIN)

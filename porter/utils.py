@@ -239,6 +239,7 @@ def merge_images(images, target, clean=True):
 
 def resize_video(video, width, height, target, clean=True):
     tag = '[RESIZE VIDEO]'
+    print_log(tag, 'Resizing video {}...'.format(video))
     command = 'ffmpeg -i {} -vf "scale={}:{}:force_original_aspect_ratio=decrease,pad={}:{}:(ow-iw)/2:(oh-ih)/2" {}'.format(
         video,
         width, height,
@@ -314,16 +315,16 @@ def get_no_copyright_desc_accounts():
 def get_youtube_quota_settings():
     return {
         'yportmaster': 20,
-        'yportdance': 20,
-        'yportgame': 20,
-        'yportcomment': 20,
+        'yportdance': 5,
+        'yportgame': 5,
+        'yportcomment': 5,
         'yportshort': 0,
-        'yportkitty': 30,
+        'yportkitty': 3,
         'potatosixdao': 20,
         'cailaobanwork': 20,
         'renrenvideotv': 30,
-        'flowerdirtyprpr': 15,
-        'jushuoshow': 15,
+        'flowerdirtyprpr': 1,
+        'jushuoshow': 5,
     }
 
 
