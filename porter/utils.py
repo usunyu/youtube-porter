@@ -179,6 +179,19 @@ def get_youtube_yportcomment_account():
 
 def find_youtube_job_has_quota(status):
     job = None
+    # get job by priority
+    priority_jobs = PorterJob.objects.filter(Q(status=status) &
+                                             Q(priority=True))
+    for priority_job in priority_jobs:
+        if priority_job.youtube_account.upload_quota > 0:
+            job = priority_job
+        if job:
+            break
+
+    if job:
+        return job
+
+    # get job by account order
     account_order = get_youtube_account_order()
     for account_name in account_order:
         account = YoutubeAccount.objects.filter(name=account_name).first()

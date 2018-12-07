@@ -165,6 +165,9 @@ class PorterJob(models.Model):
     part = models.PositiveSmallIntegerField(default=1)
     retried = models.PositiveSmallIntegerField(default=0)
 
+    # process priority
+    priority = models.BooleanField(default=False)
+
     # video statistics
     views = models.BigIntegerField(default=0)
     likes = models.BigIntegerField(default=0)

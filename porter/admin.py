@@ -143,6 +143,7 @@ class PorterJobAdmin(admin.ModelAdmin):
         'type',
         'part',
         'retried',
+        'priority',
         'upload_at',
         'thumbnail_status',
         'views',
