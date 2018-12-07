@@ -11,10 +11,9 @@ from porter.enums import PorterStatus
 account = get_youtube_yportcomment_account()
 
 jobs = PorterJob.objects.filter(
-    # Q(status=PorterStatus.PENDING) &
-    Q(youtube_account=account) &
-    Q(playlist='猫叔说电影')
-    )
+    Q(status=PorterStatus.PENDING) &
+    Q(youtube_account=account))
+    # Q(playlist='猫叔说电影')
 for job in jobs:
     job.status = PorterStatus.STOP
     job.save(update_fields=['status'])

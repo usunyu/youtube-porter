@@ -330,7 +330,7 @@ def get_no_copyright_desc_accounts():
 def get_youtube_quota_settings():
     return {
         'yportmaster': 20,
-        'yportdance': 5,
+        'yportdance': 3,
         'yportgame': 5,
         # 'yportcomment': 0,
         # 'yportshort': 0,
