@@ -317,14 +317,14 @@ def get_youtube_quota_settings():
         'yportmaster': 20,
         'yportdance': 5,
         'yportgame': 5,
-        'yportcomment': 5,
-        'yportshort': 0,
-        'yportkitty': 3,
+        # 'yportcomment': 0,
+        # 'yportshort': 0,
+        'yportkitty': 1,
         'potatosixdao': 20,
         'cailaobanwork': 20,
         'renrenvideotv': 30,
         'flowerdirtyprpr': 1,
-        'jushuoshow': 5,
+        'jushuoshow': 1,
     }
 
 

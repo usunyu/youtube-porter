@@ -20,7 +20,7 @@ def bilibili_channel_fetch(job):
     account = job.youtube_account
     if not payload['status']:
         print_log(TAG, 'Fetch channel ' + channel_url + ' failed!')
-        return []
+        return
     video_list = []
     # this channel already fetched before
     if job.last_fetched_at:
