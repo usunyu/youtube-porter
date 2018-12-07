@@ -35,7 +35,7 @@ ALLOWED_HOSTS = [
     # yportserver
     '54.153.19.234',
     # tiktokserver
-    '18.144.6.73'
+    '13.57.214.130'
 ]
 
 
