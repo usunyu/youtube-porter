@@ -70,7 +70,7 @@ $ screen -r
 $ python manage.py runserver --insecure 0.0.0.0:9652
 ```
 
-### Init Settings:
+### Initial Settings:
 ```
 $ python manage.py shell < scripts/init_settings.py
 ```
