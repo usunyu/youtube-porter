@@ -32,9 +32,6 @@ YOUTUBE_UPLOAD_TIME_INTERVAL = 24 * 60 * INTERVAL_UNIT
 scheduler = BackgroundScheduler()
 scheduler.add_jobstore(DjangoJobStore(), 'default')
 
-download_job_lock = False
-upload_job_lock = False
-
 @scheduler.scheduled_job("interval", seconds=DOWNLOAD_JOB_INTERVAL, id='download')
 def download_job():
     if not is_start_download_job():
@@ -46,17 +43,9 @@ def download_job():
         print_log(TAG, 'No pending download job available, skip this schedule...')
         return
 
-    global download_job_lock
-
-    if download_job_lock:
-        print_log(TAG, 'Download job is still running, skip this schedule...')
-        return
-
     print_log(TAG, 'Download job is started...')
 
-    download_job_lock = True
     download(job)
-    download_job_lock = False
 
 
 @scheduler.scheduled_job("interval", seconds=UPLOAD_JOB_INTERVAL, id='upload')
@@ -70,17 +59,9 @@ def upload_job():
         print_log(TAG, 'No pending upload job available, skip this schedule...')
         return
 
-    global upload_job_lock
-
-    if upload_job_lock:
-        print_log(TAG, 'Upload job is still running, skip this schedule...')
-        return
-
     print_log(TAG, 'Upload job is started...')
 
-    upload_job_lock = True
     upload(job)
-    upload_job_lock = False
 
 
 @scheduler.scheduled_job("interval", seconds=CHANNEL_JOB_INTERVAL, id='channel')

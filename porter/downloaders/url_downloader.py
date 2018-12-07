@@ -41,4 +41,5 @@ def url_download(url, headers=get_browser_headers()):
         return filename
     except:
         print_exception(TAG, 'Url download exception!')
+        print_log(TAG, 'Url download exception!')
         return None

@@ -67,7 +67,7 @@ def kuaiyinshi_video_merge():
     try:
         merge_videos(pending_videos, merged_video)
     except:
-        print_exception(TAG, 'Merge videos exception!')
+        print_log(TAG, 'Merge videos exception!')
         manual_merge_job.status = PorterStatus.FAILED
         manual_merge_job.save(update_fields=['status'])
         return

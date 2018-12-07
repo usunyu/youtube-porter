@@ -219,6 +219,7 @@ def clean_file(tag, file):
         print_log(tag, 'Deleted file: ' + file)
     except:
         print_exception(tag, 'Delete file: ' + file + ' exception!')
+        print_log(tag, 'Delete file: ' + file + ' exception!')
 
 
 def merge_images(images, target, clean=True):

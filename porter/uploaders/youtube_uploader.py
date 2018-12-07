@@ -64,7 +64,7 @@ def youtube_upload(job):
         youtube_account.save(update_fields=['upload_quota'])
 
     except:
-        print_exception(TAG, 'Upload video: ' + video.title + ' exception!')
+        print_log(TAG, 'Upload video: ' + video.title + ' exception!')
         # TODO, check exception upload limit or playlist limit
         # if playlist limit, upload status still should be true
         # update status to *UPLOAD_FAIL*
@@ -165,6 +165,10 @@ def youtube_thumbnail_upload(job):
         job.thumbnail_status = PorterThumbnailStatus.FAILED
         job.save(update_fields=['thumbnail_status'])
         print_exception(TAG, 'Upload thumbnail ' + job.thumbnail_file + ' exception!')
+        print_log(TAG, 'Upload thumbnail ' + job.thumbnail_file + ' exception!')
+        # clean thumbnail file
+        clean_file(TAG, job.thumbnail_file)
+        return
 
     job.thumbnail_status = PorterThumbnailStatus.UPDATED
     job.save(update_fields=['thumbnail_status'])

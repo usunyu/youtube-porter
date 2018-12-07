@@ -22,6 +22,7 @@ def bilibili_download_DEPRECATED(job):
         response = requests.get(api_url)
     except:
         print_exception(TAG, 'Request api exception!')
+        print_log(TAG, 'Request api exception!')
         return None
     payload = json.loads(response.text)
 
@@ -57,6 +58,7 @@ def bilibili_download_DEPRECATED(job):
             html_tags = html_response.html.find('#v_tag', first=True).find('.tag')
         except:
             print_exception(TAG, 'Fetch video tags exception!')
+            print_log(TAG, 'Fetch video tags exception!')
         for html_tag in html_tags:
             tag_name = html_tag.text
             for invalid_char in get_youtube_invalid_tag_chars():
@@ -103,6 +105,7 @@ def bilibili_download(job):
         response = requests.get(api_url)
     except:
         print_exception(TAG, 'Request api exception!')
+        print_log(TAG, 'Request api exception!')
         return PorterStatus.API_EXCEPTION
     payload = json.loads(response.text)
 
@@ -149,6 +152,7 @@ def bilibili_download(job):
             html_tags = html_response.html.find('#v_tag', first=True).find('.tag')
         except:
             print_exception(TAG, 'Fetch video tags exception!')
+            print_log(TAG, 'Fetch video tags exception!')
         for html_tag in html_tags:
             tag_name = html_tag.text
             for invalid_char in get_youtube_invalid_tag_chars():
@@ -204,6 +208,7 @@ def bilibili_download(job):
                 job.save(update_fields=['video_file'])
                 return PorterStatus.DOWNLOADED
             print_exception(TAG, 'Download video failed, bilibili-get exception!')
+            print_log(TAG, 'Download video failed, bilibili-get exception!')
             return PorterStatus.DOWNLOAD_FAIL
 
         video_file = 'av{}_{}.flv'.format(video_id, part)
