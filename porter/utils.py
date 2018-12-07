@@ -293,12 +293,13 @@ def get_video_duration(video_file):
 
 def get_no_playlist_accounts():
     return [
-        'yportshort',
+        # 'yportshort',
         'potatosixdao',
         'cailaobanwork',
         'renrenvideotv',
         'flowerdirtyprpr',
         'jushuoshow',
+        'tenminutesmovie',
     ]
 
 
@@ -325,12 +326,14 @@ def get_youtube_quota_settings():
         'renrenvideotv': 30,
         'flowerdirtyprpr': 1,
         'jushuoshow': 1,
+        'tenminutesmovie': 5,
     }
 
 
 def get_youtube_account_order():
     return [
-        'yportcomment',
+        # 'yportcomment',
+        'tenminutesmovie',
         'potatosixdao',
         'jushuoshow',
         'flowerdirtyprpr',

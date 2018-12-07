@@ -44,7 +44,8 @@ def douyin_channel_fetch(job):
     # create porter job
     added_jobs = 0
     for video in video_list:
-
+        # TODO
+        pass
         # video_id = video['aid']
         # video_url = BILIBILI_VIDEO_URL.format(video_id)
         # if PorterJob.objects.filter(
