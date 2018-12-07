@@ -329,6 +329,7 @@ def get_no_copyright_desc_accounts():
 
 def get_youtube_quota_settings():
     return {
+        # yportserver #
         'yportmaster': 20,
         'yportdance': 3,
         'yportgame': 5,
@@ -341,11 +342,14 @@ def get_youtube_quota_settings():
         'flowerdirtyprpr': 1,
         'jushuoshow': 1,
         'tenminutesmovie': 5,
+        # tiktokserver #
+        'tiktokvideo': 5,
     }
 
 
 def get_youtube_account_order():
     return [
+        # yportserver #
         # 'yportcomment',
         'tenminutesmovie',
         'potatosixdao',
@@ -357,5 +361,8 @@ def get_youtube_account_order():
         'yportkitty',
         'yportmaster',
         'yportgame',
+        # tiktokserver #
+        'tiktokvideo',
+        # test #
         'usunyu',
     ]
