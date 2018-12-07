@@ -32,15 +32,31 @@ $ python manage.py runserver
 
 ### Add YouTube Account:
 
-1. Download secrets file and upload it to server.
+1. Download secrets file `secrets/xxxxxx.json` and upload it to server.
+
+2. Update account settings in `utils.py`:
 ```
-secrets/xxxxxx.json
+def get_no_playlist_accounts():
+    ...
+
+def get_no_copyright_desc_accounts():
+    ...
+
+def get_youtube_quota_settings():
+    ...
+
+def get_youtube_account_order():
+    ...
 ```
 
-2. Run upload job and enter correct code in server.
+3. Add `YoutubeAccount` record.
+
+4. Create an empty credentials file `credentials/xxxxxx.json` from server:
 ```
-sudo touch credentials/xxxxxx.json
+$ sudo touch credentials/xxxxxx.json
 ```
+
+5. Run upload job and enter correct code from browser.
 
 ### Deployment:
 
@@ -54,24 +70,7 @@ $ screen -r
 $ python manage.py runserver --insecure 0.0.0.0:9652
 ```
 
-### Executable Scripts:
-
-1. Init settings:
+### Init Settings:
 ```
 $ python manage.py shell < scripts/init_settings.py
-```
-
-2. Init youtube accounts:
-```
-$ python manage.py shell < scripts/init_youtube_account.py
-```
-
-3. Init bilibili recommend jobs:
-```
-$ python manage.py shell < scripts/init_bilibili_recommend.py
-```
-
-4. Reset upload failed jobs:
-```
-$ python manage.py shell < scripts/reset_upload_failed_job.py
 ```

@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 '''
-Parsing data from http://api.bilibili.cn/recommend and
-creating corresponding PorterJob.
+Create Youtube accounts by scripts.
 '''
 
 from porter.models import YoutubeAccount
@@ -10,10 +9,12 @@ CREATE_ACCOUNTS = [
     {
         'name': 'yportmaster',
         'secret_file': 'secrets/yportmaster.json'
+        'secret_file': 'credentials/yportmaster.json'
     },
     {
         'name': 'usunyu',
         'secret_file': 'secrets/usunyu.json'
+        'secret_file': 'credentials/usunyu.json'
     }
 ]
 
