@@ -32,8 +32,10 @@ IMPORT_SCHEDULE = True
 ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
-    # '54.67.59.180'
-    '54.153.19.234'
+    # yportserver
+    '54.153.19.234',
+    # tiktokserver
+    '18.144.6.73'
 ]
 
 
