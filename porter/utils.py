@@ -168,7 +168,7 @@ def get_youtube_yportmaster_account():
 
 
 def get_youtube_yporttiktok_account():
-    account = YoutubeAccount.objects.filter(name='yporttiktok').first()
+    account = YoutubeAccount.objects.filter(name='tiktokvideo').first()
     return account
 
 

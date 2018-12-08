@@ -20,8 +20,11 @@ def kuaiyinshi_video_merge():
     thumbnail_job_list = manual_merge_job.thumbnail_id_list.split(',')
     # check if job is pending for merge
     merge_ready = True
+    account = None
     for job_id in porter_job_list:
         job = PorterJob.objects.get(pk=job_id)
+        if not account:
+            account = job.youtube_account
         if job.status != PorterStatus.PENDING_MERGE:
             merge_ready = False
         if job.status == PorterStatus.PENDING_REVIEW:
@@ -32,10 +35,6 @@ def kuaiyinshi_video_merge():
         return
     manual_merge_job.status = PorterStatus.DOWNLOADING
     manual_merge_job.save(update_fields=['status'])
-    # upload to yporttiktok account
-    # account = get_youtube_yporttiktok_account()
-    # TODO, this is for testing
-    account = get_youtube_test_account()
     porter_video = Video(url='-',
                          title=manual_merge_job.video_title,
                          category='Entertainment')

@@ -89,9 +89,7 @@ def douyin_recommend_fetch():
         data = payload['data']
 
         # upload to yporttiktok account
-        # account = get_youtube_yporttiktok_account()
-        # TODO, this is for testing
-        account = get_youtube_test_account()
+        account = get_youtube_yporttiktok_account()
         added_jobs = 0
         for record in data:
             download_url = 'http:' + record['video_url']

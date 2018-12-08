@@ -1,5 +1,5 @@
 #!/usr/bin/python
-import os, subprocess, httplib2, sys
+import os, subprocess, httplib2
 from porter.utils import *
 from porter.enums import PorterStatus, PorterThumbnailStatus
 
@@ -64,6 +64,7 @@ def youtube_upload(job):
         youtube_account.save(update_fields=['upload_quota'])
 
     except:
+        print_exception(TAG, 'Upload video: ' + video.title + ' exception!')
         print_log(TAG, 'Upload video: ' + video.title + ' exception!')
         # TODO, check exception upload limit or playlist limit
         # if playlist limit, upload status still should be true
