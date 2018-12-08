@@ -3,7 +3,7 @@ from porter.utils import *
 from porter.enums import VideoSource
 from porter.models import ChannelJob
 from porter.fetchers.bilibili_fetcher import bilibili_channel_fetch
-from porter.fetchers.kuaiyinshi_fetcher import douyin_channel_fetch
+from porter.fetchers.douyin_fetcher import douyin_channel_fetch
 
 
 DELAY_INTERVAL = 5

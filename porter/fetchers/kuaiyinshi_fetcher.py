@@ -12,7 +12,8 @@ KUAIYINSHI_RECOMMEND_API = 'https://kuaiyinshi.com/api/hot/videos/?source={}&pag
 
 DELAY_INTERVAL = 5
 
-def douyin_channel_fetch(job):
+# kuaiyinshi user channel video link has encrpted
+def douyin_channel_fetch_DEPRECATED(job):
     channel_url = job.url
     user_id = re.findall('([0-9]+)', channel_url)[0]
     response = requests.get(KUAIYINSHI_CHANNEL_API.format('dou-yin', user_id, 1))
@@ -42,21 +43,36 @@ def douyin_channel_fetch(job):
             time.sleep(DELAY_INTERVAL)
 
     # create porter job
+    # did not tested
     added_jobs = 0
     for video in video_list:
-        # TODO
-        pass
-        # video_id = video['aid']
-        # video_url = BILIBILI_VIDEO_URL.format(video_id)
-        # if PorterJob.objects.filter(
-        #     Q(video_url=video_url) &
-        #     Q(youtube_account=account)
-        # ).exists():
-        #     continue
-        # added_jobs = added_jobs + 1
-        # PorterJob(video_url=video_url,
-        #           playlist=job.name,
-        #           youtube_account=account).save()
+        download_url = 'http:' + record['video_url']
+        if PorterJob.objects.filter(
+            Q(download_url=download_url) &
+            Q(youtube_account=account)
+        ).exists():
+            continue
+        user_name = record['nickname']
+        title = record['desc']
+        statistics = record['statistics']
+        likes = statistics['zan']
+        comments = statistics['comment']
+        shares = statistics['share']
+        thumbnail_url = 'http:' + record['video_img']
+        video = Video(url='-', title='@' + user_name + ' ' + title)
+        video.save()
+        PorterJob(video_url='-',
+                  download_url=download_url,
+                  thumbnail_url=thumbnail_url,
+                  youtube_account=account,
+                  video_source=VideoSource.DOUYIN,
+                  video=video,
+                  status=PorterStatus.PENDING_REVIEW,
+                  type=PorterJobType.MERGE,
+                  likes=likes,
+                  comments=comments,
+                  shares=shares).save()
+        added_jobs = added_jobs + 1
     print_log(TAG, 'Create {} new jobs from channel {}'.format(added_jobs, job.name))
 
     # update last fetched time
