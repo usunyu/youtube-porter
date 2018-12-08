@@ -25,7 +25,12 @@ $ brew install ffmpeg aria2
 $ sudo apt-get install ffmpeg aria2
 ```
 
-3. Run server:
+4. Update sqlite3 db permission:
+```
+$ chmod 666 db.sqlite3
+```
+
+5. Run server:
 ```
 $ python manage.py runserver
 ```

@@ -1,7 +1,7 @@
 #!/usr/bin/python
-import os, subprocess, sys
+import subprocess, json
 from porter.utils import *
-from porter.models import PorterJob, Video
+from porter.models import PorterJob, Video, VideoSource, PorterStatus
 
 TAG = '[DOUYIN FETCHER]'
 
@@ -52,6 +52,8 @@ def douyin_channel_fetch(job):
                   thumbnail_url=thumbnail_url,
                   playlist=channel_name,
                   video=video,
+                  video_source=VideoSource.DOUYIN,
+                  status=PorterStatus.PENDING_REVIEW,
                   youtube_account=account).save()
     print_log(TAG, 'Create {} new jobs from channel {}'.format(added_jobs, channel_name))
 
