@@ -314,6 +314,7 @@ def get_no_playlist_accounts():
         'flowerdirtyprpr',
         'jushuoshow',
         'tenminutesmovie',
+        'huntingnotebook',
     ]
 
 
@@ -324,6 +325,7 @@ def get_no_copyright_desc_accounts():
         'jushuoshow',
         'flowerdirtyprpr',
         'renrenvideotv',
+        'huntingnotebook',
     ]
 
 
@@ -342,6 +344,7 @@ def get_youtube_quota_settings():
         'flowerdirtyprpr': 1,
         'jushuoshow': 1,
         'tenminutesmovie': 5,
+        'huntingnotebook': 20,
         # tiktokserver #
         'tiktokvideo': 5,
     }
@@ -356,6 +359,7 @@ def get_youtube_account_order():
         'jushuoshow',
         'flowerdirtyprpr',
         'cailaobanwork',
+        'huntingnotebook',
         'renrenvideotv',
         'yportdance',
         'yportkitty',
