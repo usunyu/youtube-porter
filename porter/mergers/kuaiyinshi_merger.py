@@ -85,16 +85,20 @@ def kuaiyinshi_video_merge():
         job.thumbnail_file = thumbnail_file
         job.save(update_fields=['thumbnail_file'])
         pending_thumbnails.append(thumbnail_file)
-    # merge 3 thumbnails
-    merged_thumbnail = get_random_16_code() + '.jpeg'
-    try:
-        merge_images(pending_thumbnails, merged_thumbnail)
-    except:
-        print_exception(TAG, 'Merge thumbnails exception!')
-        manual_merge_job.status = PorterStatus.FAILED
-        manual_merge_job.save(update_fields=['status'])
-        return
-    porter_job.thumbnail_file = merged_thumbnail
+    final_thumbnail = None
+    # 1 thumbnail or 3 thumbnails
+    if len(pending_thumbnails) == 1:
+        final_thumbnail = pending_thumbnails[0]
+    elif len(pending_thumbnails) == 3:
+        # merge 3 thumbnails
+        final_thumbnail = get_random_16_code() + '.jpeg'
+        try:
+            merge_images(pending_thumbnails, final_thumbnail)
+        except:
+            print_exception(TAG, 'Merge thumbnails exception!')
+            final_thumbnail = None
+    if final_thumbnail:
+        porter_job.thumbnail_file = final_thumbnail
 
     # update final job status to *DOWNLOADED*
     porter_job.status = PorterStatus.DOWNLOADED
