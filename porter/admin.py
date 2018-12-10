@@ -182,9 +182,9 @@ class ManualMergeJobAdmin(admin.ModelAdmin):
     list_display = [
         'id',
         'status',
+        'video_title',
         'job_id_list',
         'thumbnail_id_list',
-        'video_title',
         'video_description',
         'video_tags',
         'video_source',
