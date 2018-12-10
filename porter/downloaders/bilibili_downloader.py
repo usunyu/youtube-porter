@@ -10,7 +10,7 @@ TAG = '[BILIBILI DOWNLOADER]'
 
 BILIBILI_API = 'https://www.kanbilibili.com/api/video/'
 
-MIN_THUMBNAIL_SIZE = 51200 # 50 KB
+MIN_THUMBNAIL_SIZE = 20480 # 20 KB
 
 # use bilibili-get for stable download
 def bilibili_download_DEPRECATED(job):
