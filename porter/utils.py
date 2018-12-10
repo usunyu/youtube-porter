@@ -195,16 +195,10 @@ def find_youtube_job_has_quota(status):
     account_order = get_youtube_account_order()
     for account_name in account_order:
         account = YoutubeAccount.objects.filter(name=account_name).first()
-        if not account:
+        # find a job with account has quota
+        if not account or account.upload_quota == 0:
             continue
-
-        available_jobs = PorterJob.objects.filter(Q(status=status) &
-                                                  Q(youtube_account=account))
-        for available_job in available_jobs:
-            # find a job with account has quota
-            if available_job.youtube_account.upload_quota > 0:
-                job = available_job
-                break
+        job = PorterJob.objects.filter(Q(status=status) & Q(youtube_account=account)).first()
         if job:
             break
 
