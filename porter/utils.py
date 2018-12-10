@@ -277,7 +277,7 @@ def merge_videos(videos, target, clean=True):
     # merge videos
     subprocess.run(['ffmpeg -i concat:"{}" -c copy temptarget.mpg'.format(concat_params)], shell=True)
     # re-encode to origin format
-    subprocess.run(['ffmpeg -i temptarget.mpg -qscale:v 2 {}'.format(target)], shell=True)
+    subprocess.run(['ffmpeg -i temptarget.mpg -qscale:v 2 -strict -2 {}'.format(target)], shell=True)
     # clean files
     if clean:
         for i in range(0, len(videos)):
