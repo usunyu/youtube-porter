@@ -8,13 +8,19 @@ TAG = '[YOUTUBE UPLOADER]'
 
 DEFAULT_DESCRIPTION = """{}
 
-喜欢的话不要忘记订阅点赞哦 ^_^
+喜欢的话不要忘记订阅点赞和分享哦 ^_^
 视频来源和原始版权归属原创作者, 影片论点和本频道无关. 本频道致力于视频影片的推广, 学习和传播工作.
 如果侵犯了您的权益请留言告知, 本频道会遵照著作权保护法相关规定马上删除影片并且停止分享!
 """
 
+TIKTOK_DESCRIPTION = """喜欢的话不要忘记点赞订阅和分享哦 ❤️
+Please give me thumbs up, subscribe and share if you like it 😘
+"""
+
 def get_desc_by_account(account):
-    if account.name in get_no_copyright_desc_accounts():
+    if account == get_youtube_yporttiktok_account():
+        return TIKTOK_DESCRIPTION
+    elif account.name in get_no_copyright_desc_accounts():
         return """{}"""
     else:
         return DEFAULT_DESCRIPTION
