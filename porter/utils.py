@@ -248,7 +248,7 @@ def merge_images(images, target, clean=True):
 def resize_video(video, width, height, target, clean=True):
     tag = '[RESIZE VIDEO]'
     print_log(tag, 'Resizing video {}...'.format(video))
-    command = 'ffmpeg -i {} -vf "scale={}:{}:force_original_aspect_ratio=decrease,pad={}:{}:(ow-iw)/2:(oh-ih)/2" {}'.format(
+    command = 'ffmpeg -i {} -vf "scale={}:{}:force_original_aspect_ratio=decrease,pad={}:{}:(ow-iw)/2:(oh-ih)/2" -strict -2 {}'.format(
         video,
         width, height,
         width, height,
