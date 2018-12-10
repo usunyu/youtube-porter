@@ -104,7 +104,7 @@ def kuaiyinshi_video_merge():
     porter_job.status = PorterStatus.DOWNLOADED
     porter_job.save(update_fields=['video_file', 'thumbnail_file', 'status'])
 
-    porter_job.merge_at = get_current_time()
+    manual_merge_job.merge_at = get_current_time()
     manual_merge_job.status = PorterStatus.SUCCESS
     manual_merge_job.save(update_fields=['status', 'merge_at'])
 
