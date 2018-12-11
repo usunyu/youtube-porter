@@ -16,7 +16,8 @@ def download(job, source):
     file = url_download(download_url, headers)
     # update video file
     job.video_file = file
-    job.save(update_fields=['video_file'])
+    job.download_at = get_current_time()
+    job.save(update_fields=['video_file', 'download_at'])
     duration = get_video_duration(file)
     # update video duration
     video = job.video
