@@ -23,9 +23,9 @@ USAGE = '''
 
     Usage:
 
-        tiktok-crawler http://v.douyin.com/8YVQBV/ all
+        tiktok-crawler http://v.douyin.com/8YVQBV/ all 200
 
-        tiktok-crawler http://v.douyin.com/82UayF/ latest
+        tiktok-crawler http://v.douyin.com/82UayF/ latest 20
 
 '''
 
@@ -47,9 +47,10 @@ def get_dytk(url):
 
 class TikTokCrawler(object):
 
-    def __init__(self, url, type):
+    def __init__(self, url, type, max):
         self.url = get_real_address(url)
         self.type = type
+        self.max = max
 
     @staticmethod
     def generateSignature(value):
@@ -66,7 +67,6 @@ class TikTokCrawler(object):
     def _fetch_user_media(self, user_id, dytk, url):
 
         if not user_id:
-            # print("Number %s does not exist" % user_id)
             return { 'count': 0, 'list': [] }
 
         hostname = urllib.parse.urlparse(url).hostname
@@ -88,13 +88,11 @@ class TikTokCrawler(object):
             if max_cursor:
                 user_video_params['max_cursor'] = str(max_cursor)
 
-            # print("Fetching user videos page %s" % page)
-
             res = requests.get(user_video_url, headers=HEADERS, params=user_video_params)
             try:
                 contentJson = json.loads(res.content.decode('utf-8'))
             except:
-                # print("Fetch exception, try again!")
+                # fetch exception, try again
                 continue
 
             aweme_list = contentJson.get('aweme_list', [])
@@ -134,8 +132,8 @@ class TikTokCrawler(object):
             if self.type == FETCH_LATEST and len(aweme_list) > 0:
                 break
 
-        # if videos['count'] == 0:
-            # print("There's no video in number %s." % user_id)
+            if videos['count'] >= self.max:
+                break
 
         return videos
 
@@ -147,12 +145,10 @@ class TikTokCrawler(object):
         user_id = number[0]
         videos = self._fetch_user_media(user_id, dytk, self.url)
         sys.stdout.write(str(videos).replace("'", '"'))
-        # print("\n\nTik Tok user %s, video count %d\n\n" % (user_id, videos['count']))
 
     def _fetch_challenge_media(self, challenge_id, url):
 
         if not challenge_id:
-            # print("Challenge #%s does not exist" % challenge_id)
             return { 'count': 0, 'list': [] }
 
         hostname = urllib.parse.urlparse(url).hostname
@@ -176,13 +172,11 @@ class TikTokCrawler(object):
                 challenge_video_params['cursor'] = str(cursor)
                 challenge_video_params['_signature'] = self.generateSignature(str(challenge_id) + '9' + str(cursor))
 
-            # print("Fetching challenge videos page %s" % page)
-
             res = requests.get(challenge_video_url, headers=HEADERS,params=challenge_video_params)
             try:
                 contentJson = json.loads(res.content.decode('utf-8'))
             except:
-                # print("Fetch exception, try again!")
+                # fetch exception, try again
                 continue
 
             aweme_list = contentJson.get('aweme_list', [])
@@ -220,8 +214,8 @@ class TikTokCrawler(object):
             if self.type == FETCH_LATEST:
                 break
 
-        # if videos['count'] == 0:
-            # print("There's no video in challenge %s." % challenge_id)
+            if videos['count'] >= self.max:
+                break
 
         return videos
 
@@ -231,7 +225,6 @@ class TikTokCrawler(object):
         challenges_id = challenge[0]
         videos = self._fetch_challenge_media(challenges_id, self.url)
         sys.stdout.write(str(videos).replace("'", '"'))
-        # print("\n\nTik Tok challenge #%s, video count %d\n\n" % (challenges_id, videos['count']))
 
     def fetch(self):
         if re.search('share/user', self.url):
@@ -245,19 +238,22 @@ def usage():
     print(USAGE)
 
 def run():
-    if len(sys.argv) != 3:
+    if len(sys.argv) != 4:
         usage()
         sys.exit(1)
 
     fetch_url = sys.argv[1]
-
     fetch_type = sys.argv[2]
-
     if fetch_type != FETCH_LATEST and fetch_type != FETCH_ALL:
         usage()
         sys.exit(1)
+    try:
+        fetch_max = int(sys.argv[3])
+    except:
+        usage()
+        sys.exit(1)
 
-    crawler = TikTokCrawler(fetch_url, fetch_type)
+    crawler = TikTokCrawler(fetch_url, fetch_type, fetch_max)
 
     crawler.fetch()
 
