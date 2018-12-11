@@ -14,10 +14,10 @@ def douyin_channel_fetch(job):
     # this channel already fetched before
     if job.last_fetched_at:
         # only fetch first page
-        fetch_commend += ' latest'
+        fetch_commend += ' latest 20'
     else:
         # this channel not fetched before
-        fetch_commend += ' all'
+        fetch_commend += ' all 200'
 
     try:
         output = subprocess.check_output(fetch_commend, shell=True)
