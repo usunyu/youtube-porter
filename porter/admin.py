@@ -185,7 +185,7 @@ class ManualMergeJobAdmin(admin.ModelAdmin):
         'video_title',
         'job_id_list',
         'thumbnail_id_list',
-        'video_description',
+        # 'video_description',
         'video_tags',
         'video_source',
         'created_at',
