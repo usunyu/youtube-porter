@@ -22,13 +22,6 @@ def download(job):
             Q(part=job.part)
         ).exists():
             duplicated = True
-    elif job.video_source == VideoSource.DOUYIN:
-        # check if job is duplicated
-        if PorterJob.objects.filter(
-            Q(download_url=job.download_url) &
-            Q(youtube_account=job.youtube_account)
-        ).exists():
-            duplicated = True
     if duplicated:
         # update status to *DUPLICATED*
         job.status = PorterStatus.DUPLICATED
