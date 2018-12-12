@@ -11,14 +11,25 @@ TAG = '[DOWNLOADER]'
 MAX_DOWNLOAD_RETRIES = 3
 
 def download(job):
-    # check if job is duplicated
-    if PorterJob.objects.filter(
-        Q(video_url=job.video_url) &
-        Q(youtube_account=job.youtube_account) &
-        Q(status=PorterStatus.SUCCESS) &
-        Q(type=job.type) &
-        Q(part=job.part)
-    ).exists():
+    duplicated = False
+    if job.video_source == VideoSource.BILIBILI:
+        # check if job is duplicated
+        if PorterJob.objects.filter(
+            Q(video_url=job.video_url) &
+            Q(youtube_account=job.youtube_account) &
+            Q(status=PorterStatus.SUCCESS) &
+            Q(type=job.type) &
+            Q(part=job.part)
+        ).exists():
+            duplicated = True
+    elif job.video_source == VideoSource.DOUYIN:
+        # check if job is duplicated
+        if PorterJob.objects.filter(
+            Q(download_url=job.download_url) &
+            Q(youtube_account=job.youtube_account)
+        ).exists():
+            duplicated = True
+    if duplicated:
         # update status to *DUPLICATED*
         job.status = PorterStatus.DUPLICATED
         job.save(update_fields=['status'])
