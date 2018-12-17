@@ -22,16 +22,18 @@ logger.setLevel(logging.DEBUG)
 
 IP_ADDR = None
 
-def print_log(tag, msg):
+def print_log(tag, msg, write_to_file=False):
     dt = timezone.localtime(timezone.now())
     print(tag, dt.strftime('%Y-%m-%d %H:%M:%S'), msg)
-    logger.debug(msg)
+    if write_to_file:
+        logger.debug(msg)
 
 
-def print_exception(tag, msg):
+def print_exception(tag, msg, write_to_file=True):
     dt = timezone.localtime(timezone.now())
     print(tag, dt.strftime('%Y-%m-%d %H:%M:%S'), msg)
-    logger.exception(msg)
+    if write_to_file:
+        logger.exception(msg)
 
 
 def set_ip_addr(ip):
