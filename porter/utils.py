@@ -326,19 +326,19 @@ def get_no_copyright_desc_accounts():
 def get_youtube_quota_settings():
     return {
         # yportserver #
-        'yportmaster': 20,
+        'yportmaster': 5,
         'yportdance': 3,
         'yportgame': 5,
         # 'yportcomment': 0,
         # 'yportshort': 0,
         'yportkitty': 1,
-        'potatosixdao': 20,
-        'cailaobanwork': 20,
-        'renrenvideotv': 30,
+        'potatosixdao': 10,
+        'cailaobanwork': 3,
+        'renrenvideotv': 5,
         'flowerdirtyprpr': 1,
         'jushuoshow': 1,
         'tenminutesmovie': 5,
-        'huntingnotebook': 20,
+        'huntingnotebook': 5,
         # tiktokserver #
         'tiktokvideo': 5,
     }
