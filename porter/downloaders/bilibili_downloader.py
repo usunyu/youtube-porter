@@ -214,15 +214,21 @@ def bilibili_download(job):
         video_file = 'av{}_{}.flv'.format(video_id, part)
         # download thumbnail if video downloaded
         if job.thumbnail_url and os.path.isfile(video_file):
-            # check image file size
-            response = requests.get(job.thumbnail_url, headers=get_browser_headers())
-            image_size = int(response.headers['content-length'])
-            if image_size >= MIN_THUMBNAIL_SIZE:
-                job.thumbnail_file = url_download(job.thumbnail_url)
-                job.save(update_fields=['thumbnail_file'])
-            else:
-                job.thumbnail_status = PorterThumbnailStatus.SKIPPED
+            try:
+                # check image file size
+                response = requests.get(job.thumbnail_url, headers=get_browser_headers())
+                image_size = int(response.headers['content-length'])
+                if image_size >= MIN_THUMBNAIL_SIZE:
+                    job.thumbnail_file = url_download(job.thumbnail_url)
+                    job.save(update_fields=['thumbnail_file'])
+                else:
+                    job.thumbnail_status = PorterThumbnailStatus.SKIPPED
+                    job.save(update_fields=['thumbnail_status'])
+            except:
+                job.thumbnail_status = PorterThumbnailStatus.FAILED
                 job.save(update_fields=['thumbnail_status'])
+                print_exception(TAG, 'Download thumbnail exception!')
+                print_log(TAG, 'Download thumbnail exception!')
 
         # check download file success
         if not os.path.isfile(video_file):
