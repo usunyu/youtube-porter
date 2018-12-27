@@ -309,7 +309,8 @@ def get_no_playlist_accounts():
         'renrenvideotv',
         'flowerdirtyprpr',
         'jushuoshow',
-        'tenminutesmovie',
+        # 'tenminutesmovie',
+        'dakeng',
         'huntingnotebook',
         'tenminutesmovie2',
     ]
@@ -323,6 +324,7 @@ def get_no_copyright_desc_accounts():
         'flowerdirtyprpr',
         'renrenvideotv',
         'huntingnotebook',
+        'dakeng',
         'tenminutesmovie2',
     ]
 
@@ -341,7 +343,8 @@ def get_youtube_quota_settings():
         'renrenvideotv': 5,
         'flowerdirtyprpr': 1,
         'jushuoshow': 1,
-        'tenminutesmovie': 5,
+        # 'tenminutesmovie': 5,
+        'dakeng': 5,
         'huntingnotebook': 5,
         'tenminutesmovie2': 5,
         # tiktokserver #
@@ -354,7 +357,8 @@ def get_youtube_account_order():
         # yportserver #
         # 'yportcomment',
         'cailaobanwork',
-        'tenminutesmovie',
+        # 'tenminutesmovie',
+        'dakeng',
         'tenminutesmovie2',
         'jushuoshow',
         'potatosixdao',
