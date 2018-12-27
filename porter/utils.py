@@ -310,7 +310,6 @@ def get_no_playlist_accounts():
         'flowerdirtyprpr',
         'jushuoshow',
         # 'tenminutesmovie',
-        'dakeng',
         'huntingnotebook',
         'tenminutesmovie2',
     ]
