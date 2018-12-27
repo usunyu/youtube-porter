@@ -90,7 +90,7 @@ class PorterJobAdmin(admin.ModelAdmin):
     def video_link(self, obj):
         if obj.video_url == '-':
             if obj.download_url:
-                return format_html('<a href="{}" target="_blank">{}</a>'.format(
+                return format_html('<a href="{}" target="_blank" rel="noreferrer">{}</a>'.format(
                     obj.download_url, 'Download Link'
                 ))
             return '-'
