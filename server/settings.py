@@ -33,7 +33,8 @@ ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
     # yportserver
-    '54.153.19.234',
+    # '54.153.19.234',
+    '54.67.93.94',
     # tiktokserver
     '13.57.214.130'
 ]
