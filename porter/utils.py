@@ -328,6 +328,12 @@ def get_no_copyright_desc_accounts():
     ]
 
 
+def get_private_video_accounts():
+    return [
+        'cailaobanwork',
+    ]
+
+
 def get_youtube_quota_settings():
     return {
         # yportserver #

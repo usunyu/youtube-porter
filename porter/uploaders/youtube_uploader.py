@@ -55,6 +55,8 @@ def youtube_upload(job):
         )
         if job.playlist and youtube_account.name not in get_no_playlist_accounts():
             upload_command = upload_command + ' --playlist="' + job.playlist + '"'
+        if youtube_account.name in get_private_video_accounts():
+            upload_command += ' --privacy private'
         upload_command = upload_command + ' ' + job.video_file
         # print_log(TAG, 'Run command: ' + upload_command)
         output = subprocess.check_output(upload_command, shell=True)
