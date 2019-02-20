@@ -25,7 +25,7 @@ $ brew install ffmpeg aria2
 $ sudo apt-get install ffmpeg aria2
 ```
 
-Temporary fix bilibili-get download [issue](https://github.com/kamikat/bilibili-get/issues/18):
+##### Temporary fix bilibili-get download [issue](https://github.com/kamikat/bilibili-get/issues/18):
 ```
 $ git clone https://github.com/kamikat/bilibili-get
 $ cd libs/bilibili-get/bin/
