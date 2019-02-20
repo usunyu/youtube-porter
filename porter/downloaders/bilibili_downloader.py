@@ -196,7 +196,9 @@ def bilibili_download(job):
             return PorterStatus.PARTIAL
 
         try:
-            subprocess.run(['bilibili-get {} -o "av%(aid)s_{}.%(ext)s" -f flv'.format(video_url, part)], shell=True)
+            # subprocess.run(['bilibili-get {} -o "av%(aid)s_{}.%(ext)s" -f flv'.format(video_url, part)], shell=True)
+            # use local build, see https://github.com/kamikat/bilibili-get/issues/18
+            subprocess.run(['libs/bilibili-get/bin/bilibili-get {} -o "av%(aid)s_{}.%(ext)s" -f flv'.format(video_url, part)], shell=True)
         except:
             # may rase exception:
             # error parsing debug value

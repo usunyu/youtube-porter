@@ -25,6 +25,13 @@ $ brew install ffmpeg aria2
 $ sudo apt-get install ffmpeg aria2
 ```
 
+3.1 Temporary fix bilibili-get download [issue](https://github.com/kamikat/bilibili-get/issues/18):
+```
+$ git clone https://github.com/kamikat/bilibili-get
+$ cd libs/bilibili-get/bin/
+$ npm i
+```
+
 4. Update sqlite3 db permission:
 ```
 $ chmod 666 db.sqlite3
