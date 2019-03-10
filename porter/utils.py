@@ -342,7 +342,7 @@ def get_youtube_quota_settings():
         'yportgame': 5,
         # 'yportcomment': 0,
         # 'yportshort': 0,
-        'yportkitty': 1,
+        'yportkitty': 3,
         'potatosixdao': 10,
         'cailaobanwork': 3,
         'renrenvideotv': 5,
