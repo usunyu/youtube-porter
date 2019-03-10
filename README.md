@@ -65,6 +65,8 @@ def get_youtube_account_order():
 
 4. Create an empty credentials file `credentials/xxxxxx.json` from server:
 ```
+$ touch credentials/xxxxxx.json
+# try sudo if not working
 $ sudo touch credentials/xxxxxx.json
 ```
 
