@@ -357,7 +357,7 @@ def get_youtube_quota_settings():
         'tenminutesmovie2': 5,
         # tiktokserver #
         'tiktokvideo': 5,
-        'funnytalk', 2,
+        'funnytalk': 2,
     }
 
 
