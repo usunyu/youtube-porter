@@ -70,6 +70,7 @@ class ChannelJob(models.Model):
         null=True,
         blank=True)
     active = models.BooleanField(default=True)
+    priority = models.BooleanField(default=False)
 
     created_at = models.DateTimeField(auto_now_add=True)
     last_fetched_at = models.DateTimeField(auto_now_add=False, auto_now=False, null=True, blank=True)

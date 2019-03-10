@@ -53,7 +53,8 @@ def bilibili_channel_fetch(job):
         added_jobs = added_jobs + 1
         PorterJob(video_url=video_url,
                   playlist=job.name,
-                  youtube_account=account).save()
+                  youtube_account=account,
+                  priority=job.priority).save()
     print_log(TAG, 'Create {} new jobs from channel {}'.format(added_jobs, job.name))
 
     # update last fetched time

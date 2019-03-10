@@ -75,6 +75,7 @@ class ChannelJobAdmin(admin.ModelAdmin):
         'video_source',
         'youtube_account',
         'active',
+        'priority',
         'last_fetched_at',
         'created_at'
     ]
