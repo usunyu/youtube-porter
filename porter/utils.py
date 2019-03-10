@@ -306,7 +306,7 @@ def get_no_playlist_accounts():
         # 'yportshort',
         'potatosixdao',
         'cailaobanwork',
-        'renrenvideotv',
+        # 'renrenvideotv',
         'flowerdirtyprpr',
         'jushuoshow',
         # 'tenminutesmovie',
@@ -315,6 +315,7 @@ def get_no_playlist_accounts():
     ]
 
 
+# set upload without copyright description
 def get_no_copyright_desc_accounts():
     return [
         'potatosixdao',
@@ -325,9 +326,11 @@ def get_no_copyright_desc_accounts():
         'huntingnotebook',
         'jieshuo',
         'tenminutesmovie2',
+        'funnytalk',
     ]
 
 
+# set default upload private video
 def get_private_video_accounts():
     return [
         'cailaobanwork',
@@ -337,7 +340,7 @@ def get_private_video_accounts():
 def get_youtube_quota_settings():
     return {
         # yportserver #
-        'yportmaster': 5,
+        # 'yportmaster': 5,
         'yportdance': 3,
         'yportgame': 5,
         # 'yportcomment': 0,
@@ -345,7 +348,7 @@ def get_youtube_quota_settings():
         'yportkitty': 3,
         'potatosixdao': 10,
         'cailaobanwork': 3,
-        'renrenvideotv': 5,
+        # 'renrenvideotv': 5,
         'flowerdirtyprpr': 1,
         'jushuoshow': 1,
         # 'tenminutesmovie': 5,
@@ -354,6 +357,7 @@ def get_youtube_quota_settings():
         'tenminutesmovie2': 5,
         # tiktokserver #
         'tiktokvideo': 5,
+        'funnytalk', 2,
     }
 
 
@@ -366,13 +370,14 @@ def get_youtube_account_order():
         'jieshuo',
         'tenminutesmovie2',
         'jushuoshow',
-        'potatosixdao',
+        # 'potatosixdao',
         'flowerdirtyprpr',
         'huntingnotebook',
-        'renrenvideotv',
+        # 'renrenvideotv',
         'yportdance',
         'yportkitty',
-        'yportmaster',
+        'funnytalk',
+        # 'yportmaster',
         'yportgame',
         # tiktokserver #
         'tiktokvideo',
