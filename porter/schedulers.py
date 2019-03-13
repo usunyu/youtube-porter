@@ -119,8 +119,7 @@ def reset_quota_job():
     for account in accounts:
         if account.upload_quota > 0:
             continue
-        # OPTIMIZE, use last 99 job upload time
-        last_success_job = account.porter_jobs.filter(status=PorterStatus.SUCCESS).reverse().first()
+        last_success_job = account.porter_jobs.filter(status=PorterStatus.SUCCESS).order_by('-upload_at').first()
         should_reset = False
         # hack to fix last_success_job.upload_at if None
         if last_success_job.upload_at == None:
