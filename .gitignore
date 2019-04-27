@@ -125,3 +125,6 @@ dmypy.json
 
 # lock file
 lock.obj
+
+# vscode
+.vscode/
